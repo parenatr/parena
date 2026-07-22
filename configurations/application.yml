@@ -1,0 +1,7 @@
+#tüm actuator endpointlerini dışarıya açar -> beans,caches,health,info,env,metrics...
+#actuator endpoints -> uygulamanızı izlemenize ve onunla etkileşim kurmanıza olanak tanır.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

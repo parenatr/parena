@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: dev
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/nursultanaslan/parena.git
+          default-label: main
+          search-paths:
+            - configurations/
+            - configurations/{application}
+
+server:
+  port: 8787
