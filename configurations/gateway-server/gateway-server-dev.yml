@@ -1,6 +1,23 @@
+# Eureka
 eureka:
   client:
     service-url:
       default-zone: http://localhost:8761/eureka
     instance:
       prefer-ip-address: true
+
+# Explicit routes for better control
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          forwarded:
+            enabled: true
+          x-forwarded:
+            enabled: true
+          routes: # Gateway Manual Routes
+            - id: identity-service
+              uri: lb://identity-service
+              predicates:
+                - Path=/api/v1/identity/**
