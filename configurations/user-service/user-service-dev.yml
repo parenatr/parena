@@ -1,0 +1,13 @@
+#eureka client localdeki eureka servera bağlansın.
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+#identity-service keycloak bağlantısı.
+keycloak:
+  realm: parena
+  auth-server-url: http://localhost:8585
+  admin-client-id: user-service-client
+  admin-client-secret: 6lGmlH7IlbzvT0AGgsiAdqcKFrURbqZMbx7PUnWZwMHjf7dIPS7abYp48u7gizLoGKSsW3WjR3LzElwzs3FIkj
+

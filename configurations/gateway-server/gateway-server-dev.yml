@@ -17,7 +17,7 @@ spring:
           x-forwarded:
             enabled: true
           routes: # Gateway Manual Routes
-            - id: identity-service
-              uri: lb://identity-service
+            - id: user-service
+              uri: lb://user-service
               predicates:
-                - Path=/api/v1/identity/**
+                - Path=/api/v1/user/**
