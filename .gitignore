@@ -1,16 +1,33 @@
+# ==========================
+# Java / Maven
+# ==========================
+
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+
 .kotlin
 
-### IntelliJ IDEA ###
+# ==========================
+# IntelliJ IDEA
+# ==========================
+
 .idea/
-*.iws
 *.iml
+*.iws
 *.ipr
 
-### Eclipse ###
+# ==========================
+# VS Code
+# ==========================
+
+.vscode/
+
+# ==========================
+# Eclipse
+# ==========================
+
 .apt_generated
 .classpath
 .factorypath
@@ -19,18 +36,58 @@ target/
 .springBeans
 .sts4-cache
 
-### NetBeans ###
+# ==========================
+# NetBeans
+# ==========================
+
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
+
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
-.vscode/
+# ==========================
+# Node.js / React
+# ==========================
 
-### Mac OS ###
+**/node_modules/
+**/dist/
+**/.vite/
+**/.npm/
+
+# Package Managers
+.pnpm-store/
+.yarn/
+.yarn-cache/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage
+coverage/
+
+# ==========================
+# Environment Files
+# ==========================
+
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Example env files should be committed
+!.env.example
+
+# ==========================
+# Operating System
+# ==========================
+
 .DS_Store
+Thumbs.db
