@@ -7,11 +7,13 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/nursultanaslan/parena.git
+          uri: https://github.com/parenatr/parena.git
           default-label: main
           search-paths:
             - configurations/
             - configurations/{application}
+          force-pull: true
+          clone-on-start: true
 
 server:
   port: 8787

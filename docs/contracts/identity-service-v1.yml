@@ -1,0 +1,123 @@
+openapi: 3.2.0
+info:
+  title: User Service API
+  description: |
+    User Service Management
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: |
+      Local development server
+
+tags:
+  - name: Authentication
+    description: User authentication endpoints
+
+paths:
+  /users/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register new User
+      description: |
+        Creates a new user in Keycloak with default 'STANDARD_USER' role.
+        User is immediately enabled and can login after registration.
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: User successfully registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+        '400':
+          description: Invalid input or user already exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Keycloak service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          description: User email address (must be unique)
+          example: "user@example.com"
+          minLength: 5
+          maxLength: 100
+        password:
+          type: string
+          format: password
+          description: User password (min 8 characters)
+          example: "SecurePass123!"
+          minLength: 8
+          maxLength: 100
+
+    RegisterResponse:
+      type: object
+      required:
+        - userId
+        - email
+      properties:
+        userId:
+          type: string
+          format: uuid
+          description: Keycloak user ID
+          example: "1dda47e0-2c28-448f-9a08-270daef0fa66"
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+
+    ErrorResponse:
+      type: object
+      required:
+        - timestamp
+        - status
+        - error
+        - message
+        - path
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Error timestamp (ISO 8601)
+          example: "2026-01-20T14:30:00Z"
+        status:
+          type: string
+          description: HTTP status code
+          example: 400
+        error:
+          type: string
+          description: HTTP status text
+          example: "Bad Request"
+        message:
+          type: string
+          description: Error message
+          example: "Invalid email format"
+        path:
+          type: string
+          description: Request Path
+          example: "/api/v1/identity/register"

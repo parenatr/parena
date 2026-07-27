@@ -1,5 +1,7 @@
 package com.parena.userservice.domain.aggregate.enums;
 
+import java.util.List;
+
 public enum Role {
     STANDARD_USER,
     ADMIN;
@@ -10,17 +12,23 @@ public enum Role {
             return null;
         }
 
-        String normalized = roleStr.toUpperCase();
+        String normalizedRole = roleStr.toUpperCase().replace("-", "_");
+
         try {
-            return Role.valueOf(normalized);
+            return Role.valueOf(normalizedRole);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(String.format("Role '%s' is not a valid Role", normalized));
+            throw new IllegalArgumentException(String.format("Role '%s' is not a valid Role", normalizedRole));
         }
 
     }
 
     //keycloak apisinin istediği format.
     public String toKeycloakRole() {
-        return this.name().toLowerCase();
+        return this.name().toLowerCase().replace("-", "_");
+    }
+
+    public static List<Role> getDefault() {
+        return List.of(STANDARD_USER);
+
     }
 }

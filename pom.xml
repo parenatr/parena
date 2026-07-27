@@ -31,6 +31,8 @@
     <properties>
         <java.version>21</java.version>
         <spring-cloud.version>2025.1.1</spring-cloud.version>
+
+        <keycloak.version>26.0.11</keycloak.version>
     </properties>
 
     <!-- Tüm bağımlılıkların version uyumunu garantiler (consistency). -->
@@ -43,6 +45,13 @@
                 <version>${spring-cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!-- Keycloak -->
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-admin-client</artifactId>
+                <version>${keycloak.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
