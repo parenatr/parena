@@ -1,0 +1,22 @@
+name: parena
+
+x-build: &java-build
+  context: ./backend
+  dockerfile: Dockerfile
+
+services:
+
+# ---------------- Platform Services ----------------
+  config-server:
+    build: 
+      <<: *java-build
+      args:
+        MODULE: config-server
+    ports:
+      - "8787:8787"
+    container_name: config-server
+    environment:
+      SO_CONFIG_GIT_URI: ${SO_CONFIG_GIT_URI}
+      SO_CONFIG_GIT_BRANCH: ${SO_CONFIG_GIT_BRANCH}
+      SO_CONFIG_GIT_USERNAME: ${SO_CONFIG_GIT_USERNAME}
+      SO_CONFIG_GIT_TOKEN: ${SO_CONFIG_GIT_TOKEN}

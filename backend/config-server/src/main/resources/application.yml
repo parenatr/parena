@@ -7,11 +7,13 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/parenatr/parena.git
-          default-label: main
+          uri: ${SO_CONFIG_GIT_URI}
+          default-label: ${SO_CONFIG_GIT_BRANCH:main}
+          username: ${SO_CONFIG_GIT_USERNAME}
+          password: ${SO_CONFIG_GIT_TOKEN}
           search-paths:
-            - configurations/
-            - configurations/{application}
+            - backend/configurations/
+            - backend/configurations/{application}
           force-pull: true
           clone-on-start: true
 
