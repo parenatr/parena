@@ -20,3 +20,17 @@ services:
       SO_CONFIG_GIT_BRANCH: ${SO_CONFIG_GIT_BRANCH}
       SO_CONFIG_GIT_USERNAME: ${SO_CONFIG_GIT_USERNAME}
       SO_CONFIG_GIT_TOKEN: ${SO_CONFIG_GIT_TOKEN}
+  
+  user-service:
+    build: 
+      <<: *java-build
+      args:
+        MODULE: user-service
+    ports:
+      - "8080:8080"
+    container_name: user-service
+    environment:
+      SO_KEYCLOAK_REALM: ${SO_KEYCLOAK_REALM}
+      SO_KEYCLOAK_AUTH_SERVER_URL: ${SO_KEYCLOAK_AUTH_SERVER_URL}
+      SO_KEYCLOAK_ADMIN_CLIENT_ID: ${SO_KEYCLOAK_ADMIN_CLIENT_ID}
+      SO_KEYCLOAK_ADMIN_CLIENT_SECRET: ${SO_KEYCLOAK_ADMIN_CLIENT_SECRET}

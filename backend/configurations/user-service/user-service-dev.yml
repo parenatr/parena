@@ -4,10 +4,10 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka
 
-#identity-service keycloak bağlantısı.
+#user-service keycloak bağlantısı.
 keycloak:
-  realm: parena
-  auth-server-url: http://localhost:8585
-  admin-client-id: user-service-client
-  admin-client-secret: 6lGmlH7IlbzvT0AGgsiAdqcKFrURbqZMbx7PUnWZwMHjf7dIPS7abYp48u7gizLoGKSsW3WjR3LzElwzs3FIkj
+  realm: ${SO_KEYCLOAK_REALM}
+  auth-server-url: ${SO_KEYCLOAK_AUTH_SERVER_URL}
+  admin-client-id: ${SO_KEYCLOAK_ADMIN_CLIENT_ID}
+  admin-client-secret: ${SO_KEYCLOAK_ADMIN_CLIENT_SECRET}
 
