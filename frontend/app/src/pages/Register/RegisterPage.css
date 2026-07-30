@@ -1,0 +1,27 @@
+/* Üye ol ekranına özel yardımcı sınıflar. */
+.register-name-row {
+  display: flex;
+  gap: 12px;
+}
+
+.register-consents {
+  margin-top: 14px;
+  text-align: left;
+  font-size: 10.5px;
+  line-height: 1.6;
+  color: var(--muted-foreground);
+}
+
+.register-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 7px;
+  cursor: pointer;
+}
+
+.register-consent input {
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--brand);
+}

@@ -1,0 +1,21 @@
+.launch-page {
+  display: block;
+}
+
+/* Hero bölümü: 1.1fr / 1fr grid (masaüstü), tek kolon (mobil). */
+.launch-hero {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: 56px;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 48px 24px 72px;
+}
+
+@media (min-width: 1024px) {
+  .launch-hero {
+    grid-template-columns: 1.1fr 1fr;
+    padding-top: 84px;
+  }
+}

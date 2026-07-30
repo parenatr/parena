@@ -1,0 +1,80 @@
+import { env } from "@/config/env";
+
+import { ApiError } from "./api-error";
+
+type RequestOptions = {
+  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  body?: unknown;
+  signal?: AbortSignal;
+  /** 401 alındığında hata fırlatmak yerine null dönmek için (örn. /me). */
+  allowUnauthorized?: boolean;
+};
+
+type ProblemDetail = {
+  message?: string;
+  error?: string;
+  detail?: string;
+  code?: string;
+  errors?: Record<string, string>;
+  fieldErrors?: Record<string, string>;
+};
+
+async function parseBody(response: Response): Promise<unknown> {
+  if (response.status === 204) return null;
+  const contentType = response.headers.get("content-type") ?? "";
+  if (!contentType.includes("json")) return await response.text();
+  try {
+    return await response.json();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * BFF (Backend-for-Frontend) istemcisi.
+ *
+ * - `credentials: "include"` → oturum HttpOnly cookie ile taşınır,
+ *   token hiçbir zaman JavaScript tarafında tutulmaz.
+ * - `X-Requested-With` → BFF'in tarayıcı isteğini ayırt edip 302 yerine
+ *   401 dönebilmesi için (Spring Security standart pratiği).
+ */
+export async function apiRequest<TResponse>(
+  path: string,
+  { method = "GET", body, signal, allowUnauthorized }: RequestOptions = {},
+): Promise<TResponse> {
+  let response: Response;
+
+  try {
+    response = await fetch(`${env.apiBaseUrl}${path}`, {
+      method,
+      credentials: "include",
+      signal,
+      headers: {
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+        ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
+      },
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    });
+  } catch (cause) {
+    if (cause instanceof DOMException && cause.name === "AbortError") throw cause;
+    throw new ApiError({ status: 0, message: "Sunucuya ulaşılamadı" });
+  }
+
+  const payload = await parseBody(response);
+
+  if (!response.ok) {
+    if (response.status === 401 && allowUnauthorized) {
+      return null as TResponse;
+    }
+    const problem = (typeof payload === "object" && payload ? payload : {}) as ProblemDetail;
+    throw new ApiError({
+      status: response.status,
+      message: problem.message ?? problem.detail ?? problem.error ?? "",
+      code: problem.code,
+      fieldErrors: problem.fieldErrors ?? problem.errors,
+    });
+  }
+
+  return payload as TResponse;
+}

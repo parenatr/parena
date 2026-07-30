@@ -1,111 +1,87 @@
+@import "tailwindcss";
+
+/*
+ * PARENA design system.
+ * bg #F4F6FB · surface #FFF · ink #000 · muted #6B7285 · divider #E5E8F0
+ * brand #13294B · deep #0C1D38 · gold #E0B54E · buy #17A672 · sell #E14F4F
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Unbounded", "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-divider: var(--divider);
+  --color-border: var(--divider);
+  --color-input: var(--divider);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-deep: var(--deep);
+  --color-gold: var(--gold);
+  --color-buy: var(--buy);
+  --color-sell: var(--sell);
+  --color-primary: var(--brand);
+  --color-primary-foreground: var(--brand-foreground);
+  --color-ring: var(--brand);
+
+  --shadow-brand: 0 14px 40px -18px oklch(0.2829 0.0688 258.85 / 0.22);
+  --shadow-card: 0 18px 50px -12px oklch(0.2328 0.0571 259.29 / 0.4);
+  --shadow-drop: 0 12px 30px -8px oklch(0.2829 0.0688 258.85 / 0.25);
+}
+
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --radius: 0.625rem;
+  --background: oklch(0.973 0.007 268.55);
+  --surface: oklch(1 0 0);
+  --foreground: oklch(0 0 0);
+  --muted: oklch(0.973 0.007 268.55);
+  --muted-foreground: oklch(0.5529 0.0307 269.39);
+  --divider: oklch(0.931 0.0113 269.55);
+  --brand: oklch(0.2829 0.0688 258.85);
+  --brand-foreground: oklch(1 0 0);
+  --deep: oklch(0.2328 0.0571 259.29);
+  --gold: oklch(0.7925 0.1295 86.2);
+  --buy: oklch(0.6428 0.1372 161.52);
+  --sell: oklch(0.627 0.1821 24.01);
+}
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+@layer base {
+  * {
+    border-color: var(--divider);
+    box-sizing: border-box;
+  }
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+  }
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
+  h1,
+  h2,
+  h3 {
+    line-height: 1.25;
+    font-weight: 650;
+    letter-spacing: -0.3px;
+    color: var(--brand);
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-}
-
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
-}
-
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+@utility font-tabular {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
