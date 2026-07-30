@@ -30,11 +30,23 @@ export const register = (data: RegisterRequest) =>
 export const forgotPassword = (data: ForgotPasswordRequest) =>
   apiRequest<void>(AUTH_ENDPOINTS.forgotPassword, { method: "POST", body: data });
 
-/** Oturum yoksa 401 yerine null döner. */
-export const fetchSession = (signal?: AbortSignal) =>
-  apiRequest<SessionUser | null>(AUTH_ENDPOINTS.me, {
+/**
+ * Oturum yoksa 401 yerine null döner.
+ *
+ * Ek koruma: BFF henüz yayında değilken SPA fallback'i (Netlify `/* -> index.html`)
+ * 200 + HTML döndürebilir. Gövde geçerli bir kullanıcı nesnesi değilse oturum yok sayılır.
+ */
+export const fetchSession = async (signal?: AbortSignal) => {
+  const payload = await apiRequest<unknown>(AUTH_ENDPOINTS.me, {
     signal,
     allowUnauthorized: true,
   });
+
+  if (!payload || typeof payload !== "object") return null;
+  const candidate = payload as Partial<SessionUser>;
+  if (typeof candidate.id !== "string" || typeof candidate.email !== "string") return null;
+
+  return { ...candidate, roles: candidate.roles ?? [] } as SessionUser;
+};
 
 export const logout = () => apiRequest<void>(AUTH_ENDPOINTS.logout, { method: "POST" });

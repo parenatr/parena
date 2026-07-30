@@ -76,5 +76,17 @@ export async function apiRequest<TResponse>(
     });
   }
 
+  /**
+   * BFF yayında değilken hosting SPA fallback'i 200 + index.html döndürebilir.
+   * Bunu "başarı" saymak sahte oturum/sahte login'e yol açar; açıkça hata verilir.
+   */
+  if (typeof payload === "string" && payload.trimStart().startsWith("<")) {
+    throw new ApiError({
+      status: 502,
+      message: "API sunucusuna ulaşılamadı",
+      code: "API_NOT_REACHABLE",
+    });
+  }
+
   return payload as TResponse;
 }
