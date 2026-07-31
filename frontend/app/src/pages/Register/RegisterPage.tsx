@@ -11,7 +11,6 @@ import { isValidEmail, isValidPassword, normalizeEmail } from "@/lib/auth-valida
 import { toUserMessage } from "@/lib/http/api-error";
 
 import "./RegisterPage.css";
-import { loginPageMeta } from "../Login/LoginPage";
 import { useDocumentMeta } from "@/hooks/use-document-meta";
 
 export const registerPageMeta = {
@@ -23,7 +22,7 @@ export const registerPageMeta = {
 
 
 export default function RegisterPage() {
-  useDocumentMeta(loginPageMeta); 
+  useDocumentMeta(registerPageMeta); 
   const [form, setForm] = useState({ ad: "", soyad: "", eposta: "", sifre: "" });
   const [kvkk, setKvkk] = useState(false);
   const [ticari, setTicari] = useState(false);

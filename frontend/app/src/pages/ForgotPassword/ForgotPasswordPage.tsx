@@ -10,7 +10,6 @@ import { isValidEmail, normalizeEmail } from "@/lib/auth-validation";
 import { toUserMessage } from "@/lib/http/api-error";
 
 import "./ForgotPasswordPage.css";
-import { loginPageMeta } from "../Login/LoginPage";
 import { useDocumentMeta } from "@/hooks/use-document-meta";
 
 export const forgotPasswordPageMeta = {
@@ -21,7 +20,7 @@ export const forgotPasswordPageMeta = {
 };
 
 export default function ForgotPasswordPage() {
-  useDocumentMeta(loginPageMeta);
+  useDocumentMeta(forgotPasswordPageMeta);
   const [email, setEmail] = useState("");
   const { label, status, fail, succeed } = useSubmitFeedback(
     "Sıfırlama bağlantısı gönder",

@@ -8,7 +8,6 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteNav } from "@/components/layout/SiteNav";
 
 import "./LaunchPage.css";
-import { loginPageMeta } from "../Login/LoginPage";
 import { useDocumentMeta } from "@/hooks/use-document-meta";
 
 export const launchPageMeta = {
@@ -21,7 +20,7 @@ export const launchPageMeta = {
 
 
 export default function LaunchPage() {
-  useDocumentMeta(loginPageMeta);
+  useDocumentMeta(launchPageMeta);
   return (
     <div className="launch-page">
       <SiteNav />
