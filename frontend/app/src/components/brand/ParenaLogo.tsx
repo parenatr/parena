@@ -1,17 +1,22 @@
 import { Link } from "react-router-dom";
-
 import { ParenaMark } from "./ParenaMark";
 
 /** Nav'da kullanılan logo: amblem + PARENA kelime markası + slogan. */
 export function ParenaLogo() {
   return (
-    <Link to="/" className="flex items-center gap-[11px] text-foreground no-underline">
-      <ParenaMark size={60} className="drop-shadow-[0_4px_8px_rgba(19,41,75,.35)]" />
-      <span className="block leading-[1.05]">
-        <span className="block font-display text-[29px] font-bold tracking-[.5px] text-foreground">
+    <Link
+      to="/"
+      className="flex min-w-0 items-center gap-2 text-foreground no-underline sm:gap-[11px]"
+    >
+      <ParenaMark
+        size={60}
+        className="h-9 w-9 shrink-0 drop-shadow-[0_4px_8px_rgba(19,41,75,.35)] sm:h-[46px] sm:w-[46px] lg:h-[60px] lg:w-[60px]"
+      />
+      <span className="block min-w-0 leading-[1.05]">
+        <span className="block truncate font-display text-[19px] font-bold tracking-[.5px] text-foreground sm:text-[24px] lg:text-[29px]">
           PAR<span className="text-brand">ENA</span>
         </span>
-        <span className="mt-[2px] block text-[14px] font-semibold uppercase tracking-[2.2px] text-muted-foreground">
+        <span className="mt-[2px] hidden truncate text-[11px] font-semibold uppercase tracking-[1.6px] text-muted-foreground sm:block lg:text-[14px] lg:tracking-[2.2px]">
           Paranın Arenası
         </span>
       </span>

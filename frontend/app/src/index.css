@@ -1,7 +1,10 @@
 @import "tailwindcss";
+@source "../src";
+@import "tw-animate-css";
 
 /*
  * PARENA design system.
+ * Tüm renkler oklch. Marka paleti:
  * bg #F4F6FB · surface #FFF · ink #000 · muted #6B7285 · divider #E5E8F0
  * brand #13294B · deep #0C1D38 · gold #E0B54E · buy #17A672 · sell #E14F4F
  */
@@ -36,6 +39,16 @@
   --color-primary: var(--brand);
   --color-primary-foreground: var(--brand-foreground);
   --color-ring: var(--brand);
+
+  /* shadcn/ui sözleşmesi: marka tokenlarına eşlenmiş semantik roller. */
+  --color-secondary: var(--background);
+  --color-secondary-foreground: var(--brand);
+  --color-accent: var(--background);
+  --color-accent-foreground: var(--brand);
+  --color-destructive: var(--sell);
+  --color-destructive-foreground: var(--brand-foreground);
+  --color-popover: var(--surface);
+  --color-popover-foreground: var(--foreground);
 
   --shadow-brand: 0 14px 40px -18px oklch(0.2829 0.0688 258.85 / 0.22);
   --shadow-card: 0 18px 50px -12px oklch(0.2328 0.0571 259.29 / 0.4);

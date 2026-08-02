@@ -11,7 +11,7 @@ import "./LaunchPage.css";
 import { useDocumentMeta } from "@/hooks/use-document-meta";
 
 export const launchPageMeta = {
-  title: "PARENA — Portföy Arena | Günlük Hisse Önerileri Tek Ekranda",
+  title: "Parena - Portföy Arena | Günlük Hisse Önerileri Tek Ekranda",
   description:
     "Aracı kurumların günlük hisse önerileri tek ekranda — kaynağıyla, arşiviyle ve her akşam netleşen karnesiyle. Davetli üyelik.",
   ogTitle: "PARENA — Paranın Arenası",

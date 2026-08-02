@@ -29,7 +29,7 @@ export function Features() {
     <section id="ozellikler" className="mx-auto max-w-[1080px] px-6 py-16">
       <h2 className="text-center text-2xl">Dağınık bültenler yerine tek arena</h2>
       <p className="mx-auto mb-13 mt-2 text-center text-[14.5px] text-muted-foreground">
-        Her sabah 20+ kurumun PDF'ini açmak yerine, hepsi karşında — kanıtıyla.
+        Her sabah 20+ kurumun PDF'ini açmak yerine, hepsi karşında, kaynaklarıyla.
       </p>
 
       <div className="mt-12 space-y-16">
