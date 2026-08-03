@@ -5,6 +5,56 @@ x-build: &java-build
   dockerfile: Dockerfile
 
 services:
+# ---------------- Infrastructure Services ----------------
+
+#keycloak default olarak postgresql ile calısacak sekilde tasarlanmıstır.
+#sadece keycloak servisinin kullanacagı db.
+  keycloak_db:   #dışarıya açmıyoruz sadece keycloak kullanacak
+    image: postgres:16
+    container_name: keycloak-db
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: ${SO_KEYCLOAK_DB_USER}
+      POSTGRES_PASSWORD: ${SO_KEYCLOAK_DB_PASSWORD}
+    volumes:
+      - keycloakdb_vol:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${SO_KEYCLOAK_DB_USER} -d keycloak"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      [parena]
+
+#merkezi kimlik ve erişim yönetimi sağlar (users,roles,authority). (identity-server)
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.7.0
+    container_name: keycloak
+    depends_on:
+      keycloak_db:
+        condition: service_healthy
+    command:
+      - start-dev   #localde http serbest, prodda https zorunlu. bu yüzden start-dev ile başlatıyoruz.
+      - --http-enabled=true
+      - --http-port=8585
+    ports:
+      - "8585:8585"
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak_db:5432/keycloak
+      KC_DB_USERNAME: ${SO_KEYCLOAK_DB_USER}
+      KC_DB_PASSWORD: ${SO_KEYCLOAK_DB_PASSWORD}
+
+      KEYCLOAK_ADMIN: ${SO_KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${SO_KEYCLOAK_ADMIN_PASSWORD}
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
+
+      KC_PROXY: edge
+      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
+    networks:
+      [parena]
 
 # ---------------- Platform Services ----------------
   config-server:
@@ -20,7 +70,9 @@ services:
       SO_CONFIG_GIT_BRANCH: ${SO_CONFIG_GIT_BRANCH}
       SO_CONFIG_GIT_USERNAME: ${SO_CONFIG_GIT_USERNAME}
       SO_CONFIG_GIT_TOKEN: ${SO_CONFIG_GIT_TOKEN}
-  
+      SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
+      SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
+
   user-service:
     build: 
       <<: *java-build
@@ -34,3 +86,13 @@ services:
       SO_KEYCLOAK_AUTH_SERVER_URL: ${SO_KEYCLOAK_AUTH_SERVER_URL}
       SO_KEYCLOAK_ADMIN_CLIENT_ID: ${SO_KEYCLOAK_ADMIN_CLIENT_ID}
       SO_KEYCLOAK_ADMIN_CLIENT_SECRET: ${SO_KEYCLOAK_ADMIN_CLIENT_SECRET}
+      SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
+      SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
+
+
+volumes:
+  keycloakdb_vol: {}
+
+networks:
+  parena:
+    driver: bridge

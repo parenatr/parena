@@ -2,7 +2,11 @@ spring:
   application:
     name: config-server
   profiles:
-    active: dev
+    active: git
+  security:           #config-server basic auth -> config servera herkes erişemez.
+    user:
+      name: ${SO_CONFIG_SECURITY_USER}
+      password: ${SO_CONFIG_SECURITY_PASSWORD}
   cloud:
     config:
       server:
@@ -16,6 +20,8 @@ spring:
             - backend/configurations/{application}
           force-pull: true
           clone-on-start: true
+        native:
+         search-locations: [ ]
 
 server:
   port: 8787

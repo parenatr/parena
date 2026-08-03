@@ -5,3 +5,7 @@ spring:
     active: dev
   config:
     import: configserver:http://localhost:8787
+  cloud:            #config-server security ile korunuyor, config servera baglanırken basit authentication yapılacak.
+    config:
+      username: ${SO_CONFIG_SECURITY_USER}
+      password: ${SO_CONFIG_SECURITY_PASSWORD}
