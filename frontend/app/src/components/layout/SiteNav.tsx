@@ -39,10 +39,10 @@ export function SiteNav() {
 
   return (
     <nav className="sticky top-0 z-10 border-b border-divider bg-background/90 backdrop-blur-md">
-      <div className="mx-auto grid h-[58px] max-w-[1080px] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:h-[62px] sm:px-6">
+      <div className="mx-auto grid h-14.5 max-w-270 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:h-15.5 sm:px-6">
         <ParenaLogo />
 
-        <div className="flex shrink-0 items-center gap-3 text-[13.5px] sm:gap-4 lg:gap-[26px]">
+        <div className="flex shrink-0 items-center gap-3 text-[13.5px] sm:gap-4 lg:gap-6.5">
           {SECTIONS.map((item) => (
             <a
               key={item.href}
@@ -55,7 +55,7 @@ export function SiteNav() {
 
           {isAuthenticated ? (
             <div className="flex items-center gap-2 sm:gap-3">
-              <span className="hidden max-w-[140px] truncate text-[13px] font-semibold text-brand sm:inline">
+              <span className="hidden max-w-35 truncate text-[13px] font-semibold text-brand sm:inline">
                 {user?.firstName ?? user?.email}
               </span>
               <ParenaButton
@@ -74,7 +74,7 @@ export function SiteNav() {
                   <Link to="/giris">Giriş yap</Link>
                 </ParenaButton>
 
-                <div className="invisible absolute right-0 top-[calc(100%+8px)] z-20 min-w-[150px] -translate-y-1.5 rounded-[10px] border border-divider bg-surface p-1.5 opacity-0 shadow-drop transition-[opacity,transform,visibility] duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                <div className="invisible absolute right-0 top-[calc(100%+8px)] z-20 min-w-37.5 -translate-y-1.5 rounded-[10px] border border-divider bg-surface p-1.5 opacity-0 shadow-drop transition-[opacity,transform,visibility] duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
                   <span className="pointer-events-auto absolute inset-x-0 -top-2 h-2" />
                   <Link
                     to="/giris"
@@ -104,9 +104,9 @@ export function SiteNav() {
               aria-label="Menüyü aç"
               className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] border border-divider bg-surface text-brand transition-colors hover:bg-background lg:hidden"
             >
-              <Menu className="h-[18px] w-[18px]" />
+              <Menu className="h-4.5 w-4.5" />
             </SheetTrigger>
-            <SheetContent side="right" className="w-[280px] bg-surface">
+            <SheetContent side="right" className="w-70 bg-surface">
               <SheetHeader>
                 <SheetTitle className="text-left font-display text-[15px] text-brand">
                   Menü
@@ -119,7 +119,7 @@ export function SiteNav() {
                     key={item.href}
                     href={item.href}
                     onClick={() => setMenuOpen(false)}
-                    className="rounded-[8px] px-3 py-2.5 text-sm font-semibold text-brand no-underline transition-colors hover:bg-background"
+                    className="rounded-xl px-3 py-2.5 text-sm font-semibold text-brand no-underline transition-colors hover:bg-background"
                   >
                     {item.label}
                   </a>
@@ -142,7 +142,7 @@ export function SiteNav() {
                           Giriş yap
                         </Link>
                       </ParenaButton>
-                      <ParenaButton asChild size="block" variant="ghost">
+                      <ParenaButton asChild size="block" variant="ghost" className="border border-brand text-brand hover:bg-brand/5">
                         <Link to="/uye-ol" onClick={() => setMenuOpen(false)}>
                           Üye ol
                         </Link>

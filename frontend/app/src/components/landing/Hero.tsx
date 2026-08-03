@@ -1,6 +1,3 @@
-import { ParenaButton } from "@/components/ui/parena-button";
-import { TELEGRAM_URL } from "@/data/landing";
-
 export function Hero() {
   return (
     <div>
@@ -10,7 +7,7 @@ export function Hero() {
       <p className="mb-3.5 text-xs font-semibold uppercase tracking-[2.6px] text-muted-foreground">
         Paranın Arenası
       </p>
-      <h1 className="mb-[18px] max-w-[22ch] text-[32px] md:text-[38px]">
+      <h1 className="mb-4.5 max-w-[22ch] text-[32px] md:text-[38px]">
         Günlük hisse önerileri,
         <br />
         tek ekranda.
@@ -19,9 +16,6 @@ export function Hero() {
         Aracı kurumların sabah bültenlerindeki öneriler bir arada. Kaynağıyla, arşiviyle,
         her akşam kendiliğinden netleşen karnesiyle. Sen sadece kahveni al, gel.
       </p>
-      <a href={TELEGRAM_URL} target="_blank" rel="noreferrer" className="inline-block">
-        <ParenaButton>Davet İste</ParenaButton>
-      </a>
     </div>
   );
 }

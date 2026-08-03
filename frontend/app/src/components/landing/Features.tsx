@@ -9,7 +9,7 @@ const TONE: Record<string, string> = {
 
 function Row({ row }: { row: FeatureRow }) {
   return (
-    <div className="flex items-center justify-between gap-3 border-b border-divider py-[7px] last:border-b-0">
+    <div className="flex items-center justify-between gap-3 border-b border-divider py-1.75 last:border-b-0">
       <b className="font-tabular">{row.left}</b>
       {row.mid ? <span className="text-muted-foreground">{row.mid}</span> : null}
       {row.right ? (
@@ -26,7 +26,7 @@ function Row({ row }: { row: FeatureRow }) {
 
 export function Features() {
   return (
-    <section id="ozellikler" className="mx-auto max-w-[1080px] px-6 py-16">
+    <section id="ozellikler" className="mx-auto max-w-270 px-6 py-16">
       <h2 className="text-center text-2xl">Dağınık bültenler yerine tek arena</h2>
       <p className="mx-auto mb-13 mt-2 text-center text-[14.5px] text-muted-foreground">
         Her sabah 20+ kurumun PDF'ini açmak yerine, hepsi karşında, kaynaklarıyla.
@@ -51,7 +51,7 @@ export function Features() {
               {feature.consensus ? (
                 <>
                   <b className="font-tabular">{feature.consensus.title}</b>
-                  <div className="my-[7px] flex h-[9px] overflow-hidden rounded-[5px]">
+                  <div className="my-1.75 flex h-2.25 overflow-hidden rounded-[5px]">
                     <div
                       className="bg-buy"
                       style={{ width: `${feature.consensus.buy}%` }}

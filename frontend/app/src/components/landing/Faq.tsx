@@ -2,9 +2,9 @@ import { FAQ_ITEMS } from "@/data/landing";
 
 export function Faq() {
   return (
-    <section id="sss" className="mx-auto max-w-[1080px] px-6 py-16">
+    <section id="sss" className="mx-auto max-w-270 px-6 py-16">
       <h2 className="mb-8 text-center text-2xl">Sık sorulanlar</h2>
-      <div className="mx-auto max-w-[680px]">
+      <div className="mx-auto max-w-170">
         {FAQ_ITEMS.map((item) => (
           <details
             key={item.q}

@@ -92,8 +92,8 @@ export const FAQ_ITEMS = [
     a: "Hayır. PARENA, aracı kurumların kamuya açık raporlarındaki görüşleri derler, karşılaştırır ve sonuçlarını raporlar; kendi adına hiçbir alım-satım önerisi veya derecelendirme üretmez. Yatırım danışmanlığı, yetkili kuruluşlarla imzalanan sözleşme çerçevesinde sunulur.",
   },
   {
-    q: "Nasıl üye olurum?",
-    a: "PARENA davetle katılınan bir platformdur. Telegram botumuza yazın; ödemeniz onaylandığında davet kodunuz ve giriş bilgileriniz iletilir.",
+    q: "Veriler nereden geliyor?",
+    a: "Yalnızca SPK lisanslı aracı kurumların kamuya açık olarak yayınladığı günlük bülten ve araştırma raporlarından. Her önerinin yanında kaynak belgenin bağlantısı bulunur.",
   },
   {
     q: "Hesabımı paylaşabilir miyim?",

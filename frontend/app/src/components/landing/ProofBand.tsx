@@ -2,8 +2,8 @@ import { PROOF_STATS } from "@/data/landing";
 
 export function ProofBand() {
   return (
-    <section id="karne" className="mx-auto max-w-[1080px] px-6 py-16">
-      <div className="rounded-[22px] bg-gradient-to-br from-deep to-brand px-8 py-13 text-center text-brand-foreground">
+    <section id="karne" className="mx-auto max-w-270 px-6 py-16">
+      <div className="rounded-[22px] bg-linear-to-br from-deep to-brand px-8 py-13 text-center text-brand-foreground">
         <h2 className="mb-2 text-[21px] text-brand-foreground">
           Her öneri, sonucuyla birlikte
         </h2>
