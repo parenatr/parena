@@ -24,7 +24,6 @@ export const TERMS: LegalDocument = {
     {
       heading: "Üyelik Koşulları",
       items: [
-        "Üyelik yalnızca davet kodu ile gerçekleşir.",
         "Üyelik kişiseldir; başkasına devredilemez, paylaşılamaz.",
         "Bir hesapta yalnızca tek aktif oturum bulunabilir.",
         "Bir Telegram hesabı yalnızca bir üyeliğe bağlanabilir.",

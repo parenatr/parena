@@ -1,5 +1,5 @@
 import {
-  Check,
+  CheckCircle2,
   CircleAlert,
   Info,
 } from "lucide-react";
@@ -73,50 +73,38 @@ export function ToastProvider({ children }: PropsWithChildren) {
         <div
           className={cn(
             `
-              fixed
-              bottom-6
-              right-6
-              z-[100]
-              flex
-              min-w-[360px]
-              max-w-md
-              items-start
-              gap-4
-              rounded-2xl
-              border
-              border-divider
-              bg-surface
-              px-5
-              py-4
-              shadow-2xl
-              transition-all
-              duration-300
-              ease-out
-            `,
+            fixed
+            bottom-6
+            right-6
+            z-100
+            flex
+            items-center
+            gap-3
+            rounded-xl
+            border
+            border-divider
+            bg-surface
+            px-4
+            py-3
+            shadow-xl
+            transition-all
+            duration-300
+            ease-out
+            min-w-70
+            max-w-sm
+          `,
             visible
               ? "translate-y-0 opacity-100"
-              : "translate-y-4 opacity-0",
+              : "translate-y-3 opacity-0",
           )}
         >
-          <div
-            className="
-              flex
-              h-10
-              w-10
-              shrink-0
-              items-center
-              justify-center
-              rounded-full
-              bg-brand
-              text-brand-foreground
-            "
-          >
+          <div className="mt-0.5 shrink-0 text-brand">
             {toast.variant === "success" && (
-              <Check className="h-5 w-5" />
+              <CheckCircle2 className="h-5 w-5" />
             )}
 
             {toast.variant === "error" && (
-              <CircleAlert className="h-5 w-5" />
+              <CircleAlert className="h-5 w-5 text-destructive" />
             )}
 
             {toast.variant === "info" && (
@@ -125,13 +113,7 @@ export function ToastProvider({ children }: PropsWithChildren) {
           </div>
 
           <div className="flex-1">
-            <p className="font-semibold text-deep">
-              {toast.variant === "success" && "Başarılı"}
-              {toast.variant === "error" && "Bir hata oluştu"}
-              {toast.variant === "info" && "Bilgilendirme"}
-            </p>
-
-            <p className="mt-1 text-sm leading-6 text-muted-foreground">
+            <p className="text-sm font-small leading-5 text-muted-foreground">
               {toast.message}
             </p>
           </div>

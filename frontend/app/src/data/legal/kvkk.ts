@@ -9,7 +9,7 @@ export const KVKK: LegalDocument = {
     {
       heading: "Veri Sorumlusu",
       paragraphs: [
-        "PARENA Platformu — destek@parena.com.tr · parena.com.tr",
+        "PARENA Platformu · destek@parena.com.tr · parena.com.tr",
       ],
     },
 
