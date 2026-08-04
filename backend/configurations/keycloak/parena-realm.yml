@@ -1,0 +1,117 @@
+realm: parena
+enabled: true
+sslRequired: external          # dev'de http serbest (proxy arkasında), prod'da zorunlu HTTPS
+
+# --- Kayıt/Login davranışı ---
+registrationAllowed: false      # Keycloak'ın kendi register formu KAPALI.
+# Register akışı user-service -> Keycloak Admin API üzerinden yürütülüyor.
+resetPasswordAllowed: true      # Forgot Password akışı Keycloak'ın kendi (Keycloakify temalı) flow'u üzerinden.
+rememberMe: true
+verifyEmail: false              # TODO: user-service, Admin API ile kullanıcı oluşturduktan sonra
+  # ayrıca "gönder email verification" action'ını tetiklemeli.
+  # Bunu true yapmak sadece Keycloak'ın KENDİ self-registration
+  # formundan gelen kayıtları etkiler; bizim akışımızda etkisi yok.
+  # KYC/AML gereksinimi netleşince true'ya çekip user-service'te
+# sendVerifyEmail() çağrısını ekleyeceğiz.
+
+loginWithEmailAllowed: true
+duplicateEmailsAllowed: false
+
+# --- Brute-force koruması ---
+bruteForceProtected: true
+permanentLockout: false
+failureFactor: 5
+waitIncrementSeconds: 60
+maxFailureWaitSeconds: 900
+maxDeltaTimeSeconds: 43200
+
+# --- Parola politikası ---
+passwordPolicy: "length(10) and upperCase(1) and lowerCase(1) and digits(1) and specialChars(1) and notUsername and passwordHistory(3)"
+
+# --- Token / session ömürleri ---
+accessTokenLifespan: 300              # 5 dk - BFF refresh token ile otomatik yeniler
+ssoSessionIdleTimeout: 1800           # 30 dk hareketsizlik
+ssoSessionMaxLifespan: 43200          # 12 saat mutlak üst sınır
+offlineSessionIdleTimeout: 2592000    # 30 gün - "remember me" senaryosu için
+revokeRefreshToken: true              # refresh token rotation ZORUNLU (her kullanımda yenisi basılır)
+refreshTokenMaxReuse: 0               # rotation ihlali (eski token tekrar kullanılırsa) = tüm session iptal
+
+# --- Dil desteği ---
+internationalizationEnabled: true
+supportedLocales:
+  - tr
+  - en
+defaultLocale: tr
+
+# --- Realm rolleri ---
+# Şimdilik minimal: "customer" rolü, user-service Admin API ile kullanıcı
+# oluştururken bu rolü açıkça atayacak. "admin" rolü ileride internal
+# ops/BFF admin panel yetkilendirmesi için ayrılmış, henüz kimseye atanmıyor.
+roles:
+  realm:
+    - name: user
+      description: "Standart uygulama kullanıcısı"
+    - name: admin
+      description: "Internal operasyon/yönetim yetkisi (henüz kullanılmıyor)"
+
+clients:
+  # -------------------------------------------------------------------
+  # bff-server: BFF pattern'in OAuth2 client'ı.
+  # Confidential, sadece Authorization Code + PKCE. ROPC fiziksel olarak kapalı.
+  # -------------------------------------------------------------------
+  - clientId: bff-server
+    name: Parena BFF
+    enabled: true
+    protocol: openid-connect
+    publicClient: false
+    clientAuthenticatorType: client-secret
+    secret: "${SO_BFF_CLIENT_SECRET}"
+    standardFlowEnabled: true
+    directAccessGrantsEnabled: false
+    implicitFlowEnabled: false
+    serviceAccountsEnabled: false
+    redirectUris:
+      - "${SO_BFF_BASE_URL}/login/oauth2/code/keycloak"
+    webOrigins:
+      - "${SO_FRONTEND_BASE_URL}"
+    attributes:
+      pkce.code.challenge.method: S256
+      post.logout.redirect.uris: "${SO_FRONTEND_BASE_URL}"
+      use.refresh.tokens: "true"
+
+  # -------------------------------------------------------------------
+  # user-service: Kullanıcı adına değil, kendi adına (client_credentials)
+  # token alıp Keycloak Admin API'sini çağırır. Register akışı bunun üzerinden.
+  # -------------------------------------------------------------------
+  - clientId: user-service
+    name: User Service (Admin API access)
+    enabled: true
+    protocol: openid-connect
+    publicClient: false
+    clientAuthenticatorType: client-secret
+    secret: "${SO_USER_SERVICE_CLIENT_SECRET}"
+    standardFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: true
+    serviceAccountsRoles:
+      clientRoles:
+        realm-management:
+          - manage-users
+          - view-users
+
+# --- SMTP: Keycloak'ın KENDİ gönderdiği mailler için (forgot-password, email verification) ---
+# NOT: UserRegisteredEvent -> Kafka -> notification-service üzerinden gidecek "hoş geldin/kayıt"
+# maili bundan bağımsız, kendi servisiniz gönderiyor zaten. Bu blok sadece Keycloak'ın
+# native flow'larının (Forgot Password vb.) gerçekten mail atabilmesi için gerekli.
+# Sağlayıcıyı netleştirene kadar placeholder kalacak, doldurulmazsa Keycloak
+# başlamaya devam eder ama forgot-password maili SESSİZCE gitmez (loglara düşer).
+smtpServer:
+  host: "${SO_SMTP_HOST}"
+  port: "${SO_SMTP_PORT}"
+  from: "${SO_SMTP_FROM}"
+  fromDisplayName: "Parena"
+  auth: "true"
+  user: "${SO_SMTP_USER}"
+  password: "${SO_SMTP_PASSWORD}"
+  ssl: "false"
+  starttls: "true"
