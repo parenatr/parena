@@ -106,12 +106,16 @@ clients:
 # Sağlayıcıyı netleştirene kadar placeholder kalacak, doldurulmazsa Keycloak
 # başlamaya devam eder ama forgot-password maili SESSİZCE gitmez (loglara düşer).
 smtpServer:
-  host: "${SO_SMTP_HOST}"
-  port: "${SO_SMTP_PORT}"
-  from: "${SO_SMTP_FROM}"
+  host: smtppro.zoho.eu
+  port: "587"
+  from: "no-reply@parena.com.tr"
   fromDisplayName: "Parena"
+  replyTo: "destek@parena.com.tr"
   auth: "true"
-  user: "${SO_SMTP_USER}"
-  password: "${SO_SMTP_PASSWORD}"
+  user: "${SO_SMTP_USER}"          # no-reply@parena.com.tr (ayrı mailbox ise)
+  # ya da destek@parena.com.tr (Send As ile ise)
+  password: "${SO_SMTP_PASSWORD}"   # Zoho hesap şifresi DEĞİL — mutlaka
+    # accounts.zoho.eu > Security > App Passwords'tan
+  # üretilmiş app-specific password
   ssl: "false"
   starttls: "true"
