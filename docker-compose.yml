@@ -98,6 +98,10 @@ services:
       SO_USER_SERVICE_CLIENT_SECRET: ${SO_USER_SERVICE_CLIENT_SECRET}
       SO_BFF_BASE_URL: ${SO_BFF_BASE_URL}
       SO_FRONTEND_BASE_URL: ${SO_FRONTEND_BASE_URL}
+
+      # SMTP
+      SO_SMTP_USER: ${SO_SMTP_USER}
+      SO_SMTP_PASSWORD: ${SO_SMTP_PASSWORD}
     volumes:
       - ./backend/configurations/keycloak:/config
     networks:

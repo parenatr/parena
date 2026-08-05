@@ -109,7 +109,7 @@ users:
 # Sağlayıcıyı netleştirene kadar placeholder kalacak, doldurulmazsa Keycloak
 # başlamaya devam eder ama forgot-password maili SESSİZCE gitmez (loglara düşer).
 smtpServer:
-  host: smtppro.zoho.eu
+  host: "smtppro.zoho.eu"
   port: "587"
   from: "no-reply@parena.com.tr"
   fromDisplayName: "Parena"
