@@ -74,10 +74,10 @@ clients:
       - "${SO_BFF_BASE_URL}/login/oauth2/code/keycloak"
     webOrigins:
       - "${SO_FRONTEND_BASE_URL}"
-    attributes:
-      pkce.code.challenge.method: S256
-      post.logout.redirect.uris: "${SO_FRONTEND_BASE_URL}"
-      use.refresh.tokens: "true"
+#    attributes:
+#      pkce.code.challenge.method: S256
+#      post.logout.redirect.uris: "${SO_FRONTEND_BASE_URL}"
+#      use.refresh.tokens: "true"
 
   # -------------------------------------------------------------------
   # user-service: Kullanıcı adına değil, kendi adına (client_credentials)
@@ -93,6 +93,11 @@ clients:
     standardFlowEnabled: false
     directAccessGrantsEnabled: false
     serviceAccountsEnabled: true
+#   serviceAccountsRoles:
+#    clientRoles:
+#      realm-management:
+#        - manage-users
+#        - view-users
 
 # --- SMTP: Keycloak'ın KENDİ gönderdiği mailler için (forgot-password, email verification) ---
 # NOT: UserRegisteredEvent -> Kafka -> notification-service üzerinden gidecek "hoş geldin/kayıt"
