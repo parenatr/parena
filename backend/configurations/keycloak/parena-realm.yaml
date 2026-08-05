@@ -93,11 +93,6 @@ clients:
     standardFlowEnabled: false
     directAccessGrantsEnabled: false
     serviceAccountsEnabled: true
-    serviceAccountsRoles:
-      clientRoles:
-        realm-management:
-          - manage-users
-          - view-users
 
 # --- SMTP: Keycloak'ın KENDİ gönderdiği mailler için (forgot-password, email verification) ---
 # NOT: UserRegisteredEvent -> Kafka -> notification-service üzerinden gidecek "hoş geldin/kayıt"
