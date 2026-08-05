@@ -5,11 +5,12 @@ x-build: &java-build
   dockerfile: Dockerfile
 
 services:
-# ---------------- Infrastructure Services ----------------
+  # ---------------- Infrastructure Services ----------------
 
-#keycloak default olarak postgresql ile calısacak sekilde tasarlanmıstır.
-#sadece keycloak servisinin kullanacagı db.
-  keycloak_db:   #dışarıya açmıyoruz sadece keycloak kullanacak
+  #keycloak default olarak postgresql ile calısacak sekilde tasarlanmıstır.
+  #sadece keycloak servisinin kullanacagı db.
+  keycloak_db:
+    #dışarıya açmıyoruz sadece keycloak kullanacak
     image: postgres:16
     container_name: keycloak-db
     environment:
@@ -19,22 +20,21 @@ services:
     volumes:
       - keycloakdb_vol:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${SO_KEYCLOAK_DB_USER} -d keycloak"]
+      test: [ "CMD-SHELL", "pg_isready -U ${SO_KEYCLOAK_DB_USER} -d keycloak" ]
       interval: 5s
       timeout: 3s
       retries: 10
-    networks:
-      [parena]
+    networks: [ parena ]
 
-#merkezi kimlik ve erişim yönetimi sağlar (users,roles,authority). (identity-server)
+  #merkezi kimlik ve erişim yönetimi sağlar (users,roles,authority). (identity-server)
   keycloak:
-    image: quay.io/keycloak/keycloak:26.7.0
+    image: quay.io/keycloak/keycloak:26.5.5
     container_name: keycloak
     depends_on:
       keycloak_db:
         condition: service_healthy
     command:
-      - start-dev   #localde http serbest, prodda https zorunlu. bu yüzden start-dev ile başlatıyoruz.
+      - start-dev #localde http serbest, prodda https zorunlu. bu yüzden start-dev ile başlatıyoruz.
       - --http-enabled=true
       - --http-port=8585
     ports:
@@ -53,12 +53,78 @@ services:
       KC_PROXY: edge
       KC_HOSTNAME_STRICT: "false"
       KC_HOSTNAME_STRICT_HTTPS: "false"
+      # keycloak imajında curl yok, bu yüzden bash'in /dev/tcp özelliğiyle
+      # management portundaki (9000, http-port'tan bağımsız, sabit) health/ready
+      # endpoint'ine ham HTTP isteği atıyoruz.
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "exec 3<>/dev/tcp/127.0.0.1/9000; echo -e 'GET /health/ready HTTP/1.1\r
+
+            host: localhost\r
+
+            Connection: close\r
+
+            \r
+
+            ' >&3; grep -q '200' <&3"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 20s
+    networks: [ parena ]
+  
+  # -----------------------------------------------------------------
+  # Keycloak realm/client konfigürasyonunu kod olarak (YAML) uygular.
+  # Idempotent — tekrar çalıştırılabilir, mevcut kullanıcı verisini silmez.
+  # -----------------------------------------------------------------
+  keycloak_config_cli:
+    image: adorsys/keycloak-config-cli:latest-26.5.5
+    container_name: keycloak-config-cli
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    environment:
+      KEYCLOAK_URL: http://keycloak:8585
+      KEYCLOAK_USER: ${SO_KEYCLOAK_ADMIN}
+      KEYCLOAK_PASSWORD: ${SO_KEYCLOAK_ADMIN_PASSWORD}
+      KEYCLOAK_AVAILABILITYCHECK_ENABLED: "true"
+      KEYCLOAK_AVAILABILITYCHECK_TIMEOUT: 120s
+      IMPORT_FILES_LOCATIONS: "/config/*.yaml"
+      IMPORT_VARSUBSTITUTION_ENABLED: "true"
+      SO_BFF_CLIENT_SECRET: ${SO_BFF_CLIENT_SECRET}
+      SO_USER_SERVICE_CLIENT_SECRET: ${SO_USER_SERVICE_CLIENT_SECRET}
+      SO_BFF_BASE_URL: ${SO_BFF_BASE_URL}
+      SO_FRONTEND_BASE_URL: ${SO_FRONTEND_BASE_URL}
+    volumes:
+      - ./backend/configurations/keycloak:/config
+    networks:
+      - parena
+  
+  # -----------------------------------------------------------------
+  # BFF-server'ın session store'u. Spring Session, OAuth2AuthorizedClient
+  # (access+refresh token içerir) nesnesini burada tutar. Tarayıcı sadece
+  # opak session ID cookie'si görür.
+  # -----------------------------------------------------------------
+  redis:
+    image: redis:7.4-alpine
+    container_name: redis
+    command: ["redis-server", "--requirepass", "${SO_REDIS_PASSWORD}"]
+    volumes:
+      - redis_vol:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${SO_REDIS_PASSWORD}", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
     networks:
       [parena]
 
-# ---------------- Platform Services ----------------
+  # ---------------- Platform Services ----------------
   config-server:
-    build: 
+    build:
       <<: *java-build
       args:
         MODULE: config-server
@@ -68,13 +134,28 @@ services:
     environment:
       SO_CONFIG_GIT_URI: ${SO_CONFIG_GIT_URI}
       SO_CONFIG_GIT_BRANCH: ${SO_CONFIG_GIT_BRANCH}
-      SO_CONFIG_GIT_USERNAME: ${SO_CONFIG_GIT_USERNAME}
-      SO_CONFIG_GIT_TOKEN: ${SO_CONFIG_GIT_TOKEN}
       SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
+      SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}
+    
+  discovery-server:
+    build:
+      <<: *java-build
+      args:
+        MODULE: discovery-server
+    ports:
+      - "8761:8761"
+    container_name: discovery-server
+    environment:
+      SO_CONFIG_GIT_URI: ${SO_CONFIG_GIT_URI}
+      SO_CONFIG_GIT_BRANCH: ${SO_CONFIG_GIT_BRANCH}
+      SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
+      SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
+      SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}
+
 
   user-service:
-    build: 
+    build:
       <<: *java-build
       args:
         MODULE: user-service
@@ -82,16 +163,34 @@ services:
       - "8080:8080"
     container_name: user-service
     environment:
-      SO_KEYCLOAK_REALM: ${SO_KEYCLOAK_REALM}
-      SO_KEYCLOAK_AUTH_SERVER_URL: ${SO_KEYCLOAK_AUTH_SERVER_URL}
-      SO_KEYCLOAK_ADMIN_CLIENT_ID: ${SO_KEYCLOAK_ADMIN_CLIENT_ID}
-      SO_KEYCLOAK_ADMIN_CLIENT_SECRET: ${SO_KEYCLOAK_ADMIN_CLIENT_SECRET}
+    
       SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
+      SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}
 
+  # ---------------- DB(PostgreSQL) Services ----------------
+  user_service_db:
+    image: postgres:16
+    container_name: user-service-db
+    environment:
+      POSTGRES_DB: user_service
+      POSTGRES_USER: ${SO_USER_SERVICE_DB_USER}
+      POSTGRES_PASSWORD: ${SO_USER_SERVICE_DB_PASSWORD}
+    volumes:
+      - userservicedb_vol:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${SO_USER_SERVICE_DB_USER} -d user_service"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      [parena]
 
 volumes:
   keycloakdb_vol: {}
+  redis_vol: {}
+  userservicedb_vol: {}
+
 
 networks:
   parena:
