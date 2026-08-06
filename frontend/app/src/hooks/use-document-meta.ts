@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 
-type Meta = {
+export type PageMeta = {
   title: string;
   description: string;
-  ogTitle?: string;
-  ogDescription?: string;
+  ogTitle: string;
+  ogDescription: string;
 };
 
-function setTag(attr: "name" | "property", key: string, content: string) {
-  let el = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`);
+function setTag(selector: string, attr: "name" | "property", key: string, content: string) {
+  let el = document.head.querySelector<HTMLMetaElement>(selector);
   if (!el) {
     el = document.createElement("meta");
     el.setAttribute(attr, key);
@@ -17,14 +17,22 @@ function setTag(attr: "name" | "property", key: string, content: string) {
   el.setAttribute("content", content);
 }
 
-/** Sayfa başlığı ve meta etiketlerini SPA'da elle yönetir. */
-export function useDocumentMeta({ title, description, ogTitle, ogDescription }: Meta) {
+/**
+ * SPA'da sayfa başlığı/meta yönetimi (SSR head yerine).
+ * Sadece bir React bileşeninin gövdesinde çağrılmalıdır.
+ */
+export function useDocumentMeta(meta: PageMeta) {
   useEffect(() => {
-    document.title = title;
-    setTag("name", "description", description);
-    setTag("property", "og:title", ogTitle ?? title);
-    setTag("property", "og:description", ogDescription ?? description);
-    setTag("property", "og:type", "website");
-    setTag("name", "twitter:card", "summary_large_image");
-  }, [title, description, ogTitle, ogDescription]);
+    document.title = meta.title;
+    setTag('meta[name="description"]', "name", "description", meta.description);
+    setTag('meta[property="og:title"]', "property", "og:title", meta.ogTitle);
+    setTag(
+      'meta[property="og:description"]',
+      "property",
+      "og:description",
+      meta.ogDescription,
+    );
+    setTag('meta[property="og:type"]', "property", "og:type", "website");
+    setTag('meta[name="twitter:card"]', "name", "twitter:card", "summary_large_image");
+  }, [meta]);
 }

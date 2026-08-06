@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
+
 import { ParenaMark } from "@/components/brand/ParenaMark";
 
 /**
  * Kurumsal auth standardı: form ekranlarında tam navbar yerine
  * yalnızca anasayfaya dönen tıklanabilir logo + tek geri bağlantısı.
- * Odak formda kalır, çıkış yolu her zaman görünür durumdadır.
  */
 export function AuthHeader() {
   return (

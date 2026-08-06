@@ -1,41 +1,86 @@
-import { PRICE_FEATURES } from "@/data/landing";
-import { ParenaButton } from "@/components/ui/parena-button";
-import { Link } from "react-router-dom";
+import { AppLink } from "@/components/ui/app-link";
 
 export function Pricing() {
   return (
-    <section id="fiyat" className="mx-auto `max-w-270` px-6 py-16">
-      <h2 className="text-center text-2xl">Tek plan, şeffaf fiyat</h2>
-      <p className="mb-13 mt-2 text-center text-[14.5px] text-muted-foreground">
-        Tek plan, net fiyat. Sürpriz yok.
-      </p>
+    <>
+      <section className="sec" style={{"background": "var(--surface)", "borderTop": "1px solid var(--line)"}}>
+        <div className="wrap">
+          <div id="fiyat" className="sec-head rv" style={{"maxWidth": "640px"}}>
+            <p className="eyebrow">Fiyat</p>
+            <h2>Ücretsiz başla, hazır olduğunda yükselt</h2>
+            <p>Dört içerik tipinin tamamı ve sektör analizi tek pakette. Kurucu üyelik yalnızca ilk 150 kişi için geçerli; 151. üyeden itibaren fiyat 249 ₺/ay olarak devam edecek.</p>
+          </div>
 
-      <div className="mx-auto mt-12 max-w-107.5 rounded-[20px] border-t-[3px] border-brand bg-surface px-9 py-9 text-center shadow-brand">
-        <span className="mb-3.5 inline-block rounded-full bg-[rgba(232,169,61,0.15)] px-3 py-1 text-[11px] font-bold text-[#B07E1E]">
-          KURUCU ÜYE · İLK 150 KİŞİ
-        </span>
-        <div className="font-tabular text-[40px] font-bold leading-tight">
-          ₺149<small className="text-[15px] font-medium text-muted-foreground">/ ay</small>
-        </div>
-        <div className="mb-3  text-[11px] text-muted-foreground">
-          veya <strong>1.490 ₺</strong> / yıl
-        </div>
-        <div className="my-6 text-left text-[13.5px] text-muted-foreground">
-          {PRICE_FEATURES.map((item) => (
-            <div key={item} className="py-1.5">
-              ✓ {item}
+          <div className="price-wrap">
+
+            <div className="pcard rv">
+              <span className="ptag free">Ücretsiz</span>
+              <p className="pname">Topluluk</p>
+              <p className="pprice">0 ₺<small>/ay</small></p>
+              <p className="pyear">Kart bilgisi istenmez</p>
+              <ul className="plist">
+                <li>PARENA Telegram topluluğuna katılım</li>
+                <li>Topluluk içi piyasa sohbeti ve duyurular</li>
+                <li>Yeni özelliklerden ve kontenjan durumundan ilk haberdar olma</li>
+                <li className="off">Günlük, haftalık, model portföy ve kısa vadeli öneriler</li>
+                <li className="off">Her önerinin kâr/zararı ve hedef fiyatlar</li>
+                <li className="off">Sektör bazlı kurum isabet analizi</li>
+                <li className="off">Portföy karnesi, konsensüs ve simülatör</li>
+              </ul>
+              <AppLink className="btn btn-ghost btn-block" href="/uye-ol?plan=topluluk" data-cta="plan-free">Topluluğa katıl</AppLink>
+              <p className="pfoot">Kayıt 2 dakika sürer.<br />
+                <AppLink href="/kullanim-sartlari">Kullanım Şartları</AppLink> ve <AppLink href="/gizlilik">Gizlilik Politikası</AppLink> geçerlidir.</p>
             </div>
-          ))}
+
+            <div className="pcard hero-plan rv">
+              <span className="ptag">Kurucu üye · ilk 150 kişi</span>
+              <p className="pname">PARENA Premium</p>
+              <p className="pprice">149 ₺<small>/ay</small><span className="pold">249 ₺</span></p>
+              <p className="pyear">veya <strong>1.490 ₺/yıl</strong>, iki ay hediye</p>
+
+              <div className="ladder" aria-label="Üyelik fiyat kademeleri">
+                <div className="lstep on">
+                  <span className="lrank">1 – 150. üye</span>
+                  <span className="lprice">149 ₺<small>/ay</small></span>
+                  <span className="lnote">Kurucu üye</span>
+                </div>
+                <span className="larrow" aria-hidden="true">→</span>
+                <div className="lstep">
+                  <span className="lrank">151. üyeden sonra</span>
+                  <span className="lprice">249 ₺<small>/ay</small></span>
+                  <span className="lnote">Standart</span>
+                </div>
+              </div>
+
+              <div className="quota">
+                <div className="quota-bar" role="progressbar" aria-valuemin={0} aria-valuemax={150} aria-valuenow={112} aria-label="Kurucu üyelik kontenjanı">
+                  <i id="quotaFill" data-w="74.6"></i>
+                </div>
+                <p className="quota-txt"><span><b id="quotaNow">112</b> / 150 üye katıldı</span><span className="qleft"><b id="quotaLeft">38</b> kontenjan kaldı</span></p>
+              </div>
+
+              <ul className="plist">
+                <li>Günlük, haftalık, model portföy ve kısa vadeli önerilerin tamamı + kaynak PDF</li>
+                <li>Her önerinin kâr/zararı ve içerik tipine göre kurum sicili</li>
+                <li>Sektör × kurum isabet analizi</li>
+                <li>Portföy takibi, konsensüs ve hisse karşılaştırma</li>
+                <li>Strateji simülatörü, model portföy rebalansı, KAP akışı</li>
+                <li>Hisse ve kurum karşılaştırma, Telegram bildirimleri</li>
+                <li>Kurucu üyelere özel Telegram kanalı ve yeni özelliklere ilk erişim</li>
+              </ul>
+
+              <AppLink className="btn btn-primary btn-block btn-lg" href="/uye-ol?plan=kurucu" data-cta="plan-premium">Kurucu üye ol · 149 ₺/ay</AppLink>
+              <p className="pfoot">
+                🔒 Ödeme iyzico'nun güvenli sayfasında tamamlanır; kart bilgilerin PARENA'da saklanmaz.<br />
+                Kurucu kontenjanı dolduğunda üyelik 249 ₺/ay olarak devam eder.<br />
+                Üyelik <AppLink href="/kullanim-sartlari">Kullanım Şartları</AppLink> ve
+                <AppLink href="/mesafeli-satis">Mesafeli Satış Sözleşmesi</AppLink>'ne tabidir.
+              </p>
+            </div>
+
+          </div>
         </div>
-        <Link to="/uye-ol" className="block">
-          <ParenaButton className="w-full">
-            Üye Ol
-          </ParenaButton>
-        </Link>
-        <p className="mt-3 text-[11px] text-muted-foreground">
-          Kontenjan dolduğunda standart fiyat ₺249 / ay olur.
-        </p>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }

@@ -1,0 +1,89 @@
+:root:root{
+  --bg:#F4F6FB; --surface:#FFFFFF; --ink:#101321; --muted:#6B7285;
+  --line:#E5E8F0; --navy:#13294B; --deep:#0C1D38; --gold:#E0B54E; --sell:#E14F4F;
+  --ease:cubic-bezier(.22,.8,.28,1);
+}
+.legal-page *, .legal-page{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:96px;-webkit-text-size-adjust:100%}
+.legal-page{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--ink);font-size:15.5px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.legal-page a{color:var(--navy);text-decoration:none}
+.legal-page .wrap{max-width:900px;margin:0 auto;padding:0 24px}
+.legal-page :focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:4px}
+.legal-page .skip{position:absolute;left:-9999px;background:var(--navy);color:#fff;padding:12px 20px;z-index:99}
+.legal-page .skip:focus{left:0}
+.legal-page .nav{position:sticky;top:0;z-index:50;background:rgba(244,246,251,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.legal-page .nav-in{max-width:1140px;margin:0 auto;padding:0 24px;height:78px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.legal-page .brand{display:flex;align-items:center;gap:12px}
+.legal-page .brand-name{display:block;font-family:'Unbounded',sans-serif;font-weight:700;font-size:24px;letter-spacing:.03em;color:var(--ink);line-height:1}
+.legal-page .brand-name em{font-style:normal;color:var(--navy)}
+.legal-page .brand-tag{display:block;font-size:9.5px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);margin-top:5px}
+.legal-page .brand-tag::before{content:"";display:inline-block;width:16px;height:2px;background:var(--gold);border-radius:2px;vertical-align:3px;margin-right:7px}
+.legal-page .back{font-size:14px;font-weight:600;color:var(--navy);display:inline-flex;align-items:center;gap:7px}
+.legal-page .back:hover{color:var(--deep)}
+.legal-page .head{padding:clamp(40px,6vw,68px) 0 clamp(26px,3vw,36px)}
+.legal-page .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--navy);margin-bottom:16px}
+.legal-page .eyebrow::before{content:"";width:22px;height:2px;background:var(--gold);border-radius:2px}
+.legal-page h1{font-family:'Inter',sans-serif;font-size:clamp(1.75rem,4vw,2.5rem);line-height:1.18;letter-spacing:-.03em;color:var(--navy);text-wrap:balance}
+.legal-page .meta{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;font-size:13px;color:var(--muted)}
+.legal-page .meta b{color:var(--ink);font-weight:600}
+.legal-page .toc{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:36px}
+.legal-page .toc h2{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.legal-page .toc ol{list-style:none;counter-reset:t;columns:2;column-gap:28px}
+.legal-page .toc li{counter-increment:t;margin-bottom:8px;font-size:13.8px;break-inside:avoid}
+.legal-page .toc li::before{content:counter(t,decimal-leading-zero);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);margin-right:9px;font-weight:500}
+.legal-page .toc a:hover{border-bottom:1px solid var(--navy)}
+.legal-page .doc{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:clamp(26px,4vw,48px);margin-bottom:40px;counter-reset:sec}
+.legal-page .doc section{padding:26px 0;border-top:1px solid var(--line)}
+.legal-page .doc section:first-of-type{border-top:none;padding-top:0}
+.legal-page .doc h2{
+  counter-increment:sec;font-size:clamp(1.05rem,2vw,1.25rem);color:var(--navy);
+  letter-spacing:-.02em;line-height:1.3;margin-bottom:14px;display:flex;gap:12px;align-items:baseline;
+}
+.legal-page .doc h2::before{
+  content:counter(sec,decimal-leading-zero);font-family:'JetBrains Mono',monospace;font-size:12px;
+  font-weight:500;color:var(--gold);flex-shrink:0;
+}
+.legal-page .doc h3{font-size:.95rem;color:var(--ink);margin:20px 0 8px;font-weight:700}
+.legal-page .doc p{margin-bottom:12px;color:#3B4256;font-size:14.6px;text-wrap:pretty}
+.legal-page .doc ul,
+.legal-page .doc ol{margin:0 0 14px 20px}
+.legal-page .doc li{margin-bottom:7px;color:#3B4256;font-size:14.4px}
+.legal-page .doc strong{color:var(--navy);font-weight:650}
+.legal-page .fill{background:rgba(224,181,78,.18);border-bottom:1px dashed #C09A2E;padding:1px 4px;border-radius:3px;font-weight:600;color:#7A5C0F}
+.legal-page .callout{
+  background:rgba(225,79,79,.05);border:1px solid rgba(225,79,79,.25);border-left:3px solid var(--sell);
+  border-radius:10px;padding:18px 20px;margin:18px 0;
+}
+.legal-page .callout p{margin-bottom:0;font-size:14.2px}
+.legal-page .callout p+p{margin-top:10px}
+.legal-page .note{
+  background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:16px 0;
+  font-style:italic;font-size:14px;color:#3B4256;
+}
+.legal-page table{width:100%;border-collapse:collapse;margin:14px 0 18px;font-size:13.8px}
+.legal-page th,
+.legal-page td{text-align:left;padding:11px 13px;border-bottom:1px solid var(--line);vertical-align:top}
+.legal-page th{background:var(--bg);font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.legal-page tbody tr:last-child td{border-bottom:none}
+/* Footer – kaynak HTML tasarımıyla birebir, .legal-page altında kapsüllenmiş. */
+.legal-page footer{background:var(--deep);color:rgba(255,255,255,.6);padding:40px 0 28px;font-size:13px;margin-top:8px}
+.legal-page footer a{color:rgba(255,255,255,.62);transition:color .18s var(--ease)}
+.legal-page footer a:hover{color:var(--gold)}
+.legal-page .flinks{display:flex;flex-wrap:wrap;gap:10px 22px;margin-bottom:20px}
+.legal-page .fnote{font-size:11.5px;line-height:1.75;color:rgba(255,255,255,.42);text-wrap:pretty}
+.legal-page .fnote b{color:rgba(255,255,255,.7)}
+.legal-page .fnote-copy{margin-top:14px}
+@media(max-width:700px){
+.legal-page .toc ol{columns:1}
+.legal-page .nav-in{height:70px}
+.legal-page .brand-name{font-size:22px}
+}
+@media(max-width:640px){
+.legal-page .wrap{padding:0 18px}
+.legal-page footer{padding:32px 0 24px}
+.legal-page .flinks{gap:9px 16px}
+}
+@media(prefers-reduced-motion:reduce){
+.legal-page *, .legal-page{transition:none!important;scroll-behavior:auto!important}
+}
+

@@ -4,6 +4,7 @@ import type {
   ForgotPasswordRequest,
   LoginRequest,
   RegisterRequest,
+  ResetPasswordRequest,
   SessionUser,
 } from "./auth.types";
 
@@ -15,6 +16,7 @@ export const AUTH_ENDPOINTS = {
   login: "/api/auth/login",
   register: "/api/auth/register",
   forgotPassword: "/api/auth/forgot-password",
+  resetPassword: "/api/auth/reset-password",
   me: "/api/auth/me",
   logout: "/api/auth/logout",
 } as const;
@@ -29,6 +31,10 @@ export const register = (data: RegisterRequest) =>
 /** Kullanıcı sızdırmamak için backend her durumda 2xx dönmelidir. */
 export const forgotPassword = (data: ForgotPasswordRequest) =>
   apiRequest<void>(AUTH_ENDPOINTS.forgotPassword, { method: "POST", body: data });
+
+/** Token geçersiz/süresi dolmuşsa backend 400 döner. */
+export const resetPassword = (data: ResetPasswordRequest) =>
+  apiRequest<void>(AUTH_ENDPOINTS.resetPassword, { method: "POST", body: data });
 
 /**
  * Oturum yoksa 401 yerine null döner.

@@ -10,6 +10,8 @@ export type SessionUser = {
 export type LoginRequest = {
   email: string;
   password: string;
+  /** "Beni hatırla" — BFF oturum çerezinin ömrünü belirler. */
+  remember?: boolean;
 };
 
 export type RegisterRequest = {
@@ -22,4 +24,10 @@ export type RegisterRequest = {
 
 export type ForgotPasswordRequest = {
   email: string;
+};
+
+export type ResetPasswordRequest = {
+  /** E-postadaki sıfırlama bağlantısından gelen tek kullanımlık token. */
+  token: string;
+  password: string;
 };

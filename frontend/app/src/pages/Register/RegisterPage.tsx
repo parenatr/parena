@@ -1,155 +1,282 @@
-import { useNavigate } from "react-router-dom";
-import { useState, type FormEvent } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 
-import { AuthCard } from "@/components/auth/AuthCard";
-import { AuthLink } from "@/components/auth/AuthLink";
-import { ParenaButton } from "@/components/ui/parena-button";
-import { TextField } from "@/components/ui/text-field";
+import { AuthField, AuthPasswordField } from "@/components/auth/AuthField";
+import { AuthShell } from "@/components/auth/AuthShell";
+import { AppLink } from "@/components/ui/app-link";
+import { FOUNDER_PRICE, FOUNDER_QUOTA_LEFT } from "@/data/quota";
 import { useRegister } from "@/features/auth/auth.queries";
-import { useSubmitFeedback } from "@/hooks/use-submit-feedback";
-import { isValidEmail, isValidPassword, normalizeEmail } from "@/lib/auth-validation";
+import { isValidEmail, normalizeEmail } from "@/lib/auth-validation";
 import { toUserMessage } from "@/lib/http/api-error";
 
-import "./RegisterPage.css";
-import { useDocumentMeta } from "@/hooks/use-document-meta";
-
 export const registerPageMeta = {
-  title: "PARENA — Üye Ol",
-  description: "PARENA hesabı oluştur ve günlük hisse önerilerini takip etmeye başla.",
-  ogTitle: "PARENA — Üye Ol",
-  ogDescription: "Dakikalar içinde PARENA hesabı oluştur.",
+  title: "Ücretsiz Üye Ol | PARENA Portföy Arena",
+  description:
+    "2 dakikada ücretsiz PARENA hesabı oluştur; kart bilgisi istenmez. Kurucu üyeliğe istediğin zaman yükselt.",
+  ogTitle: "PARENA — Ücretsiz hesap oluştur",
+  ogDescription: "Kurucu kontenjanı sınırlı. Kart bilgisi istenmeden 2 dakikada üye ol.",
 };
 
+const STRENGTH_LABELS = [
+  "Parola gücü ölçülüyor",
+  "Zayıf",
+  "Orta",
+  "İyi",
+  "Güçlü",
+] as const;
 
-export default function RegisterPage() {
-  useDocumentMeta(registerPageMeta); 
-  const [form, setForm] = useState({ ad: "", soyad: "", eposta: "", sifre: "" });
-  const [kvkk, setKvkk] = useState(false);
-  const [ticari, setTicari] = useState(false);
-  const navigate = useNavigate();
-  const { label, status, fail, succeed } = useSubmitFeedback("Üye ol");
+function scorePassword(value: string) {
+  let score = 0;
+  if (value.length >= 8) score++;
+  if (value.length >= 12) score++;
+  if (/[A-ZÇĞİÖŞÜ]/.test(value) && /[a-zçğıöşü]/.test(value)) score++;
+  if (/[0-9]/.test(value) && /[^A-Za-z0-9]/.test(value)) score++;
+  return Math.min(score, 4);
+}
+
+type Errors = {
+  ad?: string;
+  soyad?: string;
+  mail?: string;
+  pass?: string;
+  terms?: string;
+  form?: string;
+};
+
+export default function RegisterPage({ plan = "topluluk" }: { plan?: string }) {
+  const isFounder = plan === "kurucu";
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [terms, setTerms] = useState(false);
+  const [marketing, setMarketing] = useState(false);
+  const [errors, setErrors] = useState<Errors>({});
+  const [doneMail, setDoneMail] = useState<string | null>(null);
+
   const registerMutation = useRegister();
-
-  const update = (key: keyof typeof form) => (value: string) =>
-    setForm((prev) => ({ ...prev, [key]: value }));
+  const strength = useMemo(() => (password ? scorePassword(password) : 0), [password]);
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     if (registerMutation.isPending) return;
 
-    const eposta = normalizeEmail(form.eposta);
-    if (
-      !form.ad.trim() ||
-      !form.soyad.trim() ||
-      !isValidEmail(eposta) ||
-      !isValidPassword(form.sifre)
-    ) {
-      return fail("Alanları eksiksiz doldur");
-    }
-    if (!kvkk) return fail("Sözleşmeleri onaylamalısın");
+    const ad = firstName.trim().slice(0, 60);
+    const soyad = lastName.trim().slice(0, 60);
+    const mail = normalizeEmail(email);
+    const next: Errors = {};
+    if (ad.length < 2) next.ad = "Adını gir.";
+    if (soyad.length < 2) next.soyad = "Soyadını gir.";
+    if (!isValidEmail(mail)) next.mail = "Geçerli bir e-posta adresi gir.";
+    if (password.length < 8) next.pass = "Parola en az 8 karakter olmalı.";
+    if (!terms) next.terms = "Devam etmek için sözleşmeleri kabul etmelisin.";
+
+    setErrors(next);
+    if (Object.keys(next).length > 0) return;
 
     try {
       await registerMutation.mutateAsync({
-        firstName: form.ad.trim(),
-        lastName: form.soyad.trim(),
-        email: eposta,
-        password: form.sifre,
-        marketingConsent: ticari,
+        firstName: ad,
+        lastName: soyad,
+        email: mail,
+        password,
+        marketingConsent: marketing,
       });
-      succeed("✓ Hesap oluşturuldu");
-      navigate("/", { replace: true });
+      setDoneMail(mail);
     } catch (error) {
-      fail(toUserMessage(error, "Kayıt tamamlanamadı"));
+      setErrors({ form: toUserMessage(error, "Kayıt tamamlanamadı, tekrar dene.") });
     }
   }
 
   return (
-    <AuthCard
-      title="Üye ol"
-      footer={
-        <>
-          Zaten üye misin? <AuthLink to="/giris">Giriş yap</AuthLink>
-        </>
-      }
+    <AuthShell
+      sideTitle={`Kurucu kontenjanında ${FOUNDER_QUOTA_LEFT} kişilik yer kaldı.`}
+      sideText={`İlk 150 üye için ${FOUNDER_PRICE}. 151. üyeden itibaren aynı platform 249 ₺/ay olarak devam edecek.`}
+      proof={[
+        { no: "01", text: "Ücretsiz hesapla Telegram topluluğuna katıl" },
+        { no: "02", text: "Kart bilgisi istenmez, kayıt 2 dakika sürer" },
+        { no: "03", text: "İstediğinde kurucu üyeliğe yükselt" },
+      ]}
     >
-      <form onSubmit={handleSubmit} noValidate>
-        <div className="register-name-row">
-          <TextField
-            label="Ad"
-            autoComplete="given-name"
-            placeholder="Adın"
-            containerClassName="flex-1 min-w-0"
-            value={form.ad}
-            onChange={(e) => update("ad")(e.target.value)}
-          />
-          <TextField
-            label="Soyad"
-            autoComplete="family-name"
-            placeholder="Soyadın"
-            containerClassName="flex-1 min-w-0"
-            value={form.soyad}
-            onChange={(e) => update("soyad")(e.target.value)}
-          />
-        </div>
-
-        <TextField
-          label="E-posta"
-          type="email"
-          autoComplete="email"
-          placeholder="ornek@eposta.com"
-          value={form.eposta}
-          onChange={(e) => update("eposta")(e.target.value)}
-        />
-        <TextField
-          label="Şifre"
-          type="password"
-          autoComplete="new-password"
-          placeholder="En az 8 karakter"
-          value={form.sifre}
-          onChange={(e) => update("sifre")(e.target.value)}
-        />
-
-        <div className="register-consents">
-          <label className="register-consent">
-            <input
-              type="checkbox"
-              checked={kvkk}
-              onChange={(e) => setKvkk(e.target.checked)}
-            />
-            <span>
-              <span className="cursor-pointer text-brand hover:underline">
-                Kullanım Şartları
-              </span>
-              'nı ve{" "}
-              <span className="cursor-pointer text-brand hover:underline">
-                KVKK Aydınlatma Metni
-              </span>
-              'ni okudum, onaylıyorum.
+      <div className="card-top">
+        <p className="eyebrow">Kayıt</p>
+        <h1>{isFounder ? "Önce hesabını oluştur" : "Ücretsiz hesap oluştur"}</h1>
+        <p className="sub">
+          Zaten hesabın var mı? <AppLink href="/giris">Giriş yap</AppLink>
+        </p>
+        {isFounder ? (
+          <div className="planbar">
+            <span className="pb-tag">Kurucu üyelik</span>
+            <span className="pb-txt">
+              Önce hesabını oluştur, sonra ödemeye geç. <b>{FOUNDER_PRICE}</b>
             </span>
-          </label>
-          <label className="register-consent">
-            <input
-              type="checkbox"
-              checked={ticari}
-              onChange={(e) => setTicari(e.target.checked)}
-            />
-            <span>
-              PARENA'dan kampanya ve bilgilendirme iletileri almak istiyorum.{" "}
-              <span className="opacity-70">(opsiyonel)</span>
-            </span>
-          </label>
-        </div>
+          </div>
+        ) : null}
+      </div>
 
-        <ParenaButton
-          type="submit"
-          size="block"
-          disabled={registerMutation.isPending}
-          variant={status === "success" ? "success" : "brand"}
-          className="mt-2"
-        >
-          {registerMutation.isPending ? "Hesap oluşturuluyor…" : label}
-        </ParenaButton>
-      </form>
-    </AuthCard>
+      {!doneMail ? (
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="name-row">
+            <AuthField
+              id="ad"
+              label="Ad"
+              type="text"
+              name="given-name"
+              placeholder="Adın"
+              autoComplete="given-name"
+              maxLength={60}
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              error={errors.ad}
+            />
+
+            <AuthField
+              id="soyad"
+              label="Soyad"
+              type="text"
+              name="family-name"
+              placeholder="Soyadın"
+              autoComplete="family-name"
+              maxLength={60}
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              error={errors.soyad}
+            />
+          </div>
+
+
+          <AuthField
+            id="mail"
+            label="E-posta adresi"
+            type="email"
+            name="email"
+            placeholder="ornek@eposta.com"
+            autoComplete="email"
+            inputMode="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            error={errors.mail}
+          />
+
+          <AuthPasswordField
+            id="pass"
+            label={
+              <>
+                Parola <span className="hint">— en az 8 karakter</span>
+              </>
+            }
+            name="password"
+            placeholder="••••••••"
+            autoComplete="new-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            error={errors.pass}
+          >
+            <div className={strength ? `meter s${strength}` : "meter"} aria-hidden="true">
+              <i />
+              <i />
+              <i />
+              <i />
+            </div>
+            <p className="meter-txt">
+              {password ? STRENGTH_LABELS[strength] : STRENGTH_LABELS[0]}
+            </p>
+          </AuthPasswordField>
+
+          <div className="field" style={{ marginTop: 20 }}>
+            <label className="check">
+              <input
+                type="checkbox"
+                checked={terms}
+                aria-invalid={errors.terms ? true : undefined}
+                onChange={(e) => setTerms(e.target.checked)}
+              />
+              <span>
+                <AppLink href="/kullanim-sartlari" target="_blank" rel="noopener">
+                  Kullanım Şartları
+                </AppLink>
+                ,{" "}
+                <AppLink href="/gizlilik" target="_blank" rel="noopener">
+                  Gizlilik Politikası
+                </AppLink>{" "}
+                ve{" "}
+                <AppLink href="/kvkk" target="_blank" rel="noopener">
+                  KVKK Aydınlatma Metni
+                </AppLink>
+                'ni okudum, kabul ediyorum.
+              </span>
+            </label>
+            <p className={errors.terms ? "err on" : "err"} role="alert">
+              {errors.terms}
+            </p>
+          </div>
+
+          <div className="field" style={{ marginBottom: 22 }}>
+            <label className="check">
+              <input
+                type="checkbox"
+                checked={marketing}
+                onChange={(e) => setMarketing(e.target.checked)}
+              />
+              <span>
+                Kampanya ve duyurulardan e-posta ile haberdar olmak istiyorum.{" "}
+                <span style={{ color: "var(--muted)" }}>(isteğe bağlı)</span>
+              </span>
+            </label>
+          </div>
+
+          <button type="submit" className="btn" disabled={registerMutation.isPending}>
+            {registerMutation.isPending ? "Oluşturuluyor…" : "Hesabı oluştur"}
+          </button>
+
+          <p
+            className={errors.form ? "err on" : "err"}
+            role="alert"
+            style={{ textAlign: "center", marginTop: 12 }}
+          >
+            {errors.form}
+          </p>
+        </form>
+      ) : (
+        <div className="done on">
+          <div className="done-ico">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1">
+              <path d="M4 12l5 5L20 6" />
+            </svg>
+          </div>
+          <h2>Hesabın oluşturuldu</h2>
+          <p>
+            <span className="mail">{doneMail}</span> adresine bir doğrulama bağlantısı
+            gönderdik. Bağlantıya tıklayarak hesabını etkinleştir.
+          </p>
+          {isFounder ? (
+            <>
+              <AppLink className="btn" href="/odeme?plan=kurucu">
+                Ödemeye geç · {FOUNDER_PRICE}
+              </AppLink>
+              <p style={{ fontSize: "12.5px", color: "var(--muted)", marginTop: 14 }}>
+                Ödemeyi sonra da tamamlayabilirsin;{" "}
+                <AppLink href="/giris" style={{ fontWeight: 600 }}>
+                  giriş yap
+                </AppLink>{" "}
+                ve hesabından devam et.
+              </p>
+            </>
+          ) : (
+            <AppLink className="btn" href="/giris">
+              Giriş sayfasına dön
+            </AppLink>
+          )}
+        </div>
+      )}
+
+      <p className="legal-note">
+        Ücretli üyeliğe geçtiğinde{" "}
+        <AppLink href="/mesafeli-satis" target="_blank" rel="noopener">
+          Mesafeli Satış Sözleşmesi
+        </AppLink>{" "}
+        de geçerli olur.
+      </p>
+    </AuthShell>
   );
 }

@@ -1,95 +1,121 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { AuthCard } from "@/components/auth/AuthCard";
-import { AuthLink } from "@/components/auth/AuthLink";
-import { ParenaButton } from "@/components/ui/parena-button";
-import { TextField } from "@/components/ui/text-field";
+import { AuthField, AuthPasswordField } from "@/components/auth/AuthField";
+import { AuthShell } from "@/components/auth/AuthShell";
+import { AppLink } from "@/components/ui/app-link";
 import { useLogin } from "@/features/auth/auth.queries";
-import { useSubmitFeedback } from "@/hooks/use-submit-feedback";
-import { isValidEmail, isValidPassword, normalizeEmail } from "@/lib/auth-validation";
+import { isValidEmail, normalizeEmail } from "@/lib/auth-validation";
 import { toUserMessage } from "@/lib/http/api-error";
 
-import "./LoginPage.css";
-import { useDocumentMeta } from "@/hooks/use-document-meta";
-
 export const loginPageMeta = {
-  title: "PARENA — Giriş Yap",
-  description: "PARENA hesabına giriş yap; günlük hisse önerilerini tek ekranda gör.",
-  ogTitle: "PARENA — Giriş Yap",
-  ogDescription: "PARENA hesabına güvenli giriş.",
+  title: "Giriş Yap | PARENA Portföy Arena",
+  description:
+    "PARENA hesabına giriş yap; 68 kurumun günlük önerilerini kâr/zarar takibiyle tek ekranda gör.",
+  ogTitle: "PARENA — Hesabına giriş yap",
+  ogDescription: "Bugünün karnesi seni bekliyor. PARENA hesabına güvenli giriş.",
 };
 
+type Errors = { mail?: string; pass?: string; form?: string };
 
-export default function LoginPage() {
-   useDocumentMeta(loginPageMeta);
+export default function LoginPage({ redirectTo = "/" }: { redirectTo?: string }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [remember, setRemember] = useState(true);
+  const [errors, setErrors] = useState<Errors>({});
   const navigate = useNavigate();
-  const { label, status, fail, succeed } = useSubmitFeedback("Giriş yap");
   const loginMutation = useLogin();
-  const [searchParams] = useSearchParams();
-  const raw = searchParams.get("redirect");
-  const redirectTo = raw?.startsWith("/") && !raw.startsWith("//") ? raw : "/";
 
   async function handleSubmit(event: FormEvent) {
-  
     event.preventDefault();
     if (loginMutation.isPending) return;
 
-    const normalized = normalizeEmail(email);
-    if (!isValidEmail(normalized)) return fail("Geçerli bir e-posta gir");
-    if (!isValidPassword(password)) return fail("Şifreni eksiksiz gir");
+    const mail = normalizeEmail(email);
+    const next: Errors = {};
+    if (!mail) next.mail = "E-posta adresini gir.";
+    else if (!isValidEmail(mail)) next.mail = "Geçerli bir e-posta adresi gir.";
+    if (!password) next.pass = "Parolanı gir.";
+
+    setErrors(next);
+    if (Object.keys(next).length > 0) return;
 
     try {
-      await loginMutation.mutateAsync({ email: normalized, password });
-      succeed("✓ Giriş yapılıyor…");
+      await loginMutation.mutateAsync({ email: mail, password, remember });
       navigate(redirectTo, { replace: true });
     } catch (error) {
-      fail(toUserMessage(error, "E-posta veya şifre hatalı"));
+      setErrors({ form: toUserMessage(error, "E-posta veya parola hatalı.") });
     }
   }
 
   return (
-    <AuthCard
-      title="Giriş yap"
-      footer={
-        <>
-          Hesabın yok mu? <AuthLink to="/uye-ol">Üye ol</AuthLink>
-        </>
-      }
+    <AuthShell
+      sideTitle="Bugünün karnesi seni bekliyor."
+      sideText="Günlük, haftalık, model portföy ve kısa vadeli önerilerin tamamı, her birinin kâr/zararıyla birlikte."
     >
+      <div className="card-top">
+        <p className="eyebrow">Giriş</p>
+        <h1>Hesabına giriş yap</h1>
+        <p className="sub">
+          Hesabın yok mu? <AppLink href="/uye-ol">Ücretsiz oluştur</AppLink>
+        </p>
+      </div>
+
       <form onSubmit={handleSubmit} noValidate>
-        <TextField
-          label="E-posta"
+        <AuthField
+          id="mail"
+          label="E-posta adresi"
           type="email"
-          autoComplete="email"
+          name="email"
           placeholder="ornek@eposta.com"
+          autoComplete="email"
+          inputMode="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          error={errors.mail}
         />
-        <TextField
-          label="Şifre"
-          type="password"
+
+        <AuthPasswordField
+          id="pass"
+          label="Parola"
+          name="password"
+          placeholder="••••••••"
           autoComplete="current-password"
-          placeholder="Şifren"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          error={errors.pass}
         />
 
-        <div className="login-forgot">
-          <AuthLink to="/sifremi-unuttum">Şifremi unuttum</AuthLink>
+        <div className="row">
+          <label className="check">
+            <input
+              type="checkbox"
+              checked={remember}
+              onChange={(e) => setRemember(e.target.checked)}
+            />{" "}
+            <span>Beni hatırla</span>
+          </label>
+          <AppLink className="link-sm" href="/sifremi-unuttum">
+            Parolamı unuttum
+          </AppLink>
         </div>
 
-        <ParenaButton
-          type="submit"
-          size="block"
-          disabled={loginMutation.isPending}
-          variant={status === "success" ? "success" : "brand"}
+        <button type="submit" className="btn" disabled={loginMutation.isPending}>
+          {loginMutation.isPending ? "Giriş yapılıyor…" : "Giriş yap"}
+        </button>
+
+        <p
+          className={errors.form ? "err on" : "err"}
+          role="alert"
+          style={{ textAlign: "center", marginTop: 12 }}
         >
-          {loginMutation.isPending ? "Giriş yapılıyor…" : label}
-        </ParenaButton>
+          {errors.form}
+        </p>
       </form>
-    </AuthCard>
+
+      <p className="foot">
+        Tek aktif oturum kuralı geçerlidir: yeni bir cihazdan giriş yaptığında önceki oturumun
+        kapanır.
+      </p>
+    </AuthShell>
   );
 }

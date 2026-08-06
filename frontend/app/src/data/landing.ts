@@ -19,7 +19,7 @@ export const FEATURES: Feature[] = [
   {
     id: "akis",
     title: "Günlük öneri akışı",
-    body: "Kurumların sabah bültenlerindeki AL / TUT / SAT tavsiyeleri ve hedef fiyatlar, yayınlandığı dakikalarda tek tabloda. Her satırın yanında kaynak PDF dokümanı. Söz uçar, arşiv kalır.",
+    body: "Kurumların sabah bültenlerindeki AL / TUT / SAT tavsiyeleri ve hedef fiyatlar, yayınlandığı dakikalarda tek tabloda. Her satırın yanında kaynak PDF — söz uçar, arşiv kalır.",
     reversed: false,
     rows: [
       { left: "THYAO", mid: "Ak Yatırım", right: "AL", value: "345 ₺", tone: "buy" },
@@ -41,7 +41,7 @@ export const FEATURES: Feature[] = [
   {
     id: "konsensus",
     title: "Konsensüs ve aykırı görüş",
-    body: "Bir hisseye kaç kurum AL diyor, ortalama ve medyan hedef ne, son 7 günde görüş nasıl kaydı ve herkes bir yöndeyken ters düşen kim? Piyasanın ortak aklı tek bakışta.",
+    body: "Bir hisseye kaç kurum AL diyor, ortalama ve medyan hedef ne, son 7 günde görüş nasıl kaydı — ve herkes bir yöndeyken ters düşen kim? Piyasanın ortak aklı tek bakışta.",
     reversed: false,
     consensus: { title: "THYAO · 13 kurum", buy: 69, hold: 23, sell: 8 },
     rows: [
@@ -52,7 +52,7 @@ export const FEATURES: Feature[] = [
   {
     id: "simulator",
     title: "Simülatör",
-    body: '"Bakiyemi o gün o kurumun önerilerine yatırsaydım ne olurdu?" Takvimden günü seç, kurumun o günkü gerçek önerilerini gör, para büyüme grafiğini izle. Geçmiş performans geleceğin garantisi değildir ama iyi bir öğretmendir.',
+    body: '"Bakiyemi o gün o kurumun önerilerine yatırsaydım ne olurdu?" Takvimden günü seç, kurumun o günkü gerçek önerilerini gör, para büyüme grafiğini izle. Geçmiş performans geleceğin garantisi değildir — ama iyi bir öğretmendir.',
     reversed: true,
     rows: [
       { left: "Başlangıç", value: "50.000 ₺" },
@@ -92,12 +92,16 @@ export const FAQ_ITEMS = [
     a: "Hayır. PARENA, aracı kurumların kamuya açık raporlarındaki görüşleri derler, karşılaştırır ve sonuçlarını raporlar; kendi adına hiçbir alım-satım önerisi veya derecelendirme üretmez. Yatırım danışmanlığı, yetkili kuruluşlarla imzalanan sözleşme çerçevesinde sunulur.",
   },
   {
+    q: "Nasıl üye olurum?",
+    a: "PARENA davetle katılınan bir platformdur. Telegram botumuza yazın; ödemeniz onaylandığında davet kodunuz ve giriş bilgileriniz iletilir.",
+  },
+  {
     q: "Veriler nereden geliyor?",
     a: "Yalnızca SPK lisanslı aracı kurumların kamuya açık olarak yayınladığı günlük bülten ve araştırma raporlarından. Her önerinin yanında kaynak belgenin bağlantısı bulunur.",
   },
   {
     q: "Hesabımı paylaşabilir miyim?",
-    a: "Üyelik kişiseldir ve tek aktif oturumla çalışır, yeni bir cihazdan giriş yapıldığında önceki oturum kapanır. Paylaşım tespitinde üyelik askıya alınır.",
+    a: "Üyelik kişiseldir ve tek aktif oturumla çalışır — yeni bir cihazdan giriş yapıldığında önceki oturum kapanır. Paylaşım tespitinde üyelik askıya alınır.",
   },
 ];
 

@@ -1,17 +1,30 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
+import { BrowserRouter } from "react-router-dom";
 
-import { AppRouter } from "@/router/AppRouter";
+import { AppRouter } from "./router/AppRouter";
 
-const queryClient = new QueryClient({
-  defaultOptions: { queries: { retry: false, staleTime: 60_000 } },
-});
+/**
+ * Uygulama kabuğu.
+ * Mimari: React -> react-router-dom -> Pages
+ *         React Components -> React Query -> API Client -> BFF
+ */
+export default function App() {
+  // QueryClient bileşen ömrü boyunca tek örnek kalsın (StrictMode remount güvenli).
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: { retry: false, refetchOnWindowFocus: false },
+        },
+      }),
+  );
 
-export function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AppRouter />
+      <BrowserRouter>
+        <AppRouter />
+      </BrowserRouter>
     </QueryClientProvider>
   );
 }
-
-export default App;
