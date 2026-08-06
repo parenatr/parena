@@ -13,7 +13,7 @@ html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 .launch-page{
   font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   background:var(--bg);color:var(--ink);line-height:1.65;font-size:15.5px;
-  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;overflow-x:clip;
 }
 .launch-page img,
 .launch-page svg{max-width:100%;display:block}
@@ -43,13 +43,13 @@ html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 .launch-page [id="ozellikler"],
 .launch-page [id="karne"],
 .launch-page [id="fiyat"],
-.launch-page [id="sss"]{scroll-margin-top:100px}
+.launch-page [id="sss"]{scroll-margin-top:20px}
 @media(max-width:640px){
 .launch-page [id="nasil"],
 .launch-page [id="ozellikler"],
 .launch-page [id="karne"],
 .launch-page [id="fiyat"],
-.launch-page [id="sss"]{scroll-margin-top:88px}
+.launch-page [id="sss"]{scroll-margin-top:20px}
 }
 .launch-page .sec-head p{font-size:.94rem;color:var(--muted);margin-top:14px}
 .launch-page .oneline{text-wrap:nowrap;white-space:nowrap}

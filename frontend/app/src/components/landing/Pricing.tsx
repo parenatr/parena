@@ -3,9 +3,15 @@ import { AppLink } from "@/components/ui/app-link";
 export function Pricing() {
   return (
     <>
-      <section className="sec" style={{"background": "var(--surface)", "borderTop": "1px solid var(--line)"}}>
+      <section
+        className="sec pricing-section"
+        style={{
+          background: "var(--surface)",
+          borderTop: "1px solid var(--line)",
+        }}
+      >
         <div className="wrap">
-          <div id="fiyat" className="sec-head rv" style={{"maxWidth": "640px"}}>
+          <div id="fiyat" className="sec-head rv" style={{ "maxWidth": "640px" }}>
             <p className="eyebrow">Fiyat</p>
             <h2>Ücretsiz başla, hazır olduğunda yükselt</h2>
             <p>Dört içerik tipinin tamamı ve sektör analizi tek pakette. Kurucu üyelik yalnızca ilk 150 kişi için geçerli; 151. üyeden itibaren fiyat 249 ₺/ay olarak devam edecek.</p>

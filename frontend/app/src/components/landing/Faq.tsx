@@ -12,7 +12,7 @@ export function Faq() {
           </div>
 
           <div className="faq rv">
-            <details open={true}>
+            <details>
               <summary>PARENA yatırım tavsiyesi veriyor mu?</summary>
               <div className="ans">Hayır. PARENA, SPK lisanslı aracı kurumların kamuya açık raporlarındaki borsa görüşlerini derler, karşılaştırır ve sonuçlarını raporlar. Kendi adına hiçbir alım-satım önerisi veya derecelendirme üretmez. Yatırım danışmanlığı, yetkili kuruluşlarla imzalanan sözleşme çerçevesinde sunulur. Ayrıntı: <AppLink href="/kullanim-sartlari#m3">Kullanım Şartları, madde 3</AppLink>.</div>
             </details>

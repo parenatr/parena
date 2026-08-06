@@ -1,9 +1,9 @@
 export function HowItWorks() {
   return (
     <>
-      <section className="sec">
+      <section id="nasil" className="sec">
         <div className="wrap">
-          <div id="nasil" className="sec-head rv">
+          <div className="sec-head rv">
             <p className="eyebrow">Nasıl çalışır</p>
             <h2>Bir işlem gününün üç aşaması</h2>
             <p className="oneline">Döngü bir borsa gününü izler: derle, takip et, kâr/zararı yaz.</p>
