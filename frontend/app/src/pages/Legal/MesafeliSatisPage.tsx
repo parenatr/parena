@@ -1,7 +1,7 @@
 import { LegalLayout } from "@/components/legal/LegalLayout";
 
 export const mesafeliSatisPageMeta = {
-  title: 'Mesafeli Satış Sözleşmesi | PARENA',
+  title: 'Mesafeli Satış - Parena',
   description: 'PARENA dijital abonelik hizmetine ilişkin mesafeli satış sözleşmesi: bedel, ifa, cayma hakkı, otomatik yenileme ve uyuşmazlık çözümü.',
   ogTitle: 'Mesafeli Satış Sözleşmesi | PARENA',
   ogDescription: 'PARENA dijital abonelik hizmetine ilişkin mesafeli satış sözleşmesi: bedel, ifa, cayma hakkı, otomatik yenileme ve uyuşmazlık çözümü.',

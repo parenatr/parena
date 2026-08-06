@@ -7,7 +7,7 @@ import { FOUNDER_QUOTA } from "@/data/quota";
 import "./CheckoutPage.css";
 
 export const checkoutPageMeta = {
-  title: "Kurucu Üyeliği Tamamla | PARENA Ödeme",
+  title: "Kurucu Üyeliği Tamamla | Parena",
   description:
     "PARENA kurucu üyeliğini aylık 149 ₺ veya yıllık 1.490 ₺ ile tamamla. Ödeme iyzico'nun güvenli sayfasında yapılır.",
   ogTitle: "PARENA — Kurucu üyeliğini tamamla",

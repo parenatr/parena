@@ -9,7 +9,7 @@ import { isValidEmail, normalizeEmail } from "@/lib/auth-validation";
 import { toUserMessage } from "@/lib/http/api-error";
 
 export const loginPageMeta = {
-  title: "Giriş Yap | PARENA Portföy Arena",
+  title: "Giriş Yap | Parena",
   description:
     "PARENA hesabına giriş yap; 68 kurumun günlük önerilerini kâr/zarar takibiyle tek ekranda gör.",
   ogTitle: "PARENA — Hesabına giriş yap",

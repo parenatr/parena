@@ -1,7 +1,7 @@
 import { LegalLayout } from "@/components/legal/LegalLayout";
 
 export const kullanimSartlariPageMeta = {
-  title: 'Kullanım Şartları ve Üyelik Sözleşmesi | PARENA',
+  title: 'Şartlar - Parena',
   description: 'PARENA platformunun kullanım şartları, üyelik sözleşmesi, ücretlendirme, cayma hakkı ve sorumluluk sınırlarına ilişkin hükümler.',
   ogTitle: 'Kullanım Şartları ve Üyelik Sözleşmesi | PARENA',
   ogDescription: 'PARENA platformunun kullanım şartları, üyelik sözleşmesi, ücretlendirme, cayma hakkı ve sorumluluk sınırlarına ilişkin hükümler.',

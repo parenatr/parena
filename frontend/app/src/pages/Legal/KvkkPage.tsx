@@ -1,7 +1,7 @@
 import { LegalLayout } from "@/components/legal/LegalLayout";
 
 export const kvkkPageMeta = {
-  title: 'KVKK Aydınlatma Metni | PARENA',
+  title: 'KVKK - Parena',
   description: '6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında PARENA aydınlatma metni: işlenen veriler, amaçlar, hukuki sebepler ve haklarınız.',
   ogTitle: 'KVKK Aydınlatma Metni | PARENA',
   ogDescription: '6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında PARENA aydınlatma metni: işlenen veriler, amaçlar, hukuki sebepler ve haklarınız.',

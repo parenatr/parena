@@ -9,7 +9,7 @@ import { isValidEmail, normalizeEmail } from "@/lib/auth-validation";
 import { toUserMessage } from "@/lib/http/api-error";
 
 export const registerPageMeta = {
-  title: "Ücretsiz Üye Ol | PARENA Portföy Arena",
+  title: "Ücretsiz Üye Ol | Parena",
   description:
     "2 dakikada ücretsiz PARENA hesabı oluştur; kart bilgisi istenmez. Kurucu üyeliğe istediğin zaman yükselt.",
   ogTitle: "PARENA — Ücretsiz hesap oluştur",

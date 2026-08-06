@@ -1,7 +1,7 @@
 import { LegalLayout } from "@/components/legal/LegalLayout";
 
 export const gizlilikPageMeta = {
-  title: 'Gizlilik Politikası | PARENA',
+  title: 'Gizlilik - Parena',
   description: 'PARENA gizlilik politikası: hangi verileri topluyoruz, neden işliyoruz, kimlerle paylaşıyoruz ve haklarınızı nasıl kullanırsınız.',
   ogTitle: 'Gizlilik Politikası | PARENA',
   ogDescription: 'PARENA gizlilik politikası: hangi verileri topluyoruz, neden işliyoruz, kimlerle paylaşıyoruz ve haklarınızı nasıl kullanırsınız.',

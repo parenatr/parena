@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
-import { Navigate, Route, Routes, useSearchParams } from "react-router-dom";
+import { Navigate, Route, Routes, useSearchParams, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 import { useDocumentMeta, type PageMeta } from "@/hooks/use-document-meta";
 import CheckoutPage, { checkoutPageMeta } from "@/pages/Checkout/CheckoutPage";
@@ -44,7 +45,12 @@ function ResetPasswordRoute() {
 }
 
 const LaunchRoute = withMeta(LaunchPage, launchPageMeta);
-const RegisterRoute = withMeta(RegisterPage, registerPageMeta);
+function RegisterRoute() {
+  useDocumentMeta(registerPageMeta);
+  const [params] = useSearchParams();
+  const plan = params.get("plan") ?? "topluluk";
+  return <RegisterPage plan={plan} />;
+}
 const ForgotPasswordRoute = withMeta(ForgotPasswordPage, forgotPasswordPageMeta);
 const CheckoutRoute = withMeta(CheckoutPage, checkoutPageMeta);
 const CerezRoute = withMeta(CerezPage, cerezPageMeta);
@@ -54,9 +60,32 @@ const KvkkRoute = withMeta(KvkkPage, kvkkPageMeta);
 const MesafeliSatisRoute = withMeta(MesafeliSatisPage, mesafeliSatisPageMeta);
 
 /** Uygulamanın tek yönlendirme merkezi. */
+function ScrollToTop() {
+  const { pathname, hash } = useLocation();
+
+  useEffect(() => {
+    if (hash) {
+      // Eğer URL'de bir hash (#m3 vb.) varsa, elementin DOM'a yüklenmesini bekleyip oraya kaydır
+      setTimeout(() => {
+        const id = hash.replace("#", "");
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 50);
+    } else {
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }
+  }, [pathname, hash]);
+
+  return null;
+}
+
 export function AppRouter() {
   return (
-    <Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
       <Route path="/" element={<LaunchRoute />} />
       <Route path="/giris" element={<LoginRoute />} />
       <Route path="/uye-ol" element={<RegisterRoute />} />
@@ -69,7 +98,8 @@ export function AppRouter() {
       <Route path="/kvkk" element={<KvkkRoute />} />
       <Route path="/mesafeli-satis" element={<MesafeliSatisRoute />} />
       <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+      </Routes>
+    </>
   );
 }
 

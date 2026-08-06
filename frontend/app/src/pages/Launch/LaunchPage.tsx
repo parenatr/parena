@@ -21,10 +21,10 @@ import { useLandingEffects } from "@/hooks/use-landing-effects";
 import "./LaunchPage.css";
 
 export const launchPageMeta = {
-  title: "PARENA (Portföy Arena) | Borsa ve Portföy Analiz Platformu",
+  title: "Parena - Portföy Arena",
   description:
     "68 kurumun günlük, haftalık, model portföy ve kısa vadeli önerileri tek ekranda, her birinin kâr/zararıyla. Sektör bazlı isabet analizi. Ücretsiz başla.",
-  ogTitle: "PARENA · Portföy Arena | Paranın Arenası",
+  ogTitle: "Parena · Portföy Arena | Paranın Arenası",
   ogDescription:
     "68 kurumun önerileri, her biri kâr/zararıyla birlikte. Hangi kurum hangi sektörde isabetli, veriyle gör.",
 };

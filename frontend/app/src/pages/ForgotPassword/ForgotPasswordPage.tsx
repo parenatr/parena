@@ -7,7 +7,7 @@ import { useForgotPassword } from "@/features/auth/auth.queries";
 import { isValidEmail, normalizeEmail } from "@/lib/auth-validation";
 
 export const forgotPasswordPageMeta = {
-  title: "Parolamı Unuttum | PARENA Portföy Arena",
+  title: "Parolamı Unuttum | Parena",
   description:
     "PARENA hesabının parolasını sıfırla. E-posta adresini gir, 60 dakika geçerli sıfırlama bağlantısını gönderelim.",
   ogTitle: "PARENA — Parola sıfırlama",

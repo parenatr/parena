@@ -8,7 +8,7 @@ import { toUserMessage } from "@/lib/http/api-error";
 import { STRENGTH_LABELS, scorePassword } from "@/lib/password-strength";
 
 export const resetPasswordPageMeta = {
-  title: "Yeni Parola Belirle | PARENA Portföy Arena",
+  title: "Yeni Parola Belirle | Parena",
   description:
     "PARENA hesabın için yeni bir parola belirle. Parola değiştiğinde tüm cihazlardaki oturumlar kapanır.",
   ogTitle: "PARENA — Yeni parolanı belirle",

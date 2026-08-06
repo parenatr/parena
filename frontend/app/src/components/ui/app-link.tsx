@@ -1,10 +1,6 @@
 import type { AnchorHTMLAttributes } from "react";
 import { Link } from "react-router-dom";
 
-/**
- * Uygulama içi bağlantı sarmalayıcısı.
- * Tasarım HTML'lerindeki `href` sözdizimi korunur; router'a özel API tek dosyada tutulur.
- */
 export type AppLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & { href: string };
 
 const isExternal = (href: string) =>
@@ -19,8 +15,18 @@ export function AppLink({ href, children, ...rest }: AppLinkProps) {
     );
   }
 
+  function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    if (rest.onClick) {
+      rest.onClick(e);
+    }
+    // Eğer hedef anasayfa ("/") ise, tıklandığında her koşulda en üste kaydır
+    if (href === "/" || href === "") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+
   return (
-    <Link to={href} {...rest}>
+    <Link to={href} {...rest} onClick={handleClick}>
       {children}
     </Link>
   );

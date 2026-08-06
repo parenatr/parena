@@ -1,7 +1,7 @@
 import { LegalLayout } from "@/components/legal/LegalLayout";
 
 export const cerezPageMeta = {
-  title: 'Çerez Politikası | PARENA',
+  title: 'Çerez Politikası - Parena',
   description: 'PARENA çerez politikası: kullanılan çerez türleri, süreleri, üçüncü taraf çerezleri ve tercihlerinizi nasıl yöneteceğiniz.',
   ogTitle: 'Çerez Politikası | PARENA',
   ogDescription: 'PARENA çerez politikası: kullanılan çerez türleri, süreleri, üçüncü taraf çerezleri ve tercihlerinizi nasıl yöneteceğiniz.',
