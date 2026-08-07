@@ -151,11 +151,10 @@ services:
       - "8761:8761"
     container_name: discovery-server
     environment:
-      SO_CONFIG_GIT_URI: ${SO_CONFIG_GIT_URI}
-      SO_CONFIG_GIT_BRANCH: ${SO_CONFIG_GIT_BRANCH}
       SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
       SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}
+      SO_CONFIG_URI: ${SO_CONFIG_URI}
   
   gateway-server:
     build:
@@ -166,11 +165,10 @@ services:
       - "8888:8888"
     container_name: gateway-server
     environment:
-      SO_CONFIG_GIT_URI: ${SO_CONFIG_GIT_URI}
-      SO_CONFIG_GIT_BRANCH: ${SO_CONFIG_GIT_BRANCH}
       SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
       SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}
+      SO_CONFIG_URI: ${SO_CONFIG_URI}
   
   bff-server:
     build:
@@ -181,8 +179,6 @@ services:
       - "8082:8082"
     container_name: bff-server
     environment:
-      SO_CONFIG_GIT_URI: ${SO_CONFIG_GIT_URI}
-      SO_CONFIG_GIT_BRANCH: ${SO_CONFIG_GIT_BRANCH}
       SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
       SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}
@@ -197,11 +193,10 @@ services:
       - "8080:8080"
     container_name: user-service
     environment:
-      SO_CONFIG_GIT_URI: ${SO_CONFIG_GIT_URI}
-      SO_CONFIG_GIT_BRANCH: ${SO_CONFIG_GIT_BRANCH}
       SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
       SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}
+      SO_CONFIG_URI: ${SO_CONFIG_URI}
 
   # ---------------- DB(PostgreSQL) Services ----------------
   user_service_db:

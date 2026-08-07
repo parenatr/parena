@@ -4,7 +4,7 @@ spring:
   profiles:
     active: docker
   config:
-    import: configserver:http://localhost:8787
+    import: configserver:${SO_CONFIG_URI:http://localhost:8787}
   cloud: #config-server security ile korunuyor, config servera baglanırken basit authentication yapılacak.
     config:
       username: ${SO_CONFIG_SECURITY_USER}
