@@ -13,6 +13,8 @@ spring:
         git:
           uri: ${SO_CONFIG_GIT_URI}
           default-label: ${SO_CONFIG_GIT_BRANCH:main}
+          username: ${SO_CONFIG_GIT_USERNAME}
+          password: ${SO_CONFIG_GIT_TOKEN}
           search-paths:
             - backend/configurations/
             - backend/configurations/{application}
