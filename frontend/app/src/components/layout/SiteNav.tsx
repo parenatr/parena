@@ -3,7 +3,7 @@ import { AppLink } from "@/components/ui/app-link";
 import { ParenaMark } from "@/components/brand/ParenaMark";
 
 const LINKS = [
-  { href: "#nasil", label: "Nasıl çalışır" },
+  { href: "#nasil", label: "Nasıl çalışır?" },
   { href: "#ozellikler", label: "Özellikler" },
   { href: "#karne", label: "Karne" },
   { href: "#fiyat", label: "Fiyat" },

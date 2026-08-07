@@ -69,16 +69,7 @@
   color: rgba(255, 255, 255, 0.45);
   margin-top: 5px;
 }
-.site-footer .sf-brand-tag::before {
-  content: "";
-  display: inline-block;
-  width: 16px;
-  height: 2px;
-  background: #e0b54e;
-  border-radius: 2px;
-  vertical-align: 3px;
-  margin-right: 7px;
-}
+
 .site-footer .sf-brand-tag i {
   display: block;
   font-style: italic;
