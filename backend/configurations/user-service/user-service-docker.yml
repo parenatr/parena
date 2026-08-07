@@ -1,0 +1,25 @@
+#user dockerda çalışan eureka-server'a bağlanır.
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-server:8761/eureka
+
+#user-service keycloak bağlantısı.
+keycloak:
+  realm: parena
+  auth-server-url: http://keycloak:8585
+  admin-client-id: user-service
+  admin-client-secret: ${SO_USER_SERVICE_CLIENT_SECRET}
+
+spring:
+  datasource:
+    url: jdbc:postgresql://user_service_db:5432/user_service
+    username: ${SO_USER_SERVICE_DB_USER}
+    password: ${SO_USER_SERVICE_DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate   # şema Flyway'in sorumluluğunda
+      open-in-view: false
+      flyway:
+        enabled: true

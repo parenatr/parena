@@ -3,7 +3,7 @@ package com.parena.userservice.domain.aggregate.enums;
 import java.util.List;
 
 public enum Role {
-    STANDARD_USER,
+    USER,
     ADMIN;
 
     //domain Enum Role ile calısıyor -> formatı ona gore ayarlar.
@@ -28,7 +28,7 @@ public enum Role {
     }
 
     public static List<Role> getDefault() {
-        return List.of(STANDARD_USER);
+        return List.of(USER);
 
     }
 }

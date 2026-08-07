@@ -1,0 +1,25 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-server:8761/eureka
+
+spring:
+  security:     #bff-server'i keycloak'a tanitiyoruz
+    oauth2:
+      client:
+        provider:  #keycloak bir provider (auth providerı)
+          keycloak:
+            authorization-uri: http://localhost:8585/realms/parena/protocol/openid-connect/auth #browser-routing (external)
+            token-uri: http://keycloak:8585/realms/parena/protocol/openid-connect/token  #bff: token almak icin dockerdaki keycloaka gider (internal)
+            jwk-set-uri: http://keycloak:8585/realms/parena/protocol/openid-connect/certs #bff: jwt imzalarını dogrulamak icin keycloaka gider (internal)
+            user-name-attribute: preferred_username
+        registration:
+          keycloak:
+            client-id: bff-server    #keycloak'ta olusturdugumuz client'in id'si.     (confidential-client)
+            client-secret: ${BFF_CLIENT_SECRET}  #client'e atanmıs secret
+            redirect-uri: "${BFF_BASE_URL}/login/oauth2/code/{registrationId}"   #baseUrl:http://localhost:8989, registrationId:keycloak
+            authorization-grant-type: authorization_code
+            scope:          #giriş yapmıs kullanıcıdan hangi bilgileri alalım
+              - openid      #jwt bilgileri icin gerekli
+              - profile
+              - email

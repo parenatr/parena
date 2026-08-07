@@ -1,4 +1,4 @@
-package com.parena.userservice.infrastructure.config;
+package com.parena.userservice.infrastructure.keycloak.config;
 
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;

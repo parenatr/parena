@@ -1,4 +1,4 @@
-package com.parena.userservice.infrastructure.config;
+package com.parena.userservice.infrastructure.keycloak.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -12,9 +12,9 @@ import org.springframework.context.annotation.Configuration;
 public class KeycloakProperties {
 
     private String realm;
+    private String authServerUrl;
     private String adminClientId;
     private String adminClientSecret;
-    private String authServerUrl;
 
     public KeycloakProperties() {
     }

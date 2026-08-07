@@ -4,3 +4,32 @@ eureka:
       defaultZone: http://localhost:8761/eureka
     instance:
       prefer-ip-address: true
+
+app:
+  frontend-base-url: ${SO_FRONTEND_BASE_URL}
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: bff-server
+            client-secret: ${BFF_CLIENT_SECRET}
+            authorization-grant-type: authorization_code
+            scope: openid, profile, email
+            redirect-uri: "${BFF_BASE_URL}/login/oauth2/code/keycloak"
+        provider:
+          keycloak:
+            issuer-uri: http://keycloak:8585/realms/parena
+
+  session:
+    redis:
+      namespace: parena:bff:session
+    timeout: 30m
+
+  data:
+    redis:
+      host: redis
+      port: 6379
+      password: ${REDIS_PASSWORD}

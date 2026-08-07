@@ -4,10 +4,24 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka
 
+
 #user-service keycloak bağlantısı.
 keycloak:
-  realm: ${SO_KEYCLOAK_REALM}
-  auth-server-url: ${SO_KEYCLOAK_AUTH_SERVER_URL}
-  admin-client-id: ${SO_KEYCLOAK_ADMIN_CLIENT_ID}
-  admin-client-secret: ${SO_KEYCLOAK_ADMIN_CLIENT_SECRET}
+  realm: parena
+  auth-server-url: http://localhost:8585
+  admin-client-id: user-service
+  admin-client-secret: ${SO_USER_SERVICE_CLIENT_SECRET}
 
+spring:
+  #db config (postgresql)
+  datasource:
+    url: jdbc:postgresql://localhost:5432/user_service
+    username: ${SO_USER_SERVICE_DB_USER}
+    password: ${SO_USER_SERVICE_DB_PASSWORD}
+  #hibernate & orm
+  jpa:
+    hibernate:
+      ddl-auto: validate   # şema Flyway'in sorumluluğunda
+      open-in-view: false
+      flyway:
+        enabled: true

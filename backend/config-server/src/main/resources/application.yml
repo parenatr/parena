@@ -2,7 +2,7 @@ spring:
   application:
     name: config-server
   profiles:
-    active: git
+    active: docker
   security:           #config-server basic auth -> config servera herkes erişemez.
     user:
       name: ${SO_CONFIG_SECURITY_USER}

@@ -156,6 +156,36 @@ services:
       SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
       SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}
+  
+  gateway-server:
+    build:
+      <<: *java-build
+      args:
+        MODULE: gateway-server
+    ports:
+      - "8888:8888"
+    container_name: gateway-server
+    environment:
+      SO_CONFIG_GIT_URI: ${SO_CONFIG_GIT_URI}
+      SO_CONFIG_GIT_BRANCH: ${SO_CONFIG_GIT_BRANCH}
+      SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
+      SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
+      SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}
+  
+  bff-server:
+    build:
+      <<: *java-build
+      args:
+        MODULE: bff-server
+    ports:
+      - "8082:8082"
+    container_name: bff-server
+    environment:
+      SO_CONFIG_GIT_URI: ${SO_CONFIG_GIT_URI}
+      SO_CONFIG_GIT_BRANCH: ${SO_CONFIG_GIT_BRANCH}
+      SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
+      SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
+      SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}
 
 
   user-service:
@@ -167,7 +197,8 @@ services:
       - "8080:8080"
     container_name: user-service
     environment:
-    
+      SO_CONFIG_GIT_URI: ${SO_CONFIG_GIT_URI}
+      SO_CONFIG_GIT_BRANCH: ${SO_CONFIG_GIT_BRANCH}
       SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
       SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}

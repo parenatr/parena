@@ -1,12 +1,11 @@
 spring:
   application:
     name: discovery-server
-
-server:
-  port: 8761
-
-# Don't register itself as a client
-eureka:
-  client:
-    fetch-registry: false
-    register-with-eureka: false
+  profiles:
+    active: docker
+  config:
+    import: configserver:http://localhost:8787
+  cloud: #config-server security ile korunuyor, config servera baglanırken basit authentication yapılacak.
+    config:
+      username: ${SO_CONFIG_SECURITY_USER}
+      password: ${SO_CONFIG_SECURITY_PASSWORD}

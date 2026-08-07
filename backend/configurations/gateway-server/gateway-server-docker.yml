@@ -1,0 +1,23 @@
+#gateway dockerda çalışan eureka-server'a bağlanır.
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-server:8761/eureka
+    instance:
+      prefer-ip-address: false
+
+# Explicit routes for better control
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          forwarded:
+            enabled: true
+          x-forwarded:
+            enabled: true
+          routes: # Gateway Manual Routes
+            - id: user-service
+              uri: lb://user-service
+              predicates:
+                - Path=/api/v1/user/**
