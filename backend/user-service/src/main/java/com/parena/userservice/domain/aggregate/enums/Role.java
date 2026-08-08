@@ -1,6 +1,6 @@
 package com.parena.userservice.domain.aggregate.enums;
 
-import java.util.List;
+import java.util.Set;
 
 public enum Role {
     USER,
@@ -24,11 +24,10 @@ public enum Role {
 
     //keycloak apisinin istediği format.
     public String toKeycloakRole() {
-        return this.name().toLowerCase().replace("-", "_");
+        return name().toLowerCase();
     }
-
-    public static List<Role> getDefault() {
-        return List.of(USER);
+    public static Set<Role> getDefault() {
+        return Set.of(Role.USER);
 
     }
 }

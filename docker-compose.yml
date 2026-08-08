@@ -75,7 +75,7 @@ services:
       retries: 15
       start_period: 20s
     networks: [ parena ]
-  
+
   # -----------------------------------------------------------------
   # Keycloak realm/client konfigürasyonunu kod olarak (YAML) uygular.
   # Idempotent — tekrar çalıştırılabilir, mevcut kullanıcı verisini silmez.
@@ -106,7 +106,7 @@ services:
       - ./backend/configurations/keycloak:/config
     networks:
       - parena
-  
+
   # -----------------------------------------------------------------
   # BFF-server'ın session store'u. Spring Session, OAuth2AuthorizedClient
   # (access+refresh token içerir) nesnesini burada tutar. Tarayıcı sadece
@@ -115,16 +115,15 @@ services:
   redis:
     image: redis:7.4-alpine
     container_name: redis
-    command: ["redis-server", "--requirepass", "${SO_REDIS_PASSWORD}"]
+    command: [ "redis-server", "--requirepass", "${SO_REDIS_PASSWORD}" ]
     volumes:
       - redis_vol:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${SO_REDIS_PASSWORD}", "ping"]
+      test: [ "CMD", "redis-cli", "-a", "${SO_REDIS_PASSWORD}", "ping" ]
       interval: 5s
       timeout: 3s
       retries: 10
-    networks:
-      [parena]
+    networks: [ parena ]
 
   # ---------------- Platform Services ----------------
   config-server:
@@ -141,7 +140,8 @@ services:
       SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
       SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}
-    
+    networks: [ parena ]
+
   discovery-server:
     build:
       <<: *java-build
@@ -154,8 +154,9 @@ services:
       SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
       SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}
-      SO_CONFIG_URI: ${SO_CONFIG_URI}
-  
+      SO_CONFIG_URI: ${SO_CONFIG_URI},
+    networks: [ parena ]
+
   gateway-server:
     build:
       <<: *java-build
@@ -169,7 +170,8 @@ services:
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
       SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}
       SO_CONFIG_URI: ${SO_CONFIG_URI}
-  
+    networks: [ parena ]
+
   bff-server:
     build:
       <<: *java-build
@@ -182,7 +184,8 @@ services:
       SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
       SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}
-
+      SO_CONFIG_URI: ${SO_CONFIG_URI}
+    networks: [ parena ]
 
   user-service:
     build:
@@ -192,11 +195,18 @@ services:
     ports:
       - "8080:8080"
     container_name: user-service
+    depends_on:
+      user_service_db:
+        condition: service_healthy
     environment:
+      SO_USER_SERVICE_DB_USER: ${SO_USER_SERVICE_DB_USER}
+      SO_USER_SERVICE_DB_PASSWORD: ${SO_USER_SERVICE_DB_PASSWORD}
+
       SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
       SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}
       SO_CONFIG_URI: ${SO_CONFIG_URI}
+    networks: [ parena ]
 
   # ---------------- DB(PostgreSQL) Services ----------------
   user_service_db:
@@ -209,18 +219,16 @@ services:
     volumes:
       - userservicedb_vol:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${SO_USER_SERVICE_DB_USER} -d user_service"]
+      test: [ "CMD-SHELL", "pg_isready -U ${SO_USER_SERVICE_DB_USER} -d user_service" ]
       interval: 5s
       timeout: 3s
       retries: 10
-    networks:
-      [parena]
+    networks: [ parena ]
 
 volumes:
   keycloakdb_vol: {}
   redis_vol: {}
   userservicedb_vol: {}
-
 
 networks:
   parena:
