@@ -102,6 +102,7 @@ users:
       realm-management:
         - view-users
         - manage-users
+        - view-realm
 # --- SMTP: Keycloak'ın KENDİ gönderdiği mailler için (forgot-password, email verification) ---
 # NOT: UserRegisteredEvent -> Kafka -> notification-service üzerinden gidecek "hoş geldin/kayıt"
 # maili bundan bağımsız, kendi servisiniz gönderiyor zaten. Bu blok sadece Keycloak'ın

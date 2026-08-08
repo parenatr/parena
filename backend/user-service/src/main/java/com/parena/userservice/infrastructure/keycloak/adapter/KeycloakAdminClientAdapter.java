@@ -41,37 +41,30 @@ public class KeycloakAdminClientAdapter implements KeycloakPort {
 
     @Override
     public UUID createUser(String firstName, String lastName, String email, String password, Set<Role> roles) {
-        log.info("Creating user with email: {}",  email);
+        log.info("Creating user with email: {}", email);
 
-        //Realm'e bağlan (GET /admin/realms/{realm})
         RealmResource realmResource = keycloakAdminClient.realm(keycloakProperties.getRealm());
-        //O Realm içerisindeki kullanıcı endpointine erişir (GET /admin/realms/{realm}/users)
         UsersResource usersResource = realmResource.users();
-
-        //Create user representation
         UserRepresentation user = getUserRepresentation(firstName, lastName, email, password);
 
-        //User create edilip Response nesnesine atanır.
-        //Bu Response nesnesinin Header kısmı Location bilgisi içerir.
         try (Response response = usersResource.create(user)) {
             if (response.getStatus() == 409) {
                 throw new EmailAlreadyRegisteredException(email);
             }
-
             if (response.getStatus() != 201) {
                 String errorBody = response.readEntity(String.class);
                 log.error("Failed to create user: status= {}, body= {}", response.getStatus(), errorBody);
-
                 throw new KeycloakServiceException("Keycloak'ta kullanıcı oluşturulamadı: HTTP " +
                         response.getStatus() + " - " + errorBody);
             }
 
-            //Location'dan kayıt olan kullanıcının uuid bilgisini alırız.
             String location = response.getLocation().getPath();
             UUID keycloakId = UUID.fromString(location.substring(location.lastIndexOf("/") + 1));
-            assignRoleToUser(keycloakId, roles);
             log.info("User created successfully in Keycloak: keycloakId= {}, email= {}", keycloakId, email);
             return keycloakId;
+            // NOT: assignRoleToUser buradan bilerek kaldırıldı. Burada kalsaydı,
+            // rol atama hatası register()'a keycloakId hiç ulaşmadan fırlar ve
+            // telafi eylemi (Keycloak kullanıcısını silme) devreye giremezdi.
         }
     }
 
@@ -88,6 +81,18 @@ public class KeycloakAdminClientAdapter implements KeycloakPort {
                 .delete(keycloakId.toString())
                 .close();
 
+    }
+
+    @Override
+    public void assignRealmRoles(UUID keycloakId, Set<Role> roles) {
+        UserResource userResource = keycloakAdminClient.realm(keycloakProperties.getRealm())
+                .users().get(keycloakId.toString());
+
+        List<RoleRepresentation> roleRepresentations = roles.stream()
+                .map(role -> keycloakAdminClient.realm(keycloakProperties.getRealm())
+                        .roles().get(role.toKeycloakRole()).toRepresentation())
+                .toList();
+        userResource.roles().realmLevel().add(roleRepresentations);
     }
 
     private void assignRoleToUser(UUID keycloakId, Set<Role> roles) {

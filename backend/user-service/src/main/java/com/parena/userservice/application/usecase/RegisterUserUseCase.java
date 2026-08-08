@@ -34,23 +34,19 @@ public class RegisterUserUseCase {
 
         User user = User.create(firstName, lastName, email, Instant.now());
 
-        UUID keycloakId = keycloakAdminClientAdapter.createUser(
-                firstName,
-                lastName,
-                email,
-                password,
-                user.getRoles()
-        );
+        UUID keycloakId = keycloakAdminClientAdapter.createUser(firstName, lastName, email, password, user.getRoles());
         user.linkToKeycloakIdentity(keycloakId);
 
+        // Rol atama ve local persist artık aynı telafi bloğu altında —
+        // ikisinden biri başarısız olursa Keycloak kullanıcısı geri alınır.
         try {
+            keycloakAdminClientAdapter.assignRealmRoles(keycloakId, user.getRoles());
             localUserPersister.persist(user);
         } catch (Exception e) {
-            log.error("Local persist başarısız, Keycloak kullanıcısı geri alınıyor: keycloakId={}", keycloakId, e);
+            log.error("Rol atama veya local persist başarısız, Keycloak kullanıcısı geri alınıyor: keycloakId={}", keycloakId, e);
             try {
                 keycloakAdminClientAdapter.deleteUser(keycloakId);
             } catch (Exception compensationFailure) {
-                // Manuel müdahale gerekir: Keycloak'ta yetim kullanıcı var. Alerting bunu izlemeli.
                 log.error("KRİTİK: Telafi eylemi de başarısız. Yetim Keycloak kullanıcısı: keycloakId={}",
                         keycloakId, compensationFailure);
             }

@@ -24,4 +24,6 @@ public interface KeycloakPort {
 
     void deleteUser(UUID keycloakId);
 
+    void assignRealmRoles(UUID keycloakId, Set<Role> roles);
+
 }

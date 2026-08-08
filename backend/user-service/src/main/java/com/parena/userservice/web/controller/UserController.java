@@ -23,7 +23,7 @@ public class UserController {
         this.registerUserUseCase = registerUserUseCase;
     }
 
-    @PostMapping
+    @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public RegisteredUserResponse register(@Valid @RequestBody RegisterUserRequest registerRequest) {
         User user = registerUserUseCase.register(
