@@ -30,15 +30,31 @@ public class KeycloakProperties {
         return realm;
     }
 
+    public void setRealm(String realm) {
+        this.realm = realm;
+    }
+
     public String getAdminClientId() {
         return adminClientId;
+    }
+
+    public void setAdminClientId(String adminClientId) {
+        this.adminClientId = adminClientId;
     }
 
     public String getAdminClientSecret() {
         return adminClientSecret;
     }
 
+    public void setAdminClientSecret(String adminClientSecret) {
+        this.adminClientSecret = adminClientSecret;
+    }
+
     public String getAuthServerUrl() {
         return authServerUrl;
+    }
+
+    public void setAuthServerUrl(String authServerUrl) {
+        this.authServerUrl = authServerUrl;
     }
 }

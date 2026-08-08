@@ -18,10 +18,17 @@ spring:
     url: jdbc:postgresql://localhost:5432/user_service
     username: ${SO_USER_SERVICE_DB_USER}
     password: ${SO_USER_SERVICE_DB_PASSWORD}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8585/realms/parena/protocol/openid-connect/certs
+
   #hibernate & orm
   jpa:
     hibernate:
       ddl-auto: validate   # şema Flyway'in sorumluluğunda
       open-in-view: false
-      flyway:
-        enabled: true
+  flyway:
+    enabled: true

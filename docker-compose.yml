@@ -206,6 +206,7 @@ services:
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
       SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}
       SO_CONFIG_URI: ${SO_CONFIG_URI}
+      SO_USER_SERVICE_CLIENT_SECRET: ${SO_USER_SERVICE_CLIENT_SECRET}
     networks: [ parena ]
 
   # ---------------- DB(PostgreSQL) Services ----------------
@@ -216,6 +217,8 @@ services:
       POSTGRES_DB: user_service
       POSTGRES_USER: ${SO_USER_SERVICE_DB_USER}
       POSTGRES_PASSWORD: ${SO_USER_SERVICE_DB_PASSWORD}
+    ports:
+      - "5432:5432"
     volumes:
       - userservicedb_vol:/var/lib/postgresql/data
     healthcheck:

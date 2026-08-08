@@ -17,6 +17,12 @@ spring:
     username: ${SO_USER_SERVICE_DB_USER}
     password: ${SO_USER_SERVICE_DB_PASSWORD}
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://keycloak:8585/realms/parena/protocol/openid-connect/certs
+
   jpa:
     hibernate:
       ddl-auto: validate   # şema Flyway'in sorumluluğunda

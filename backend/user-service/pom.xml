@@ -73,15 +73,16 @@
         </dependency>
 
         <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
         </dependency>
-        <!-- Flyway 10+ bazı veritabanları için ayrı modül gerektiriyor; Postgres bunlardan biri
-             olabilir. Versiyon numarası VERMİYORUM — Spring Boot parent BOM zaten flyway-core'u
-             yönetiyor, bu ikinci artifact'ı versiyonsuz eklemek zararsız (BOM'da yoksa/gerekmiyorsa
-             Maven sessizce en güncel uyumlu sürümü çeker). İlk `mvn compile` sonrası
-             "no database found to handle jdbc:postgresql" gibi bir hata alırsanız bu modülün
-             gerçekten şart olduğunun kanıtıdır. -->
+
+
+        <!-- flyway-core yerine -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-flyway</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.flywaydb</groupId>
@@ -95,10 +96,7 @@
             <optional>true</optional>
         </dependency>
 
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-        </dependency>
+
     </dependencies>
 
     <build>
