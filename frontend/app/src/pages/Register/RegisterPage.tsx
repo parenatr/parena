@@ -6,7 +6,7 @@ import { AppLink } from "@/components/ui/app-link";
 import { FOUNDER_PRICE, FOUNDER_QUOTA_LEFT } from "@/data/quota";
 import { useRegister } from "@/features/auth/auth.queries";
 import { isValidEmail, normalizeEmail } from "@/lib/auth-validation";
-import { toUserMessage } from "@/lib/http/api-error";
+import { ApiError, toUserMessage } from "@/lib/http/api-error";
 
 export const registerPageMeta = {
   title: "Ücretsiz Üye Ol | Parena",
@@ -23,6 +23,13 @@ const STRENGTH_LABELS = [
   "İyi",
   "Güçlü",
 ] as const;
+
+const BACKEND_FIELD_MAP: Record<string, keyof Errors> = {
+  firstName: "ad",
+  lastName: "soyad",
+  email: "mail",
+  password: "pass",
+};
 
 function scorePassword(value: string) {
   let score = 0;
@@ -84,7 +91,16 @@ export default function RegisterPage({ plan = "topluluk" }: { plan?: string }) {
       });
       setDoneMail(mail);
     } catch (error) {
-      setErrors({ form: toUserMessage(error, "Kayıt tamamlanamadı, tekrar dene.") });
+      if (error instanceof ApiError && error.fieldErrors) {
+        const mapped: Errors = {};
+        for (const [backendField, message] of Object.entries(error.fieldErrors)) {
+          const frontendField = BACKEND_FIELD_MAP[backendField];
+          if (frontendField) mapped[frontendField] = message;
+        }
+        setErrors(Object.keys(mapped).length > 0 ? mapped : { form: toUserMessage(error) });
+      } else {
+        setErrors({ form: toUserMessage(error, "Kayıt tamamlanamadı, tekrar dene.") });
+      }
     }
   }
 

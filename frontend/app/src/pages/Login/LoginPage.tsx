@@ -1,12 +1,9 @@
 import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { AuthField, AuthPasswordField } from "@/components/auth/AuthField";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { AppLink } from "@/components/ui/app-link";
-import { useLogin } from "@/features/auth/auth.queries";
 import { isValidEmail, normalizeEmail } from "@/lib/auth-validation";
-import { toUserMessage } from "@/lib/http/api-error";
 
 export const loginPageMeta = {
   title: "Giriş Yap | Parena",
@@ -16,19 +13,22 @@ export const loginPageMeta = {
   ogDescription: "Bugünün karnesi seni bekliyor. PARENA hesabına güvenli giriş.",
 };
 
+/**
+ * NOT: Bu bileşen artık routing'de kullanılmıyor (/giris, Keycloak'a doğrudan
+ * redirect ediyor — bkz. AppRouter.tsx). Dosya, Keycloakify temasına
+ * taşınacak görsel tasarımın referans kaynağı olarak tutuluyor.
+ * Validation burada sadece görsel amaçlı kalıyor, gerçek submit yok.
+ */
 type Errors = { mail?: string; pass?: string; form?: string };
 
-export default function LoginPage({ redirectTo = "/" }: { redirectTo?: string }) {
+export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
   const [errors, setErrors] = useState<Errors>({});
-  const navigate = useNavigate();
-  const loginMutation = useLogin();
 
-  async function handleSubmit(event: FormEvent) {
+  function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    if (loginMutation.isPending) return;
 
     const mail = normalizeEmail(email);
     const next: Errors = {};
@@ -37,14 +37,7 @@ export default function LoginPage({ redirectTo = "/" }: { redirectTo?: string })
     if (!password) next.pass = "Parolanı gir.";
 
     setErrors(next);
-    if (Object.keys(next).length > 0) return;
-
-    try {
-      await loginMutation.mutateAsync({ email: mail, password, remember });
-      navigate(redirectTo, { replace: true });
-    } catch (error) {
-      setErrors({ form: toUserMessage(error, "E-posta veya parola hatalı.") });
-    }
+    // Gerçek submit yok — bu form Keycloakify temasına taşınana kadar pasif.
   }
 
   return (
@@ -99,8 +92,8 @@ export default function LoginPage({ redirectTo = "/" }: { redirectTo?: string })
           </AppLink>
         </div>
 
-        <button type="submit" className="btn" disabled={loginMutation.isPending}>
-          {loginMutation.isPending ? "Giriş yapılıyor…" : "Giriş yap"}
+        <button type="submit" className="btn">
+          Giriş yap
         </button>
 
         <p

@@ -15,9 +15,10 @@ import KullanimSartlariPage, {
 } from "@/pages/Legal/KullanimSartlariPage";
 import KvkkPage, { kvkkPageMeta } from "@/pages/Legal/KvkkPage";
 import MesafeliSatisPage, { mesafeliSatisPageMeta } from "@/pages/Legal/MesafeliSatisPage";
-import LoginPage, { loginPageMeta } from "@/pages/Login/LoginPage";
 import RegisterPage, { registerPageMeta } from "@/pages/Register/RegisterPage";
 import ResetPasswordPage, { resetPasswordPageMeta } from "@/pages/ResetPassword/ResetPasswordPage";
+import { getLoginRedirectUrl } from "@/features/auth/auth.api";
+
 
 /** Sayfayı meta yönetimiyle sarmalar (TanStack `head()` karşılığı). */
 function withMeta(Page: ComponentType, meta: PageMeta) {
@@ -27,15 +28,11 @@ function withMeta(Page: ComponentType, meta: PageMeta) {
   };
 }
 
-/** Sadece uygulama içi (relative) yollara izin ver — open redirect koruması. */
-function safeRedirect(value: string | null) {
-  return value && value.startsWith("/") && !value.startsWith("//") ? value : "/";
-}
-
 function LoginRoute() {
-  useDocumentMeta(loginPageMeta);
-  const [params] = useSearchParams();
-  return <LoginPage redirectTo={safeRedirect(params.get("redirect"))} />;
+  useEffect(() => {
+    window.location.href = getLoginRedirectUrl();
+  }, []);
+  return null; // kısa bir "Yönlendiriliyorsunuz..." metni de gösterebiliriz.
 }
 
 function ResetPasswordRoute() {

@@ -7,12 +7,6 @@ export type SessionUser = {
   roles: string[];
 };
 
-export type LoginRequest = {
-  email: string;
-  password: string;
-  /** "Beni hatırla" — BFF oturum çerezinin ömrünü belirler. */
-  remember?: boolean;
-};
 
 export type RegisterRequest = {
   firstName: string;
