@@ -101,15 +101,17 @@ public class KeycloakAdminClientAdapter implements KeycloakPort {
         UserResource userResource = keycloakAdminClient.realm(keycloakProperties.getRealm())
                 .users().get(keycloakId.toString());
 
-        // DİKKAT: executeActionsEmail'in tam overload imzası (parametre sırası:
-        // clientId, redirectUri, actions ya da farklı) keycloak-admin-client 26.7.0'da
-        // IDE'nizde teyit edilmeli — burada en yaygın imzayı kullanıyorum, derlenmezse
-        // IDE'nin önerdiği overload'a göre düzeltip bana bildirin.
-        userResource.executeActionsEmail(
-                keycloakProperties.getClientId(),          // "bff-server" ya da user-service'in kendi client-id'si
-                keycloakProperties.getEmailVerifiedRedirectUri(),
-                List.of("VERIFY_EMAIL")
-        );
+        try {
+            userResource.executeActionsEmail(
+                    keycloakProperties.getClientId(),
+                    keycloakProperties.getEmailVerifiedRedirectUri(),
+                    List.of("VERIFY_EMAIL")
+            );
+        } catch (jakarta.ws.rs.WebApplicationException e) {
+            String body = e.getResponse().readEntity(String.class);
+            log.error("executeActionsEmail başarısız: status={}, body={}", e.getResponse().getStatus(), body);
+            throw e;
+        }
     }
 
     private void assignRoleToUser(UUID keycloakId, Set<Role> roles) {

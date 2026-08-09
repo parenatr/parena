@@ -7,6 +7,7 @@ eureka:
 
 app:
   frontend-base-url: ${SO_FRONTEND_BASE_URL}
+  gateway-base-url: http://localhost:8888
 
 spring:
   security:
@@ -15,10 +16,10 @@ spring:
         registration:
           keycloak:
             client-id: bff-server
-            client-secret: ${BFF_CLIENT_SECRET}
+            client-secret: ${SO_BFF_CLIENT_SECRET}
             authorization-grant-type: authorization_code
             scope: openid, profile, email
-            redirect-uri: "${BFF_BASE_URL}/login/oauth2/code/keycloak"
+            redirect-uri: "${SO_BFF_BASE_URL}/login/oauth2/code/{registrationId}"
         provider:
           keycloak:
             issuer-uri: http://keycloak:8585/realms/parena
@@ -32,4 +33,4 @@ spring:
     redis:
       host: redis
       port: 6379
-      password: ${REDIS_PASSWORD}
+      password: ${SO_REDIS_PASSWORD}

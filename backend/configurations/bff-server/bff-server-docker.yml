@@ -3,6 +3,10 @@ eureka:
     service-url:
       defaultZone: http://discovery-server:8761/eureka
 
+app:
+  frontend-base-url: ${SO_FRONTEND_BASE_URL}
+  gateway-base-url: http://gateway-server:8888
+
 spring:
   security:     #bff-server'i keycloak'a tanitiyoruz
     oauth2:
@@ -16,10 +20,19 @@ spring:
         registration:
           keycloak:
             client-id: bff-server    #keycloak'ta olusturdugumuz client'in id'si.     (confidential-client)
-            client-secret: ${BFF_CLIENT_SECRET}  #client'e atanmıs secret
-            redirect-uri: "${BFF_BASE_URL}/login/oauth2/code/{registrationId}"   #baseUrl:http://localhost:8989, registrationId:keycloak
+            client-secret: ${SO_BFF_CLIENT_SECRET}  #client'e atanmıs secret
+            redirect-uri: "${SO_BFF_BASE_URL}/login/oauth2/code/{registrationId}"   #baseUrl:http://localhost:8989, registrationId:keycloak
             authorization-grant-type: authorization_code
             scope:          #giriş yapmıs kullanıcıdan hangi bilgileri alalım
               - openid      #jwt bilgileri icin gerekli
               - profile
               - email
+  session:
+    redis:
+      namespace: parena:bff:session
+    timeout: 30m
+  data:
+    redis:
+      host: redis
+      port: 6379
+      password: ${SO_REDIS_PASSWORD}
