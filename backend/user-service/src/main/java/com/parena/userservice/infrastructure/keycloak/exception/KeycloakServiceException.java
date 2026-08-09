@@ -1,4 +1,4 @@
-package com.parena.userservice.domain.exception;
+package com.parena.userservice.infrastructure.keycloak.exception;
 
 public class KeycloakServiceException extends RuntimeException {
     public KeycloakServiceException(String message) {

@@ -7,7 +7,7 @@ eureka:
 #user-service keycloak bağlantısı.
 keycloak:
   realm: parena
-  auth-server-url: http://localhost:8585
+  auth-server-url: http://keycloak:8585
 
   # Keycloak Admin API'ye bağlanmak için kullanılan client
   admin-client-id: user-service

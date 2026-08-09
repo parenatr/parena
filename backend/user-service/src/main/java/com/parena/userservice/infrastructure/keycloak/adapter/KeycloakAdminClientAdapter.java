@@ -3,7 +3,7 @@ package com.parena.userservice.infrastructure.keycloak.adapter;
 
 import com.parena.userservice.domain.aggregate.enums.Role;
 import com.parena.userservice.domain.aggregate.root.User;
-import com.parena.userservice.domain.exception.KeycloakServiceException;
+import com.parena.userservice.infrastructure.keycloak.exception.KeycloakServiceException;
 import com.parena.userservice.domain.port.KeycloakPort;
 import com.parena.userservice.infrastructure.keycloak.config.KeycloakProperties;
 import com.parena.userservice.infrastructure.keycloak.exception.EmailAlreadyRegisteredException;
