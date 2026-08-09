@@ -15,15 +15,20 @@ public class KeycloakProperties {
     private String authServerUrl;
     private String adminClientId;
     private String adminClientSecret;
+    private String clientId = "bff-server";  // redirect doğrulaması için
+    private String emailVerifiedRedirectUri; // ${SO_FRONTEND_BASE_URL}/email-dogrulandi
 
     public KeycloakProperties() {
     }
 
-    public KeycloakProperties(String realm, String adminClientId, String adminClientSecret, String authServerUrl) {
+    public KeycloakProperties(String realm, String adminClientId, String adminClientSecret,
+                              String authServerUrl, String clientId, String emailVerifiedRedirectUri) {
         this.realm = realm;
         this.adminClientId = adminClientId;
         this.adminClientSecret = adminClientSecret;
         this.authServerUrl = authServerUrl;
+        this.clientId = clientId;
+        this.emailVerifiedRedirectUri = emailVerifiedRedirectUri;
     }
 
     public String getRealm() {
@@ -56,5 +61,21 @@ public class KeycloakProperties {
 
     public void setAuthServerUrl(String authServerUrl) {
         this.authServerUrl = authServerUrl;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getEmailVerifiedRedirectUri() {
+        return emailVerifiedRedirectUri;
+    }
+
+    public void setEmailVerifiedRedirectUri(String emailVerifiedRedirectUri) {
+        this.emailVerifiedRedirectUri = emailVerifiedRedirectUri;
     }
 }

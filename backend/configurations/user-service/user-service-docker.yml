@@ -7,9 +7,15 @@ eureka:
 #user-service keycloak bağlantısı.
 keycloak:
   realm: parena
-  auth-server-url: http://keycloak:8585
+  auth-server-url: http://localhost:8585
+
+  # Keycloak Admin API'ye bağlanmak için kullanılan client
   admin-client-id: user-service
   admin-client-secret: ${SO_USER_SERVICE_CLIENT_SECRET}
+
+  # executeActionsEmail için redirect'in ait olduğu client
+  client-id: bff-server
+  email-verified-redirect-uri: ${SO_FRONTEND_BASE_URL}/email-dogrulandi
 
 spring:
   datasource:

@@ -52,6 +52,12 @@ public class RegisterUserUseCase {
             }
             throw new UserRegistrationException("Kayıt tamamlanamadı, lütfen tekrar deneyin.", e);
         }
+        // Best-effort: başarısız olursa kaydı geri almıyoruz, sadece logluyoruz.
+        try {
+            keycloakAdminClientAdapter.sendVerificationEmail(keycloakId);
+        } catch (Exception e) {
+            log.warn("Doğrulama maili gönderilemedi, kullanıcı yine de kaydedildi: keycloakId={}", keycloakId, e);
+        }
 
         return user;
     }

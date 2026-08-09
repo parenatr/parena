@@ -3,7 +3,7 @@ package com.parena.userservice.application;
 import com.parena.userservice.domain.aggregate.root.User;
 import com.parena.userservice.domain.event.UserRegisteredEvent;
 import com.parena.userservice.domain.port.UserRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;

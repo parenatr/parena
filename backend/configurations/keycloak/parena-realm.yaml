@@ -72,6 +72,7 @@ clients:
     serviceAccountsEnabled: false
     redirectUris:
       - "$(env:SO_BFF_BASE_URL)/login/oauth2/code/keycloak"
+      - "$(env:SO_FRONTEND_BASE_URL)/email-dogrulandi"
     webOrigins:
       - "$(env:SO_FRONTEND_BASE_URL)"
     attributes:

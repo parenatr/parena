@@ -12,6 +12,9 @@ keycloak:
   admin-client-id: user-service
   admin-client-secret: ${SO_USER_SERVICE_CLIENT_SECRET}
 
+  client-id: bff-server
+  email-verified-redirect-uri: ${SO_FRONTEND_BASE_URL}/email-dogrulandi
+
 spring:
   #db config (postgresql)
   datasource:

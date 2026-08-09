@@ -26,4 +26,6 @@ public interface KeycloakPort {
 
     void assignRealmRoles(UUID keycloakId, Set<Role> roles);
 
+    void sendVerificationEmail(UUID keycloakId);
+
 }

@@ -1,14 +1,19 @@
 package com.parena.userservice.infrastructure.persistence.adapter;
 
 import com.parena.userservice.domain.aggregate.root.User;
+import com.parena.userservice.domain.aggregate.valueobjects.UserId;
 import com.parena.userservice.domain.port.UserRepository;
 import com.parena.userservice.infrastructure.persistence.entity.UserJpaEntity;
 import com.parena.userservice.infrastructure.persistence.repository.UserJpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+import java.util.UUID;
+
 /**
  * OUTBOUND ADAPTER
- * */
+ *
+ */
 
 @Repository
 public class UserRepositoryAdapter implements UserRepository {
@@ -38,5 +43,23 @@ public class UserRepositoryAdapter implements UserRepository {
     @Override
     public boolean existsByEmail(String email) {
         return userJpaRepository.existsByEmailIgnoreCase(email);
+    }
+
+    @Override
+    public Optional<User> findByKeycloakId(UUID keycloakId) {
+        return userJpaRepository.findByKeycloakId(keycloakId).map(this::toDomain);
+    }
+
+    private User toDomain(UserJpaEntity entity) {
+        return User.rehydrate(
+                new UserId(entity.getId()),
+                entity.getKeycloakId(),
+                entity.getFirstName(),
+                entity.getLastName(),
+                entity.getEmail(),
+                entity.getRoles(),
+                entity.getCreatedAt(),
+                entity.isEmailVerified()
+        );
     }
 }
