@@ -41,8 +41,7 @@ public class ProfileSyncController {
         String sub = jwt.getSubject();
 
         if (sub == null) {
-            // Teşhis logu: bunu bir sonraki denemede birlikte inceleyeceğiz.
-            log.error("sync-email-verification: JWT'de 'sub' claim'i yok. Tüm claim'ler: {}", jwt.getClaims());
+            log.error("sync-email-verification: JWT'de 'sub' claim'i yok. Ham token: {}", jwt.getTokenValue());
             return ResponseEntity.badRequest().build();
         }
 
