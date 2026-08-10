@@ -18,7 +18,7 @@ spring:
             client-id: bff-server
             client-secret: ${SO_BFF_CLIENT_SECRET}
             authorization-grant-type: authorization_code
-            scope: openid, profile, email
+            scope: openid, profile, email, roles
             redirect-uri: "${SO_BFF_BASE_URL}/login/oauth2/code/{registrationId}"
         provider:
           keycloak:

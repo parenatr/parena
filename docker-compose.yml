@@ -133,6 +133,12 @@ services:
         MODULE: config-server
     ports:
       - "8787:8787"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8787/actuator/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 20s  
     container_name: config-server
     environment:
       SO_CONFIG_GIT_URI: ${SO_CONFIG_GIT_URI}
@@ -150,6 +156,9 @@ services:
     ports:
       - "8761:8761"
     container_name: discovery-server
+    depends_on:
+      config-server:
+        condition: service_healthy
     environment:
       SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
@@ -178,8 +187,11 @@ services:
       args:
         MODULE: bff-server
     ports:
-      - "8082:8082"
+      - "8989:8989"
     container_name: bff-server
+    depends_on:
+      config-server:
+        condition: service_healthy
     environment:
       SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}

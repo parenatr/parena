@@ -27,6 +27,7 @@ spring:
               - openid      #jwt bilgileri icin gerekli
               - profile
               - email
+              - roles
   session:
     redis:
       namespace: parena:bff:session

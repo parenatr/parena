@@ -79,6 +79,12 @@ clients:
       pkce.code.challenge.method: S256
       post.logout.redirect.uris: "$(env:SO_FRONTEND_BASE_URL)"
       use.refresh.tokens: "true"
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - email
 
   # -------------------------------------------------------------------
   # user-service: Kullanıcı adına değil, kendi adına (client_credentials)
