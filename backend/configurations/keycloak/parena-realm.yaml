@@ -53,6 +53,21 @@ roles:
       description: "Standart uygulama kullanıcısı"
     - name: admin
       description: "Internal operasyon/yönetim yetkisi"
+# --- Built-in "roles" client scope ---
+# Realm rollerinin ID token'a da yazılmasını garanti ediyoruz.
+clientScopes:
+  - name: roles
+    protocol: openid-connect
+    protocolMappers:
+      - name: realm roles
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-realm-role-mapper
+        config:
+          "id.token.claim": "true"
+          "access.token.claim": "true"
+          "claim.name": "realm_access.roles"
+          "jsonType.label": "String"
+          "multivalued": "true"
 
 clients:
   # -------------------------------------------------------------------

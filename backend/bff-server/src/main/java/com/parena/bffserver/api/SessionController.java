@@ -22,6 +22,7 @@ public class SessionController {
                 .map(auth -> (OidcUser) auth.getPrincipal())
                 .map(oidcUser -> {
                     List<String> roles = extractRealmRoles(oidcUser);
+                    System.out.println(">>> TÜM CLAIM'LER: " + oidcUser.getClaims());
                     return ResponseEntity.ok(
                             new SessionUserResponse(oidcUser.getSubject(), oidcUser.getEmail(), roles));
                 })
