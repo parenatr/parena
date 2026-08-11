@@ -17,7 +17,8 @@ public class GatewayProxyController {
     }
 
     @RequestMapping("/api/**")
-    public Mono<ResponseEntity<byte[]>> proxy(ServerWebExchange exchange, Mono<Authentication> authenticationMono) {
+    public Mono<ResponseEntity<byte[]>> proxy(ServerWebExchange exchange,
+                                              Mono<Authentication> authenticationMono) {
         return gatewayProxyHandler.forward(exchange, authenticationMono);
     }
 }

@@ -34,10 +34,11 @@ public class RegisterUserUseCase {
 
         User user = User.create(firstName, lastName, email, Instant.now());
 
-        UUID keycloakId = keycloakAdminClientAdapter.createUser(firstName, lastName, email, password, user.getRoles());
+        UUID keycloakId = keycloakAdminClientAdapter.createUser(
+                firstName, lastName, email, password, user.getRoles());
         user.linkToKeycloakIdentity(keycloakId);
 
-        // Rol atama ve local persist artık aynı telafi bloğu altında —
+        // Rol atama ve local persist artık aynı telafi bloğu altında
         // ikisinden biri başarısız olursa Keycloak kullanıcısı geri alınır.
         try {
             keycloakAdminClientAdapter.assignRealmRoles(keycloakId, user.getRoles());

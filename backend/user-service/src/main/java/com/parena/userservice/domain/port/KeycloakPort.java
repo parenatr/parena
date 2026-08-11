@@ -20,8 +20,6 @@ public interface KeycloakPort {
      */
     UUID createUser(String firstName, String lastName, String email, String password, Set<Role> roles);
 
-    User getUserById(String userId);
-
     void deleteUser(UUID keycloakId);
 
     void assignRealmRoles(UUID keycloakId, Set<Role> roles);

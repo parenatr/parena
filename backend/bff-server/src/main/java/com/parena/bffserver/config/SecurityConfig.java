@@ -62,6 +62,7 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // Logout success → redirect to frontendBaseUrl -> ileride login ekranına göndersin
     private ServerLogoutSuccessHandler oidcLogoutSuccessHandler(
             ReactiveClientRegistrationRepository clientRegistrationRepository) {
         var handler = new OidcClientInitiatedServerLogoutSuccessHandler(clientRegistrationRepository);

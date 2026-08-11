@@ -43,10 +43,14 @@ public class KeycloakAdminClientAdapter implements KeycloakPort {
     public UUID createUser(String firstName, String lastName, String email, String password, Set<Role> roles) {
         log.info("Creating user with email: {}", email);
 
+        //Realm'e bağlan (GET /admin/realms/{realm})
         RealmResource realmResource = keycloakAdminClient.realm(keycloakProperties.getRealm());
+        //O Realm içerisindeki kullanıcı endpointine erişir (GET /admin/realms/{realm}/users)
         UsersResource usersResource = realmResource.users();
+        //Create user representation
         UserRepresentation user = getUserRepresentation(firstName, lastName, email, password);
 
+        //User create edilip Response nesnesine atanır.
         try (Response response = usersResource.create(user)) {
             if (response.getStatus() == 409) {
                 throw new EmailAlreadyRegisteredException(email);
@@ -66,11 +70,6 @@ public class KeycloakAdminClientAdapter implements KeycloakPort {
             // rol atama hatası register()'a keycloakId hiç ulaşmadan fırlar ve
             // telafi eylemi (Keycloak kullanıcısını silme) devreye giremezdi.
         }
-    }
-
-    @Override
-    public User getUserById(String userId) {
-        return null;
     }
 
 
@@ -95,7 +94,6 @@ public class KeycloakAdminClientAdapter implements KeycloakPort {
         userResource.roles().realmLevel().add(roleRepresentations);
     }
 
-    // KeycloakAdminClientAdapter.java
     @Override
     public void sendVerificationEmail(UUID keycloakId) {
         UserResource userResource = keycloakAdminClient.realm(keycloakProperties.getRealm())
@@ -112,19 +110,6 @@ public class KeycloakAdminClientAdapter implements KeycloakPort {
             log.error("executeActionsEmail başarısız: status={}, body={}", e.getResponse().getStatus(), body);
             throw e;
         }
-    }
-
-    private void assignRoleToUser(UUID keycloakId, Set<Role> roles) {
-        UserResource userResource = keycloakAdminClient.realm(keycloakProperties.getRealm()).users().get(keycloakId.toString());
-
-        List<RoleRepresentation> roleRepresentations = roles.stream()
-                .map(role -> keycloakAdminClient.realm(keycloakProperties.getRealm())
-                        .roles()
-                        .get(role.toKeycloakRole())
-                        .toRepresentation())
-                        .toList();
-        userResource.roles().realmLevel().add(roleRepresentations);
-
     }
 
     //Helper methods

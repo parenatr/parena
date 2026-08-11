@@ -106,7 +106,7 @@ clients:
   # token alıp Keycloak Admin API'sini çağırır. Register akışı bunun üzerinden.
   # -------------------------------------------------------------------
   - clientId: user-service
-    name: User Service (Admin API access)
+    name: Parena User Service (Admin API access)
     enabled: true
     protocol: openid-connect
     publicClient: false
@@ -115,16 +115,18 @@ clients:
     standardFlowEnabled: false
     directAccessGrantsEnabled: false
     serviceAccountsEnabled: true
-
-users:
-  - username: service-account-user-service
-    enabled: true
-    serviceAccountClientId: user-service
-    clientRoles:
+    fullScopeAllowed: true
+    serviceAccountClientRoles:
       realm-management:
-        - view-users
         - manage-users
+        - view-users
         - view-realm
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - email
 # --- SMTP: Keycloak'ın KENDİ gönderdiği mailler için (forgot-password, email verification) ---
 # NOT: UserRegisteredEvent -> Kafka -> notification-service üzerinden gidecek "hoş geldin/kayıt"
 # maili bundan bağımsız, kendi servisiniz gönderiyor zaten. Bu blok sadece Keycloak'ın
