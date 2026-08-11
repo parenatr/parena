@@ -68,6 +68,17 @@ clientScopes:
           "claim.name": "realm_access.roles"
           "jsonType.label": "String"
           "multivalued": "true"
+      - name: client roles
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-client-role-mapper
+        config:
+          "id.token.claim": "true"
+          "access.token.claim": "true"
+          "client.id": "realm-management"
+          "claim.name": "resource_access.realm-management.roles"
+          "jsonType.label": "String"
+          "multivalued": "true"
+
 
 clients:
   # -------------------------------------------------------------------
