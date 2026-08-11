@@ -111,6 +111,7 @@ clients:
       - profile
       - roles
       - email
+      - basic
 
   # -------------------------------------------------------------------
   # user-service: Kullanıcı adına değil, kendi adına (client_credentials)
@@ -133,6 +134,7 @@ clients:
       - profile
       - roles
       - email
+      - basic
 
 
 users:

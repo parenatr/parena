@@ -1,8 +1,8 @@
 package com.parena.bffserver.api;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class SessionController {
@@ -20,19 +21,15 @@ public class SessionController {
                 .map(SecurityContext::getAuthentication)
                 .cast(OAuth2AuthenticationToken.class)
                 .map(auth -> (OidcUser) auth.getPrincipal())
-                .map(oidcUser -> {
-                    List<String> roles = extractRealmRoles(oidcUser);
-                    System.out.println(">>> TÜM CLAIM'LER: " + oidcUser.getClaims());
-                    return ResponseEntity.ok(
-                            new SessionUserResponse(oidcUser.getSubject(), oidcUser.getEmail(), roles));
-                })
+                .map(oidcUser -> ResponseEntity.ok(new SessionUserResponse(
+                        oidcUser.getSubject(), oidcUser.getEmail(), extractRealmRoles(oidcUser))))
                 .defaultIfEmpty(ResponseEntity.status(401).build());
     }
 
     @SuppressWarnings("unchecked")
     private List<String> extractRealmRoles(OidcUser oidcUser) {
         Object realmAccess = oidcUser.getClaims().get("realm_access");
-        if (realmAccess instanceof java.util.Map<?, ?> map) {
+        if (realmAccess instanceof Map<?, ?> map) {
             Object roles = map.get("roles");
             if (roles instanceof List<?> list) {
                 return (List<String>) list;

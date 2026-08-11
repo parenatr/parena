@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.client.oidc.web.server.logout.OidcClientInitiatedServerLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
@@ -25,7 +26,7 @@ public class SecurityConfig {
     @Value("${app.frontend-base-url}")
     private String frontendBaseUrl;
 
-    // Zincir 1: SADECE register path'i. CSRF ve authentication tamamen kapalı.
+    // Zincir 1: SADECE register path'i. CSRF ve authentication tamamen kapalı —
     // kimliksiz bir kullanıcının çalınacak bir session'ı yok, koruma anlamsız.
     @Bean
     @Order(1)
@@ -47,11 +48,16 @@ public class SecurityConfig {
             ServerHttpSecurity http,
             ReactiveClientRegistrationRepository clientRegistrationRepository,
             EmailVerificationSyncHandler emailVerificationSyncHandler,
-            CorsConfigurationSource corsConfigurationSource ) {
+            CorsConfigurationSource corsConfigurationSource) {
 
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(csrf -> csrf.csrfTokenRepository(CookieServerCsrfTokenRepository.withHttpOnlyFalse()))
+                // CookieServerCsrfTokenRepository token'ı TEMBEL üretir — hiçbir endpoint
+                // onu subscribe etmezse XSRF-TOKEN cookie'si tarayıcıya hiç yazılmaz.
+                // Bu filter her istek sonunda token'a "dokunup" cookie'nin set
+                // edilmesini garanti ediyor (Spring'in bilinen SPA/CSRF tuzağı).
+                .addFilterAfter(new CsrfCookieWebFilter(), SecurityWebFiltersOrder.CSRF)
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers("/actuator/health", "/api/auth/me").permitAll()
                         .anyExchange().authenticated())
@@ -62,7 +68,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // Logout success → redirect to frontendBaseUrl -> ileride login ekranına göndersin
     private ServerLogoutSuccessHandler oidcLogoutSuccessHandler(
             ReactiveClientRegistrationRepository clientRegistrationRepository) {
         var handler = new OidcClientInitiatedServerLogoutSuccessHandler(clientRegistrationRepository);

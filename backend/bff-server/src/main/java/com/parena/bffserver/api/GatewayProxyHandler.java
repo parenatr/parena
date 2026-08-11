@@ -20,8 +20,6 @@ import java.util.Set;
 @Component
 public class GatewayProxyHandler {
 
-    // Bu başlıkları olduğu gibi ileri taşımak connection-level tutarsızlıklara
-    // yol açar (RFC 7230, hop-by-hop headers) — bilerek filtreliyoruz.
     private static final Set<String> HOP_BY_HOP_HEADERS = Set.of(
             "connection", "keep-alive", "transfer-encoding", "upgrade",
             "proxy-authenticate", "proxy-authorization", "te", "trailer", "host");
@@ -44,7 +42,7 @@ public class GatewayProxyHandler {
 
         return authenticationMono
                 .flatMap(this::resolveAccessToken)
-                .defaultIfEmpty("")   // authenticated değilse (register gibi permitAll path) token'sız devam
+                .defaultIfEmpty("")
                 .flatMap(token -> webClient.method(method)
                         .uri(targetUri)
                         .headers(headers -> copyForwardableHeaders(exchange.getRequest().getHeaders(), headers, token))
