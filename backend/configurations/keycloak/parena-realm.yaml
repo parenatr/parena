@@ -116,17 +116,23 @@ clients:
     directAccessGrantsEnabled: false
     serviceAccountsEnabled: true
     fullScopeAllowed: true
-    serviceAccountClientRoles:
-      realm-management:
-        - manage-users
-        - view-users
-        - view-realm
     defaultClientScopes:
       - web-origins
       - acr
       - profile
       - roles
       - email
+
+
+users:
+  - username: service-account-user-service
+    enabled: true
+    serviceAccountClientId: user-service
+    clientRoles:
+      realm-management:
+        - manage-users
+        - view-users
+        - view-realm
 # --- SMTP: Keycloak'ın KENDİ gönderdiği mailler için (forgot-password, email verification) ---
 # NOT: UserRegisteredEvent -> Kafka -> notification-service üzerinden gidecek "hoş geldin/kayıt"
 # maili bundan bağımsız, kendi servisiniz gönderiyor zaten. Bu blok sadece Keycloak'ın
