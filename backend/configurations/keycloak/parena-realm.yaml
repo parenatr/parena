@@ -5,6 +5,7 @@ sslRequired: external          # dev'de http serbest (proxy arkasında), prod'da
 # --- Kayıt/Login davranışı ---
 registrationAllowed: false      # Keycloak'ın kendi register formu KAPALI.
 # Register akışı user-service -> Keycloak Admin API üzerinden yürütülüyor.
+loginTheme: app
 resetPasswordAllowed: true      # Forgot Password akışı Keycloak'ın kendi (Keycloakify temalı) flow'u üzerinden.
 rememberMe: true
 verifyEmail: false              # TODO: user-service, Admin API ile kullanıcı oluşturduktan sonra
