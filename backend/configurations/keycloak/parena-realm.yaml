@@ -103,7 +103,7 @@ clients:
       - "$(env:SO_FRONTEND_BASE_URL)"
     attributes:
       pkce.code.challenge.method: S256
-      post.logout.redirect.uris: "$(env:SO_FRONTEND_BASE_URL)"
+      post.logout.redirect.uris: "$(env:SO_FRONTEND_BASE_URL)/*"
       use.refresh.tokens: "true"
     defaultClientScopes:
       - web-origins
