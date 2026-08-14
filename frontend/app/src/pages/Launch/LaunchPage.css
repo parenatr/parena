@@ -107,18 +107,20 @@ html {
 ========================= */
 
 .launch-page .skip {
-  position: absolute;
-  left: -9999px;
-  top: 0;
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  transform: translateY(-150%);
   background: var(--navy);
   color: #fff;
   padding: 12px 20px;
-  z-index: 999;
-  border-radius: 0 0 8px 0;
+  z-index: 9999;
+  border-radius: 8px;
+  transition: transform .2s ease;
 }
 
-.launch-page .skip:focus {
-  left: 0;
+.launch-page .skip:focus-visible {
+  transform: translateY(0);
 }
 
 .launch-page :focus-visible {
@@ -138,7 +140,6 @@ html {
   white-space: nowrap;
   border: 0;
 }
-
 
 /* =========================
    COMMON

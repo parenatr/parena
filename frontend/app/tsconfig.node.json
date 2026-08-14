@@ -6,8 +6,9 @@
     "types": ["node"],
     "skipLibCheck": true,
 
-    /* Bundler mode */
-    "module": "nodenext",
+    /* Bundler Moduna Geçin */
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",

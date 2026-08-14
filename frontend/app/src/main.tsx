@@ -1,11 +1,23 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { StrictMode, lazy, Suspense } from "react";
+import { KcPage, type KcContext } from "./keycloak-theme/kc.gen";
 
-import App from "./App";
-import "./index.css";
+const AppEntrypoint = lazy(() => import("./main.app"));
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
+    {window.kcContext ? (
+      <KcPage kcContext={window.kcContext} />
+    ) : (
+      <Suspense>
+        <AppEntrypoint />
+      </Suspense>
+    )}
   </StrictMode>,
 );
+
+declare global {
+  interface Window {
+    kcContext?: KcContext;
+  }
+}

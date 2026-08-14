@@ -12,7 +12,8 @@ type AuthShellProps = {
   sideTitle: string;
   sideText: string;
   proof?: ProofItem[];
-  children: ReactNode;
+  children: ReactNode,
+
 };
 
 const DEFAULT_PROOF: ProofItem[] = [
@@ -21,9 +22,13 @@ const DEFAULT_PROOF: ProofItem[] = [
   { no: "03", text: "Sektör bazlı kurum isabet analizi" },
 ];
 
+//development için localhost, production için ise PARENA_BASE_URL
+const FRONTEND_BASE_URL = import.meta.env.VITE_FRONTEND_BASE_URL;
+
+
 function BrandBlock({ className }: { className: string }) {
   return (
-    <AppLink className={className} href="/" aria-label="PARENA ana sayfa">
+    <AppLink className={className} href={`${FRONTEND_BASE_URL}/`} aria-label="PARENA ana sayfa">
       <ParenaMark size={48} className="brand-mark" />
       <span>
         <span className="brand-name">
@@ -63,8 +68,8 @@ export function AuthShell({ sideTitle, sideText, proof = DEFAULT_PROOF, children
           <p className="side-foot">
             PARENA yatırım tavsiyesi vermez. İçerikler yalnızca bilgilendirme amaçlıdır.
             <br />
-            <AppLink href="/kullanim-sartlari">Kullanım Şartları</AppLink> ·{" "}
-            <AppLink href="/gizlilik">Gizlilik</AppLink> · <AppLink href="/kvkk">KVKK</AppLink>
+            <AppLink href={`${FRONTEND_BASE_URL}/kullanim-sartlari`}>Kullanım Şartları</AppLink> ·{" "}
+            <AppLink href={`${FRONTEND_BASE_URL}/gizlilik`}>Gizlilik</AppLink> · <AppLink href={`${FRONTEND_BASE_URL}/kvkk`}>KVKK</AppLink>
           </p>
         </aside>
 

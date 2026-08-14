@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { AppLink } from "@/components/ui/app-link";
 import { ParenaMark } from "@/components/brand/ParenaMark";
+import { useSession } from "@/features/auth/auth.queries";
+import { logout } from "@/features/auth/auth.api"; // Doğrudan API fonksiyonunu içe aktarıyoruz
 
 const LINKS = [
   { href: "#nasil", label: "Nasıl çalışır?" },
@@ -12,8 +14,8 @@ const LINKS = [
 
 export function SiteNav() {
   const [open, setOpen] = useState(false);
+  const { isAuthenticated, isLoading } = useSession();
 
-  // Mobil menü açıkken büyük ekrana geçilirse menüyü kapat
   useEffect(() => {
     function handleResize() {
       if (window.innerWidth > 980 && open) {
@@ -23,6 +25,33 @@ export function SiteNav() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [open]);
+
+  function AuthAction({ variant }: { variant: "desktop" | "mobile" }) {
+    if (isLoading) return null; // Session sorgusu dönene kadar flicker önleme
+
+    if (isAuthenticated) {
+      return (
+        <button
+          type="button"
+          className={variant === "desktop" ? "btn btn-ghost desktop-login-btn" : "btn btn-ghost"}
+          onClick={() => logout()} // React Query mutation yerine doğrudan tam sayfa yönlendiren logout'u çağırıyoruz
+          data-cta={variant === "desktop" ? "nav-cikis" : "nav-cikis-mob"}
+        >
+          Çıkış yap
+        </button>
+      );
+    }
+
+    return (
+      <AppLink
+        className={variant === "desktop" ? "btn btn-ghost desktop-login-btn" : "btn btn-ghost"}
+        href="/giris"
+        data-cta={variant === "desktop" ? "nav-giris" : "nav-giris-mob"}
+      >
+        Giriş yap
+      </AppLink>
+    );
+  }
 
   return (
     <header className="nav" id="nav">
@@ -48,11 +77,8 @@ export function SiteNav() {
               {l.label}
             </a>
           ))}
-          {/* Mobilde açılır menü altında yatay yan yana butonlar */}
           <div className="mob-menu-actions">
-            <AppLink className="btn btn-ghost" href="/giris" data-cta="nav-giris-mob">
-              Giriş yap
-            </AppLink>
+            <AuthAction variant="mobile" />
             <a className="btn btn-primary" href="#fiyat" data-cta="nav-uyeol-mob" style={{ color: "#ffffff", background: "var(--navy)" }}>
               Kurucu üye ol · 149 ₺/ay
             </a>
@@ -60,9 +86,7 @@ export function SiteNav() {
         </nav>
 
         <div className="nav-cta">
-          <AppLink className="btn btn-ghost desktop-login-btn" href="/giris" data-cta="nav-giris">
-            Giriş yap
-          </AppLink>
+          <AuthAction variant="desktop" />
           <a className="btn btn-primary nav-primary-btn" href="#fiyat" data-cta="nav-uyeol">
             Kurucu üye ol
           </a>

@@ -9,13 +9,13 @@ import { ParenaMark } from "@/components/brand/ParenaMark";
 export function AuthHeader() {
   return (
     <header className="w-full border-b border-divider bg-background/90 backdrop-blur-md">
-      <div className="mx-auto grid h-[58px] max-w-[1080px] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:h-[62px] sm:px-6">
+      <div className="mx-auto grid h-14.5 max-w-270 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:h-15.5 sm:px-6">
         <Link
           to="/"
           aria-label="PARENA anasayfa"
           className="flex min-w-0 items-center gap-2.5 no-underline"
         >
-          <ParenaMark size={34} className="h-8 w-8 shrink-0 sm:h-[34px] sm:w-[34px]" />
+          <ParenaMark size={34} className="h-8 w-8 shrink-0 sm:h-8.5 sm:w-8.5" />
           <span className="truncate font-display text-[15px] font-bold tracking-[.5px] text-foreground sm:text-[17px]">
             PAR<span className="text-brand">ENA</span>
           </span>

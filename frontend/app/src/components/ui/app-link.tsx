@@ -1,5 +1,5 @@
 import type { AnchorHTMLAttributes } from "react";
-import { Link } from "react-router-dom";
+import { Link, useInRouterContext } from "react-router-dom";
 
 export type AppLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & { href: string };
 
@@ -7,7 +7,8 @@ const isExternal = (href: string) =>
   /^(https?:|mailto:|tel:)/.test(href) || href.startsWith("#");
 
 export function AppLink({ href, children, ...rest }: AppLinkProps) {
-  if (isExternal(href)) {
+  const inRouterContext = useInRouterContext();
+  if (isExternal(href) || !inRouterContext) {
     return (
       <a href={href} {...rest}>
         {children}

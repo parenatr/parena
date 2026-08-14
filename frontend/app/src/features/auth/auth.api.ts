@@ -43,5 +43,10 @@ export const fetchSession = async (signal?: AbortSignal) => {
   return { ...candidate, roles: candidate.roles ?? [] } as SessionUser;
 };
 
-export const logout = () =>
-  apiRequest<{ redirectUrl: string }>(AUTH_ENDPOINTS.logout, { method: "POST" });
+//export const logout = () =>
+//  apiRequest<{ redirectUrl: string }>(AUTH_ENDPOINTS.logout, { method: "POST" });
+
+export const logout = (): void => {
+  // AJAX kullanmıyoruz; tarayıcıyı doğrudan BFF logout endpoint'ine sürüyoruz
+  window.location.href = `${env.apiBaseUrl}${AUTH_ENDPOINTS.logout}`;
+};

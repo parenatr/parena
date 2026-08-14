@@ -37,14 +37,3 @@ export function useForgotPassword() {
 export function useResetPassword() {
   return useMutation({ mutationFn: authApi.resetPassword });
 }
-
-export function useLogout() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: authApi.logout,
-    onSuccess: (data) => {
-      queryClient.clear();
-      window.location.href = data.redirectUrl; // Keycloak'taki oturumu da kapatmak için tam sayfa yönlendirme
-    },
-  });
-}

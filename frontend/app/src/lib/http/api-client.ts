@@ -23,11 +23,17 @@ async function parseBody(response: Response): Promise<unknown> {
   if (response.status === 204) return null;
   const contentType = response.headers.get("content-type") ?? "";
   if (!contentType.includes("json")) return await response.text();
+
   try {
     return await response.json();
   } catch {
     return null;
   }
+}
+
+function getCsrfTokenFromCookie(): string | null {
+  const match = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+  return match ? decodeURIComponent(match[1]) : null;
 }
 
 /**
@@ -45,6 +51,8 @@ export async function apiRequest<TResponse>(
   let response: Response;
 
   try {
+    const csrfToken = getCsrfTokenFromCookie();
+
     response = await fetch(`${env.apiBaseUrl}${path}`, {
       method,
       credentials: "include",
@@ -53,12 +61,21 @@ export async function apiRequest<TResponse>(
         Accept: "application/json",
         "X-Requested-With": "XMLHttpRequest",
         ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
+        ...(method !== "GET" && csrfToken
+          ? { "X-XSRF-TOKEN": csrfToken }
+          : {}),
       },
       body: body !== undefined ? JSON.stringify(body) : undefined,
     });
   } catch (cause) {
-    if (cause instanceof DOMException && cause.name === "AbortError") throw cause;
-    throw new ApiError({ status: 0, message: "Sunucuya ulaşılamadı" });
+    if (cause instanceof DOMException && cause.name === "AbortError") {
+      throw cause;
+    }
+
+    throw new ApiError({
+      status: 0,
+      message: "Sunucuya ulaşılamadı",
+    });
   }
 
   const payload = await parseBody(response);
@@ -67,7 +84,11 @@ export async function apiRequest<TResponse>(
     if (response.status === 401 && allowUnauthorized) {
       return null as TResponse;
     }
-    const problem = (typeof payload === "object" && payload ? payload : {}) as ProblemDetail;
+
+    const problem = (
+      typeof payload === "object" && payload ? payload : {}
+    ) as ProblemDetail;
+
     throw new ApiError({
       status: response.status,
       message: problem.message ?? problem.detail ?? problem.error ?? "",
@@ -80,7 +101,10 @@ export async function apiRequest<TResponse>(
    * BFF yayında değilken hosting SPA fallback'i 200 + index.html döndürebilir.
    * Bunu "başarı" saymak sahte oturum/sahte login'e yol açar; açıkça hata verilir.
    */
-  if (typeof payload === "string" && payload.trimStart().startsWith("<")) {
+  if (
+    typeof payload === "string" &&
+    payload.trimStart().startsWith("<")
+  ) {
     throw new ApiError({
       status: 502,
       message: "API sunucusuna ulaşılamadı",
