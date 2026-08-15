@@ -98,8 +98,11 @@ clients:
     implicitFlowEnabled: false
     serviceAccountsEnabled: false
     redirectUris:
-      - "$(env:SO_BFF_BASE_URL)/login/oauth2/code/keycloak"
-      - "$(env:SO_FRONTEND_BASE_URL)/email-dogrulandi"
+      - "http://localhost:5173/*" # Localde test edebilmek için kalabilir
+      - "http://34.159.28.55:5173/*"
+      - "http://34.159.28.55:8989/*"
+      - "https://parena.com.tr/*" # Canlı ortam domaininiz
+      - "http://parena.com.tr/*"
     webOrigins:
       - "$(env:SO_FRONTEND_BASE_URL)"
     attributes:
@@ -128,6 +131,8 @@ clients:
     standardFlowEnabled: false
     directAccessGrantsEnabled: false
     serviceAccountsEnabled: true
+    redirectUris:
+      - "https://parena.com.tr*"
     fullScopeAllowed: true
     defaultClientScopes:
       - web-origins
