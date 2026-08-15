@@ -14,7 +14,7 @@ spring:
         provider:  #keycloak bir provider (auth providerı)
           keycloak:
             issuer-uri: http://keycloak:8585/realms/parena
-            authorization-uri: http://keycloak:8585/realms/parena/protocol/openid-connect/auth #browser-routing (internal)
+            authorization-uri: ${SO_KEYCLOAK_DEV_HOSTNAME}/realms/parena/protocol/openid-connect/auth #browser-routing (internal)
             token-uri: http://keycloak:8585/realms/parena/protocol/openid-connect/token  #bff: token almak icin dockerdaki keycloaka gider (internal)
             jwk-set-uri: http://keycloak:8585/realms/parena/protocol/openid-connect/certs #bff: jwt imzalarını dogrulamak icin keycloaka gider (internal)
             user-name-attribute: preferred_username
