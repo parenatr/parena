@@ -56,6 +56,7 @@ public class GatewayProxyHandler {
         return URI.create(gatewayBaseUrl + path + (query != null ? "?" + query : ""));
     }
 
+    //arka plandaki yetkili access tokeni çözer ve istek başlığına Bearer ekler
     private Mono<String> resolveAccessToken(Authentication authentication) {
         OAuth2AuthorizeRequest request = OAuth2AuthorizeRequest
                 .withClientRegistrationId("keycloak")
@@ -66,6 +67,7 @@ public class GatewayProxyHandler {
                 .map(token -> token.getTokenValue());
     }
 
+    //bağlantı düzeyindeki HTTP başlıklarını filtreleyerek isteği temiz bir şekile gatewaye iletir
     private void copyForwardableHeaders(HttpHeaders source, HttpHeaders target, String bearerToken) {
         source.forEach((name, values) -> {
             if (!HOP_BY_HOP_HEADERS.contains(name.toLowerCase())) {

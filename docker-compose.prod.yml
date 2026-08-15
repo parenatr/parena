@@ -1,4 +1,4 @@
-name: parena
+name: parena 
 
 x-build: &java-build
   context: ./backend
@@ -6,11 +6,7 @@ x-build: &java-build
 
 services:
   # ---------------- Infrastructure Services ----------------
-
-  #keycloak default olarak postgresql ile calısacak sekilde tasarlanmıstır.
-  #sadece keycloak servisinin kullanacagı db.
-  keycloak_db:
-    #dışarıya açmıyoruz sadece keycloak kullanacak
+  keycloak_db: 
     image: postgres:16
     container_name: keycloak-db
     environment:
@@ -25,63 +21,55 @@ services:
       timeout: 3s
       retries: 10
     networks: [ parena ]
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+          cpus: '0.5'
 
-  #merkezi kimlik ve erişim yönetimi sağlar (users,roles,authority). (identity-server)
-  keycloak:
-    image: quay.io/keycloak/keycloak:26.5.5
-    container_name: keycloak
-    depends_on:
-      keycloak_db:
-        condition: service_healthy
-    command:
-      - start-dev #localde http serbest, prodda https zorunlu. bu yüzden start-dev ile başlatıyoruz.
-      - --http-enabled=true
-      - --http-port=8585
-    ports:
-      - "8585:8585"
-    volumes:
-      - ./frontend/app/dist_keycloak/keycloak-theme-for-kc-all-other-versions.jar:/opt/keycloak/providers/keycloak-theme.jar
-    environment:
-      KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://keycloak_db:5432/keycloak
-      KC_DB_USERNAME: ${SO_KEYCLOAK_DB_USER}
-      KC_DB_PASSWORD: ${SO_KEYCLOAK_DB_PASSWORD}
-
-      KC_BOOTSTRAP_ADMIN_USERNAME: ${SO_KEYCLOAK_ADMIN}
-      KC_BOOTSTRAP_ADMIN_PASSWORD: ${SO_KEYCLOAK_ADMIN_PASSWORD}
-      KC_HEALTH_ENABLED: "true"
-      KC_METRICS_ENABLED: "true"
-
-      KC_PROXY: edge
-      KC_HOSTNAME_STRICT: "false"
-      KC_HOSTNAME_STRICT_HTTPS: "false"
-      # keycloak imajında curl yok, bu yüzden bash'in /dev/tcp özelliğiyle
-      # management portundaki (9000, http-port'tan bağımsız, sabit) health/ready
-      # endpoint'ine ham HTTP isteği atıyoruz.
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "exec 3<>/dev/tcp/127.0.0.1/9000; echo -e 'GET /health/ready HTTP/1.1\r
-
-            host: localhost\r
-
-            Connection: close\r
-
-            \r
-
-            ' >&3; grep -q '200' <&3"
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 15
-      start_period: 20s
-    networks: [ parena ]
-
-  # -----------------------------------------------------------------
-  # Keycloak realm/client konfigürasyonunu kod olarak (YAML) uygular.
-  # Idempotent — tekrar çalıştırılabilir, mevcut kullanıcı verisini silmez.
-  # -----------------------------------------------------------------
+    keycloak:
+      image: quay.io/keycloak/keycloak:26.5.5
+      container_name: keycloak
+      depends_on:
+        keycloak_db:
+          condition: service_healthy
+      command:
+        - start-dev # Üretimde SSL sertifikaları proxy seviyesinde çözüleceği için edge arkasında start-dev kullanılabilir
+        - --http-enabled=true
+        - --http-port=8585
+      ports:
+        - "8585:8585" # Kullanıcı login ekranı ve token doğrulamaları için dış dünyaya açık kalmalı
+      volumes:
+        - ./frontend/app/dist_keycloak/keycloak-theme-for-kc-all-other-versions.jar:/opt/keycloak/providers/keycloak-theme.jar
+      environment:
+        KC_DB: postgres
+        KC_DB_URL: jdbc:postgresql://keycloak_db:5432/keycloak
+        KC_DB_USERNAME: ${SO_KEYCLOAK_DB_USER}
+        KC_DB_PASSWORD: ${SO_KEYCLOAK_DB_PASSWORD}
+        KC_BOOTSTRAP_ADMIN_USERNAME: ${SO_KEYCLOAK_ADMIN}
+        KC_BOOTSTRAP_ADMIN_PASSWORD: ${SO_KEYCLOAK_ADMIN_PASSWORD}
+        KC_HEALTH_ENABLED: "true"
+        KC_METRICS_ENABLED: "true"
+        KC_PROXY: edge
+        KC_HOSTNAME_STRICT: "false"
+        KC_HOSTNAME_STRICT_HTTPS: "false"
+      healthcheck:
+        test:
+          [
+            "CMD-SHELL",
+            "exec 3<>/dev/tcp/127.0.0.1/9000; echo -e 'GET /health/ready HTTP/1.1\r\nhost: localhost\r\nConnection: close\r\n\r\n' >&3; grep -q '200' <&3"
+          ]
+        interval: 10s
+        timeout: 5s
+        retries: 15
+        start_period: 20s
+      networks: [ parena ]
+      deploy:
+        resources:
+          limits:
+            memory: 1.5g
+            cpus: '1.0'
+  
   keycloak_config_cli:
     image: adorsys/keycloak-config-cli:latest-26.5.5
     container_name: keycloak-config-cli
@@ -100,20 +88,17 @@ services:
       SO_USER_SERVICE_CLIENT_SECRET: ${SO_USER_SERVICE_CLIENT_SECRET}
       SO_BFF_BASE_URL: ${SO_BFF_BASE_URL}
       SO_FRONTEND_BASE_URL: ${SO_FRONTEND_BASE_URL}
-
-      # SMTP
       SO_SMTP_USER: ${SO_SMTP_USER}
       SO_SMTP_PASSWORD: ${SO_SMTP_PASSWORD}
     volumes:
       - ./backend/configurations/keycloak:/config
-    networks:
-      - parena
-
-  # -----------------------------------------------------------------
-  # BFF-server'ın session store'u. Spring Session, OAuth2AuthorizedClient
-  # (access+refresh token içerir) nesnesini burada tutar. Tarayıcı sadece
-  # opak session ID cookie'si görür.
-  # -----------------------------------------------------------------
+    networks: [ parena ]
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+          cpus: '0.5'
+  
   redis:
     image: redis:7.4-alpine
     container_name: redis
@@ -126,15 +111,21 @@ services:
       timeout: 3s
       retries: 10
     networks: [ parena ]
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+          cpus: '0.5'
 
-  # ---------------- Platform Services ----------------
+# ---------------- Platform Services ----------------
   config-server:
     build:
       <<: *java-build
       args:
         MODULE: config-server
-    ports:
-      - "8787:8787"
+    # ports: - "8787:8787" -> Üretimde dış dünyaya kapatıldı
+    expose:
+      - "8787"
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:8787/actuator/health"]
       interval: 5s
@@ -149,14 +140,20 @@ services:
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
       SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}
     networks: [ parena ]
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+          cpus: '1.0'
 
   discovery-server:
     build:
       <<: *java-build
       args:
         MODULE: discovery-server
-    ports:
-      - "8761:8761"
+    # ports: - "8761:8761" -> Üretimde dış dünyaya kapatıldı
+    expose:
+      - "8761"
     container_name: discovery-server
     depends_on:
       config-server:
@@ -165,16 +162,22 @@ services:
       SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
       SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}
-      SO_CONFIG_URI: ${SO_CONFIG_URI},
+      SO_CONFIG_URI: ${SO_CONFIG_URI}
     networks: [ parena ]
-
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+          cpus: '1.0'
+  
   gateway-server:
     build:
       <<: *java-build
       args:
         MODULE: gateway-server
-    ports:
-      - "8888:8888"
+    # ports: - "8888:8888" -> İstekleri sadece BFF'den alacağı için dış dünyaya kapatıldı
+    expose:
+      - "8888"
     container_name: gateway-server
     depends_on:
       - config-server
@@ -185,6 +188,11 @@ services:
       SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}
       SO_CONFIG_URI: ${SO_CONFIG_URI}
     networks: [ parena ]
+    deploy:
+      resources:
+        limits:
+          memory: 768m
+          cpus: '0.5'
 
   bff-server:
     build:
@@ -192,7 +200,7 @@ services:
       args:
         MODULE: bff-server
     ports:
-      - "8989:8989"
+      - "8989:8989" # Akışınızın ilk giriş kapısı: Dış dünyaya açık kalmalı
     container_name: bff-server
     depends_on:
       config-server:
@@ -202,21 +210,25 @@ services:
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
       SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}
       SO_CONFIG_URI: ${SO_CONFIG_URI}
-
       SO_REDIS_PASSWORD: ${SO_REDIS_PASSWORD}
-
       SO_BFF_CLIENT_SECRET: ${SO_BFF_CLIENT_SECRET}
       SO_FRONTEND_BASE_URL: ${SO_FRONTEND_BASE_URL}
       SO_BFF_BASE_URL: ${SO_BFF_BASE_URL}
     networks: [ parena ]
+    deploy:
+      resources:
+        limits:
+          memory: 768m
+          cpus: '1.0'
 
   user-service:
     build:
       <<: *java-build
       args:
         MODULE: user-service
-    ports:
-      - "8080:8080"
+    # ports: - "8080:8080" -> Sadece Gateway üzerinden erişilmesi için dış dünyaya kapatıldı
+    expose:
+      - "8080"
     container_name: user-service
     depends_on:
       user_service_db:
@@ -226,15 +238,18 @@ services:
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
       SO_SPRING_PROFILES_ACTIVE: ${SO_SPRING_PROFILES_ACTIVE}
       SO_CONFIG_URI: ${SO_CONFIG_URI}
-
       SO_USER_SERVICE_DB_USER: ${SO_USER_SERVICE_DB_USER}
       SO_USER_SERVICE_DB_PASSWORD: ${SO_USER_SERVICE_DB_PASSWORD}
-
       SO_USER_SERVICE_CLIENT_SECRET: ${SO_USER_SERVICE_CLIENT_SECRET}
       SO_FRONTEND_BASE_URL: ${SO_FRONTEND_BASE_URL}
     networks: [ parena ]
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+          cpus: '1.0'
 
-  # ---------------- DB(PostgreSQL) Services ----------------
+# ---------------- DB(PostgreSQL) Services ----------------
   user_service_db:
     image: postgres:16
     container_name: user-service-db
@@ -242,21 +257,24 @@ services:
       POSTGRES_DB: user_service
       POSTGRES_USER: ${SO_USER_SERVICE_DB_USER}
       POSTGRES_PASSWORD: ${SO_USER_SERVICE_DB_PASSWORD}
-    ports:
-      - "5432:5432"
+    # ports: - "5432:5432" -> Üretimde dış dünyaya tamamen kapatıldı
     volumes:
       - userservicedb_vol:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${SO_USER_SERVICE_DB_USER} -d user_service" ]
       interval: 5s
       timeout: 3s
-      retries: 10
     networks: [ parena ]
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+          cpus: '0.5'
 
 volumes:
-  keycloakdb_vol: {}
-  redis_vol: {}
-  userservicedb_vol: {}
+  keycloakdb_vol:
+  redis_vol:
+  userservicedb_vol:
 
 networks:
   parena:

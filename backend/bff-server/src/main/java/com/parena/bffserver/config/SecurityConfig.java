@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.client.oidc.web.server.logout.OidcClientInitiatedServerLogoutSuccessHandler;
@@ -13,6 +14,7 @@ import org.springframework.security.oauth2.client.registration.ReactiveClientReg
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
 import org.springframework.security.web.server.csrf.CookieServerCsrfTokenRepository;
+import org.springframework.security.web.server.csrf.ServerCsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
@@ -21,10 +23,14 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Configuration
+@EnableWebFluxSecurity
 public class SecurityConfig {
 
-    @Value("${app.frontend-base-url}")
-    private String frontendBaseUrl;
+    private final String frontendBaseUrl;
+
+    public SecurityConfig(@Value("${app.frontend-base-url}") String frontendBaseUrl) {
+        this.frontendBaseUrl = frontendBaseUrl;
+    }
 
     // Zincir 1: SADECE register path'i. CSRF ve authentication tamamen kapalı —
     // kimliksiz bir kullanıcının çalınacak bir session'ı yok, koruma anlamsız.
@@ -33,12 +39,12 @@ public class SecurityConfig {
     public SecurityWebFilterChain registerFilterChain(
             ServerHttpSecurity http,
             CorsConfigurationSource corsConfigurationSource) {
-        http
+        return http
                 .securityMatcher(ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, "/api/v1/users/register"))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .authorizeExchange(exchange -> exchange.anyExchange().permitAll());
-        return http.build();
+                .authorizeExchange(exchange -> exchange.anyExchange().permitAll())
+                .build();
     }
 
     // Zincir 2: geri kalan HER ŞEY. CSRF açık, login/logout/authorization burada.
@@ -50,38 +56,42 @@ public class SecurityConfig {
             EmailVerificationSyncHandler emailVerificationSyncHandler,
             CorsConfigurationSource corsConfigurationSource) {
 
-        http
+        ServerCsrfTokenRequestAttributeHandler csrfAttributeHandler = new ServerCsrfTokenRequestAttributeHandler();
+
+        return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
-                .csrf(csrf -> csrf.csrfTokenRepository(CookieServerCsrfTokenRepository.withHttpOnlyFalse()))
-                // CookieServerCsrfTokenRepository token'ı TEMBEL üretir — hiçbir endpoint
-                // onu subscribe etmezse XSRF-TOKEN cookie'si tarayıcıya hiç yazılmaz.
-                // Bu filter her istek sonunda token'a "dokunup" cookie'nin set
-                // edilmesini garanti ediyor (Spring'in bilinen SPA/CSRF tuzağı).
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieServerCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRequestHandler(csrfAttributeHandler))
                 .addFilterAfter(new CsrfCookieWebFilter(), SecurityWebFiltersOrder.CSRF)
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers("/actuator/health", "/api/auth/me").permitAll()
                         .anyExchange().authenticated())
                 .oauth2Login(oauth2 -> oauth2.authenticationSuccessHandler(emailVerificationSyncHandler))
                 .logout(logout -> logout
-                        .logoutSuccessHandler(oidcLogoutSuccessHandler(clientRegistrationRepository)));
-
-        return http.build();
+                        .requiresLogout(ServerWebExchangeMatchers.pathMatchers("/api/auth/logout"))
+                        .logoutSuccessHandler(oidcLogoutSuccessHandler(clientRegistrationRepository)))
+                .build();
     }
 
     private ServerLogoutSuccessHandler oidcLogoutSuccessHandler(
             ReactiveClientRegistrationRepository clientRegistrationRepository) {
+
         var handler = new OidcClientInitiatedServerLogoutSuccessHandler(clientRegistrationRepository);
-        handler.setPostLogoutRedirectUri(frontendBaseUrl);
+
+        // Keycloak oturumu kapandıktan sonra döneceği frontend adresi
+        handler.setPostLogoutRedirectUri(this.frontendBaseUrl + "/giris");
+
         return handler;
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource(@Value("${app.frontend-base-url}") String frontendBaseUrl) {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(frontendBaseUrl));
+        config.setAllowedOrigins(List.of(this.frontendBaseUrl));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true); // cookie tabanlı session için ZORUNLU
+        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
