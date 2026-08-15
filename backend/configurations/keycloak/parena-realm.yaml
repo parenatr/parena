@@ -132,7 +132,7 @@ clients:
     directAccessGrantsEnabled: false
     serviceAccountsEnabled: true
     redirectUris:
-      - "https://parena.com.tr*"
+      - "https://parena.com.tr/*"
     fullScopeAllowed: true
     defaultClientScopes:
       - web-origins
