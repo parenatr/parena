@@ -13,10 +13,10 @@ spring:
       client:
         provider:  #keycloak bir provider (auth providerı)
           keycloak:
-            issuer-uri: http://keycloak:8585/realms/parena
+            issuer-uri: ${SO_KEYCLOAK_DEV_HOSTNAME}/realms/parena
             authorization-uri: ${SO_KEYCLOAK_DEV_HOSTNAME}/realms/parena/protocol/openid-connect/auth
-            token-uri: http://keycloak:8585/realms/parena/protocol/openid-connect/token
-            jwk-set-uri: http://keycloak:8585/realms/parena/protocol/openid-connect/certs
+            token-uri: ${SO_KEYCLOAK_DEV_HOSTNAME}/realms/parena/protocol/openid-connect/token
+            jwk-set-uri: ${SO_KEYCLOAK_DEV_HOSTNAME}/realms/parena/protocol/openid-connect/certs
             user-name-attribute: preferred_username
         registration:
           keycloak:
