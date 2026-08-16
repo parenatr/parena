@@ -13,11 +13,11 @@ spring:
       client:
         provider:  #keycloak bir provider (auth providerı)
           keycloak:
-            # ⚠️ KRİTİK DEĞİŞİKLİK: Spring'in doğrulamayı (Issuer) dış IP/Domain ile eşleştirmesini sağladık
+            # KRİTİK DEĞİŞİKLİK: Spring'in doğrulamayı (Issuer) dış IP/Domain ile eşleştirmesini sağladık
             issuer-uri: ${SO_KEYCLOAK_DEV_HOSTNAME}/realms/parena
             authorization-uri: ${SO_KEYCLOAK_DEV_HOSTNAME}/realms/parena/protocol/openid-connect/auth
 
-            # ⚠️ KRİTİK DEĞİŞİKLİK: BFF'in arka planda Keycloak ile el sıkışırken dış internete çıkıp faturayı şişirmemesi için doğrudan Docker iç ağını (keycloak:8585) kullanmasını sağladık
+            # KRİTİK DEĞİŞİKLİK: BFF'in arka planda Keycloak ile el sıkışırken dış internete çıkıp faturayı şişirmemesi için doğrudan Docker iç ağını (keycloak:8585) kullanmasını sağladık
             token-uri: http://keycloak:8585/realms/parena/protocol/openid-connect/token
             jwk-set-uri: http://keycloak:8585/realms/parena/protocol/openid-connect/certs
             user-name-attribute: preferred_username

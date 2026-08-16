@@ -98,13 +98,11 @@ clients:
     implicitFlowEnabled: false
     serviceAccountsEnabled: false
     redirectUris:
-      - "http://localhost:5173/*" # Localde test edebilmek için kalabilir
-      - "http://34.159.28.55:5173/*"
-      - "http://34.159.28.55:8989/*"
-      - "https://parena.com.tr/*" # Canlı ortam domaininiz
-      - "http://parena.com.tr/*"
+      - "http://localhost:8989/login/oauth2/code/*"    # Lokal geliştirme ortamı (BFF portu)
+      - "https://api.parena.com.tr/login/oauth2/code/*"
     webOrigins:
-      - "$(env:SO_FRONTEND_BASE_URL)"
+      - "https://parena.com.tr"                       # Frontend (Vercel) origin adresi
+      - "http://localhost:5173"
     attributes:
       pkce.code.challenge.method: S256
       post.logout.redirect.uris: "$(env:SO_FRONTEND_BASE_URL)/*"
