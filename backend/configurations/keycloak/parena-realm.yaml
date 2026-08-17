@@ -131,7 +131,7 @@ clients:
     serviceAccountsEnabled: true
     redirectUris:
       - "https://parena.com.tr/*"
-    fullScopeAllowed: true
+    fullScopeAllowed: false
     defaultClientScopes:
       - web-origins
       - acr

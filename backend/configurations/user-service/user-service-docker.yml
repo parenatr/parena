@@ -7,7 +7,7 @@ eureka:
 #user-service keycloak bağlantısı.
 keycloak:
   realm: parena
-  auth-server-url: ${SO_KEYCLOAK_DEV_HOSTNAME}
+  auth-server-url: ${SO_KEYCLOAK_PUBLIC_URL}
 
   # Keycloak Admin API'ye bağlanmak için kullanılan client
   admin-client-id: user-service

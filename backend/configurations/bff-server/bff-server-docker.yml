@@ -13,10 +13,10 @@ spring:
       client:
         provider:  #keycloak bir provider (auth providerı)
           keycloak:
-            issuer-uri: ${SO_KEYCLOAK_DEV_HOSTNAME}/realms/parena
-            authorization-uri: ${SO_KEYCLOAK_DEV_HOSTNAME}/realms/parena/protocol/openid-connect/auth
-            token-uri: ${SO_KEYCLOAK_DEV_HOSTNAME}/realms/parena/protocol/openid-connect/token
-            jwk-set-uri: ${SO_KEYCLOAK_DEV_HOSTNAME}/realms/parena/protocol/openid-connect/certs
+            issuer-uri: ${SO_KEYCLOAK_PUBLIC_URL}/realms/parena
+            authorization-uri: ${SO_KEYCLOAK_PUBLIC_URL}/realms/parena/protocol/openid-connect/auth
+            token-uri: ${SO_KEYCLOAK_PUBLIC_URL}/realms/parena/protocol/openid-connect/token
+            jwk-set-uri: ${SO_KEYCLOAK_PUBLIC_URL}/realms/parena/protocol/openid-connect/certs
             user-name-attribute: preferred_username
         registration:
           keycloak:
@@ -41,4 +41,4 @@ spring:
 
 logging:
   level:
-    org.springframework.security: DEBUG
+    org.springframework.security: INFO
