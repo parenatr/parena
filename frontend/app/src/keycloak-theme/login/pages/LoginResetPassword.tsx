@@ -18,14 +18,15 @@ export default function LoginResetPassword(
     const usernameLabel = !realm.loginWithEmailAllowed
         ? "Kullanıcı adı"
         : !realm.registrationEmailAsUsername
-          ? "E-posta veya kullanıcı adı"
-          : "E-posta adresi";
+            ? "E-posta veya kullanıcı adı"
+            : "E-posta adresi";
 
     const hasUsernameError = messagesPerField.existsError("username");
     const usernameErrorHtml = hasUsernameError ? kcSanitize(messagesPerField.get("username")) : undefined;
 
     return (
         <AuthShell
+            kcContext={kcContext}
             sideTitle="Parolanı sıfırlamak birkaç saniye sürer."
             sideText="E-posta adresini gir; hesabın varsa sıfırlama bağlantısını gönderelim."
             proof={[

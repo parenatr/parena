@@ -102,7 +102,6 @@ clients:
       - "https://api.parena.com.tr/login/oauth2/code/*"
     webOrigins:
       - "https://parena.com.tr"                       # Frontend (Vercel) origin adresi
-      - "http://localhost:5173"
     attributes:
       pkce.code.challenge.method: S256
       post.logout.redirect.uris: "$(env:SO_FRONTEND_BASE_URL)/*"

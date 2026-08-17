@@ -8,12 +8,9 @@ import { useScript } from "keycloakify/login/pages/Login.useScript";
 import { AuthShell } from "../../../components/auth/AuthShell";
 import { AuthField, AuthPasswordField } from "../../../components/auth/AuthField";
 
-// TODO: Build-time çözüm — production deploy'da Keycloak temasını doğru
-// VITE_FRONTEND_BASE_URL ile yeniden build etmemiz gerekiyor (CI/CD adımı).
-const FRONTEND_REGISTER_URL = `${import.meta.env.VITE_FRONTEND_BASE_URL}/uye-ol`;
-
 export default function Login(props: PageProps<Extract<KcContext, { pageId: "login.ftl" }>, I18n>) {
     const { kcContext } = props;
+    const FRONTEND_REGISTER_URL = `${kcContext.properties.APP_URL}/uye-ol`;
 
     useEffect(() => {
         document.title = "Giriş Yap | Parena";
@@ -43,6 +40,7 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
 
     return (
         <AuthShell
+            kcContext={kcContext}
             sideTitle="Bugünün karnesi seni bekliyor."
             sideText="Günlük, haftalık, model portföy ve kısa vadeli önerilerin tamamı, her birinin kâr/zararıyla birlikte."
         >

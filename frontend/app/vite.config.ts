@@ -10,6 +10,9 @@ export default defineConfig({
     tailwindcss(),
     keycloakify({
       accountThemeImplementation: "none",
+      environmentVariables: [
+        { name: "APP_URL", default: "https://parena.com.tr" },
+      ],
     }),
   ],
   resolve: {
