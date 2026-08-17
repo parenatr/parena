@@ -8,22 +8,23 @@ const isExternal = (href: string) =>
 
 export function AppLink({ href, children, ...rest }: AppLinkProps) {
   const inRouterContext = useInRouterContext();
-  if (isExternal(href) || !inRouterContext) {
-    return (
-      <a href={href} {...rest}>
-        {children}
-      </a>
-    );
-  }
 
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
     if (rest.onClick) {
       rest.onClick(e);
     }
-    // Eğer hedef anasayfa ("/") ise, tıklandığında her koşulda en üste kaydır
     if (href === "/" || href === "") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
+  }
+
+  // Dış bağlantı ise VEYA React Router Context dışında çalışıyorsa normal <a> kullan
+  if (isExternal(href) || !inRouterContext) {
+    return (
+      <a href={href} {...rest} onClick={handleClick}>
+        {children}
+      </a>
+    );
   }
 
   return (
