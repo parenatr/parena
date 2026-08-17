@@ -24,6 +24,34 @@ html, body {
   box-sizing: border-box
 }
 
+.auth-page .notice {
+  font-size: 13px;
+  font-weight: 550;
+  padding: 11px 14px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+  line-height: 1.55;
+}
+
+.auth-page .notice-success {
+  background: rgba(23, 166, 114, .1);
+  border: 1px solid rgba(23, 166, 114, .3);
+  color: #0E7A50;
+}
+
+.auth-page .notice-error {
+  background: rgba(225, 79, 79, .08);
+  border: 1px solid rgba(225, 79, 79, .3);
+  color: var(--sell);
+}
+
+.auth-page .notice-warning,
+.auth-page .notice-info {
+  background: rgba(224, 181, 78, .12);
+  border: 1px solid rgba(224, 181, 78, .4);
+  color: #8E6B12;
+}
+
 html {
   -webkit-text-size-adjust: 100%
 }

@@ -8,27 +8,24 @@ import { useScript } from "keycloakify/login/pages/Login.useScript";
 import { AuthShell } from "../../../components/auth/AuthShell";
 import { AuthField, AuthPasswordField } from "../../../components/auth/AuthField";
 
-// TODO: Bu URL, build-time'da sabitlenmemeli — Keycloakify'ın kcEnvNames /
-// runtime environment injection mekanizması ile Keycloak container'ının
-// SO_FRONTEND_BASE_URL değerinden okunmalı. Şimdilik yer tutucu.
+// TODO: Build-time çözüm — production deploy'da Keycloak temasını doğru
+// VITE_FRONTEND_BASE_URL ile yeniden build etmemiz gerekiyor (CI/CD adımı).
 const FRONTEND_REGISTER_URL = `${import.meta.env.VITE_FRONTEND_BASE_URL}/uye-ol`;
 
 export default function Login(props: PageProps<Extract<KcContext, { pageId: "login.ftl" }>, I18n>) {
     const { kcContext } = props;
 
     useEffect(() => {
-        document.title = "Giriş Yap | Parena"; // İstediğiniz sekme başlığını buraya yazın
+        document.title = "Giriş Yap | Parena";
     }, []);
-    
-    const { realm, url, usernameHidden, login, auth, messagesPerField, enableWebAuthnConditionalUI, authenticators } =
+
+    const { realm, url, usernameHidden, login, auth, messagesPerField, message, enableWebAuthnConditionalUI, authenticators } =
         kcContext;
 
     const [isLoginButtonDisabled, setIsLoginButtonDisabled] = useState(false);
 
     const webAuthnButtonId = "authenticateWebAuthnButton";
 
-    // i18n objesi hook'un beklediği şekli taşımıyor olabilir, Login.useScript'in
-    // gerçek imzasını build sırasında doğrulayacağız.
     useScript({
         webAuthnButtonId,
         kcContext,
@@ -57,12 +54,21 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                 </p>
             </div>
 
+            {/* Keycloak'ın kendi ürettiği durum mesajları — örn. reset-password
+                sonrası "E-postana talimatlar gönderildi" bildirimi buradan geliyor.
+                messagesPerField (alan hataları) ile ayrı, çakışmaları test ederken izleyin. */}
+            {message !== undefined && (
+                <p className={`notice notice-${message.type}`} role="status">
+                    {message.summary}
+                </p>
+            )}
+
             {realm.password && (
                 <form
                     id="kc-form-login"
                     onSubmit={() => {
                         setIsLoginButtonDisabled(true);
-                        return true; // native submit — preventDefault YOK, Keycloak'a gerçekten POST edilir
+                        return true;
                     }}
                     action={url.loginAction}
                     method="post"
@@ -91,9 +97,6 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                         error={usernameHidden && hasFieldError ? " " : undefined}
                     />
 
-                    {/* Keycloak'ın tek, birleşik hata mesajı — hangi alanı işaret ettiğine
-                        bakmaksızın form altında gösteriliyor (username/password ayrı ayrı
-                        değil, tek mesaj — Keycloak login.ftl'in orijinal davranışı da böyle). */}
                     {hasFieldError && (
                         <p className="err on" role="alert" dangerouslySetInnerHTML={{ __html: fieldErrorHtml! }} />
                     )}
