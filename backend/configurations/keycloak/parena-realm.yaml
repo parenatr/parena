@@ -100,6 +100,7 @@ clients:
     redirectUris:
       - "http://localhost:8989/login/oauth2/code/*"    # Lokal geliştirme ortamı (BFF portu)
       - "https://api.parena.com.tr/login/oauth2/code/*"
+      - "$(env:SO_FRONTEND_BASE_URL)/email-dogrulandi"
     webOrigins:
       - "https://parena.com.tr"                       # Frontend (Vercel) origin adresi
     attributes:
@@ -130,7 +131,7 @@ clients:
     serviceAccountsEnabled: true
     redirectUris:
       - "https://parena.com.tr/*"
-    fullScopeAllowed: false
+    fullScopeAllowed: true
     defaultClientScopes:
       - web-origins
       - acr
