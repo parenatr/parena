@@ -208,6 +208,7 @@ services:
       SO_BFF_CLIENT_SECRET: ${SO_BFF_CLIENT_SECRET}
       SO_FRONTEND_BASE_URL: ${SO_FRONTEND_BASE_URL}
       SO_BFF_BASE_URL: ${SO_BFF_BASE_URL}
+      SO_KEYCLOAK_PUBLIC_URL: ${SO_KEYCLOAK_PUBLIC_URL}
     networks: [ parena ]
 
   user-service:
@@ -232,6 +233,7 @@ services:
 
       SO_USER_SERVICE_CLIENT_SECRET: ${SO_USER_SERVICE_CLIENT_SECRET}
       SO_FRONTEND_BASE_URL: ${SO_FRONTEND_BASE_URL}
+      SO_KEYCLOAK_PUBLIC_URL: ${SO_KEYCLOAK_PUBLIC_URL}
     networks: [ parena ]
 
   # ---------------- DB(PostgreSQL) Services ----------------
