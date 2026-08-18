@@ -1,0 +1,14 @@
+/* Fix for mobile nav underline being hidden behind the mobile CTAs
+   This file brings the nav link underline (::after) in front so it
+   isn't covered by the "Kurucu üye ol" button in the mobile menu.
+*/
+
+/* Keep the selector scoped to the existing page layout to avoid
+   accidental global side effects. */
+.launch-page .nav-links a {
+  z-index: 1; /* ensure anchor is on its own stacking layer */
+}
+
+.launch-page .nav-links a::after {
+  z-index: 2; /* bring the underline above later siblings (mob-menu-actions) */
+}
