@@ -14,9 +14,9 @@ spring:
         provider:  #keycloak bir provider (auth providerı)
           keycloak:
             issuer-uri: ${SO_KEYCLOAK_PUBLIC_URL}/realms/parena
-            authorization-uri: ${SO_KEYCLOAK_PUBLIC_URL}/realms/parena/protocol/openid-connect/auth
-            token-uri: ${SO_KEYCLOAK_PUBLIC_URL}/realms/parena/protocol/openid-connect/token
-            jwk-set-uri: ${SO_KEYCLOAK_PUBLIC_URL}/realms/parena/protocol/openid-connect/certs
+            authorization-uri: https://parena.com.tr
+            token-uri: https://parena.com.tr
+            jwk-set-uri: https://parena.com.tr
             user-name-attribute: preferred_username
         registration:
           keycloak:
