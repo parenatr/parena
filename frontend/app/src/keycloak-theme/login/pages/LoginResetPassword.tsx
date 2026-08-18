@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { kcSanitize } from "keycloakify/lib/kcSanitize";
 import type { PageProps } from "keycloakify/login/pages/PageProps";
 import type { KcContext } from "../KcContext";
@@ -23,6 +23,10 @@ export default function LoginResetPassword(
 
     const hasUsernameError = messagesPerField.existsError("username");
     const usernameErrorHtml = hasUsernameError ? kcSanitize(messagesPerField.get("username")) : undefined;
+
+    useEffect(() => {
+        document.title = "Parolamı Unuttum | Parena";
+    }, []);
 
     return (
         <AuthShell

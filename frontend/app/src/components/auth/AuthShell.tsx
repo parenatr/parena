@@ -39,7 +39,9 @@ function BrandBlock({ className, homeHref }: { className: string; homeHref: stri
 
 /** Auth ekranlarının iki panelli ortak kabuğu (sol marka paneli + sağ form kartı). */
 export function AuthShell({ sideTitle, sideText, proof = DEFAULT_PROOF, children, kcContext }: AuthShellProps) {
-  const homeHref = kcContext?.properties?.APP_URL ?? "/";
+  const appOrigin = kcContext?.properties?.APP_URL;      // Keycloak'ta dolu, SPA'da undefined
+  const homeHref = appOrigin ?? "/";
+  const legalHref = (path: string) => (appOrigin ? `${appOrigin}${path}` : path);
   return (
     <div className="auth-page">
       <a className="skip" href="#icerik">
@@ -66,14 +68,14 @@ export function AuthShell({ sideTitle, sideText, proof = DEFAULT_PROOF, children
           <p className="side-foot">
             PARENA yatırım tavsiyesi vermez. İçerikler yalnızca bilgilendirme amaçlıdır.
             <br />
-            <AppLink href="/kullanim-sartlari">Kullanım Şartları</AppLink> ·{" "}
-            <AppLink href="/gizlilik">Gizlilik</AppLink> · <AppLink href="/kvkk">KVKK</AppLink>
+            <AppLink href={legalHref("/kullanim-sartlari")}>Kullanım Şartları</AppLink> ·{" "}
+            <AppLink href={legalHref("/gizlilik")}>Gizlilik</AppLink> · <AppLink href={legalHref("/kvkk")}>KVKK</AppLink>
           </p>
         </aside>
 
         <main className="main">
           <div className="card" id="icerik">
-            <BrandBlock className="side-brand" homeHref={homeHref} />
+            <BrandBlock className="mob-brand" homeHref={homeHref} />
             {children}
           </div>
         </main>
