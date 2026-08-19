@@ -2,6 +2,13 @@
 FROM node:20-slim AS theme-builder
 WORKDIR /workspace/frontend/app
 
+# Keycloakify, .jar paketleme adımında (build-keycloak-theme) arka planda
+# bir Maven projesi oluşturup `mvn package` çalıştırıyor — bu yüzden JDK + Maven şart.
+# Kaynak koddan bağımsız olduğu için erken layer'a koyup Docker cache'inden faydalanıyoruz.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends maven openjdk-17-jdk-headless && \
+    rm -rf /var/lib/apt/lists/*
+
 # Bağımlılık tanımlarını kopyala (layer caching için ayrı adım)
 COPY frontend/app/package*.json ./
 
@@ -15,7 +22,7 @@ COPY frontend/app/ ./
 # Artık src/ mevcut, postinstall'ın yapması gerekeni elle çalıştır
 RUN npx keycloakify sync-extensions
 
-# Keycloakify build işlemini çalıştır (esbuild burada native binary'sini kullanacak)
+# Keycloakify build işlemini çalıştır (esbuild burada native binary'sini kullanacak, Maven da .jar paketleme için burada devreye giriyor)
 RUN npm run build-keycloak-theme
 
 # Stage 2: Keycloak 26.5.5 tabanlı Custom Image
