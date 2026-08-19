@@ -30,6 +30,11 @@ FROM quay.io/keycloak/keycloak:26.5.5 AS runner
 
 COPY --from=theme-builder /workspace/frontend/app/dist_keycloak/*.jar /opt/keycloak/providers/
 
+# Build-time (persisted) ayarlar — kc.sh build'den ÖNCE set edilmeli
+ENV KC_DB=postgres
+ENV KC_HEALTH_ENABLED=true
+ENV KC_METRICS_ENABLED=true
+
 RUN /opt/keycloak/bin/kc.sh build
 
-ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start", "--optimized"]
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
