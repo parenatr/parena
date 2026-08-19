@@ -6,7 +6,7 @@ WORKDIR /workspace/frontend/app
 COPY frontend/app/package*.json ./
 
 # Script tetiklemelerini atlayarak bağımlılıkları temizce yükle
-RUN npm install --ignore-scripts
+RUN npm ci
 
 # Kaynak kodları kopyala ve Keycloakify build işlemini çalıştır
 COPY frontend/app/ ./
