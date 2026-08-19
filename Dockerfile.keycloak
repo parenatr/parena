@@ -2,24 +2,27 @@
 FROM node:20-slim AS theme-builder
 WORKDIR /workspace/frontend/app
 
-# Bağımlılık tanımlarını kopyala
+# Bağımlılık tanımlarını kopyala (layer caching için ayrı adım)
 COPY frontend/app/package*.json ./
 
-# Script tetiklemelerini atlayarak bağımlılıkları temizce yükle
-RUN npm ci
+# postinstall (keycloakify sync-extensions) henüz src/ yokken çalışamaz,
+# bu yüzden şimdilik atlıyoruz — asıl kaynak kod kopyalandıktan sonra manuel tetikleyeceğiz
+RUN npm ci --ignore-scripts
 
-# Kaynak kodları kopyala ve Keycloakify build işlemini çalıştır
+# Kaynak kodları kopyala
 COPY frontend/app/ ./
+
+# Artık src/ mevcut, postinstall'ın yapması gerekeni elle çalıştır
+RUN npx keycloakify sync-extensions
+
+# Keycloakify build işlemini çalıştır (esbuild burada native binary'sini kullanacak)
 RUN npm run build-keycloak-theme
 
 # Stage 2: Keycloak 26.5.5 tabanlı Custom Image
 FROM quay.io/keycloak/keycloak:26.5.5 AS runner
 
-# Vite + Keycloakify çıktısı olan .jar dosyasını Keycloak providers klasörüne aktar
 COPY --from=theme-builder /workspace/frontend/app/dist_keycloak/*.jar /opt/keycloak/providers/
 
-# Provider build işlemini tetikle
 RUN /opt/keycloak/bin/kc.sh build
 
-# Optimize edilmiş modda başlat
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start", "--optimized"]
