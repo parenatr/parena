@@ -1,0 +1,23 @@
+# Stage 1: React + Vite projesini derleyip Keycloakify teması (.jar) üretme
+FROM node:20-alpine AS theme-builder
+WORKDIR /workspace/frontend/app
+
+# Bağımlılık dosyalarını kopyala ve yükle
+COPY frontend/app/package*.json ./
+RUN npm ci
+
+# Kaynak kodları kopyala ve Keycloakify build işlemini çalıştır
+COPY frontend/app/ ./
+RUN npm run build-keycloak-theme
+
+# Stage 2: Keycloak 26.5.5 tabanlı Custom Image
+FROM quay.io/keycloak/keycloak:26.5.5 AS runner
+
+# Vite + Keycloakify çıktısı olan .jar dosyasını Keycloak providers klasörüne aktar
+COPY --from=theme-builder /workspace/frontend/app/dist_keycloak/*.jar /opt/keycloak/providers/
+
+# Provider build işlemini tetikle
+RUN /opt/keycloak/bin/kc.sh build
+
+# Optimize edilmiş modda başlat
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start", "--optimized"]

@@ -49,18 +49,20 @@ services:
           cpus: '0.5'
 
   keycloak:
-    image: quay.io/keycloak/keycloak:26.5.5
+    image: ghcr.io/parenatr/parena-keycloak:latest
     container_name: keycloak
     depends_on:
       keycloak_db:
         condition: service_healthy
     command:
-      - start-dev
+      - start
       - --http-enabled=true
       - --http-port=8585
       - --spi-theme-welcome-theme=keycloak
     expose:
       - "8585"
+#    volumes:
+#      - ./frontend/app/dist_keycloak/keycloak-theme-for-kc-all-other-versions.jar:/opt/keycloak/providers/keycloak-theme.jar
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://keycloak_db:5432/keycloak
@@ -71,8 +73,10 @@ services:
       KC_HEALTH_ENABLED: "true"
       KC_METRICS_ENABLED: "true"
       # GÜVENLİK VE PROXY SIKILAŞTIRMASI:
+      KC_HOSTNAME: https://auth.parena.com.tr
       KC_PROXY_HEADERS: xforwarded
       KC_HTTP_ENABLED: "true"
+      APP_URL: ${SO_FRONTEND_BASE_URL}
     healthcheck:
       test:
         [
@@ -172,6 +176,13 @@ services:
         MODULE: discovery-server
     expose:
       - "8761"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8761/actuator/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 20s
     container_name: discovery-server
     depends_on:
       config-server:
@@ -196,9 +207,18 @@ services:
     expose:
       - "8888"
     container_name: gateway-server
+    restart: unless-stopped
     depends_on:
-      - config-server
-      - discovery-server
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8888/actuator/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 20s
     environment:
       SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
@@ -219,9 +239,18 @@ services:
     expose:
       - "8989"
     container_name: bff-server
+    restart: unless-stopped
     depends_on:
-      config-server:
-        condition: service_healthy
+      config-server: { condition: service_healthy }
+      discovery-server: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      keycloak_config_cli: { condition: service_completed_successfully }
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8989/actuator/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 20s
     environment:
       SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
@@ -231,7 +260,10 @@ services:
       SO_BFF_CLIENT_SECRET: ${SO_BFF_CLIENT_SECRET}
       SO_FRONTEND_BASE_URL: ${SO_FRONTEND_BASE_URL}
       SO_BFF_BASE_URL: ${SO_BFF_BASE_URL}
-      SO_KEYCLOAK_DEV_HOSTNAME: ${SO_KEYCLOAK_DEV_HOSTNAME}
+      SO_KEYCLOAK_PUBLIC_URL: ${SO_KEYCLOAK_PUBLIC_URL}
+    extra_hosts:
+      auth.parena.com.tr: host-gateway
+      api.parena.com.tr: host-gateway
     networks: [ parena ]
     deploy:
       resources:
@@ -247,9 +279,21 @@ services:
     expose:
       - "8080"
     container_name: user-service
+    restart: unless-stopped
     depends_on:
-      user_service_db:
-        condition: service_healthy
+      config-server: { condition: service_healthy }
+      discovery-server: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      keycloak_config_cli: { condition: service_completed_successfully }     
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/actuator/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 20s
+    extra_hosts:
+      auth.parena.com.tr: host-gateway
+      api.parena.com.tr: host-gateway
     environment:
       SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
@@ -259,7 +303,7 @@ services:
       SO_USER_SERVICE_DB_PASSWORD: ${SO_USER_SERVICE_DB_PASSWORD}
       SO_USER_SERVICE_CLIENT_SECRET: ${SO_USER_SERVICE_CLIENT_SECRET}
       SO_FRONTEND_BASE_URL: ${SO_FRONTEND_BASE_URL}
-      SO_KEYCLOAK_DEV_HOSTNAME: ${SO_KEYCLOAK_DEV_HOSTNAME}
+      SO_KEYCLOAK_PUBLIC_URL: ${SO_KEYCLOAK_PUBLIC_URL}
     networks: [ parena ]
     deploy:
       resources:

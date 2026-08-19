@@ -11,6 +11,26 @@ const UserProfileFormFields = lazy(
 const Login = lazy(() => import("./pages/Login"));
 const LoginResetPassword = lazy(() => import("./pages/LoginResetPassword"));
 
+const LoginUpdatePassword = lazy(
+    () => import("./pages/LoginUpdatePassword")
+);
+
+const LoginVerifyEmail = lazy(
+    () => import("./pages/LoginVerifyEmail")
+);
+
+const LoginPageExpired = lazy(
+    () => import("./pages/LoginPageExpired")
+);
+
+const ErrorPage = lazy(
+    () => import("./pages/ErrorPage")
+);
+
+const Info = lazy(
+    () => import("./pages/Info")
+)
+
 const doMakeUserConfirmPassword = true;
 
 export default function KcPage(props: { kcContext: KcContext }) {
@@ -35,6 +55,60 @@ export default function KcPage(props: { kcContext: KcContext }) {
                     case "login-reset-password.ftl":
                         return (
                             <LoginResetPassword
+                                kcContext={kcContext}
+                                i18n={i18n}
+                                classes={classes}
+                                Template={Template}
+                                doUseDefaultCss={true}
+                            />
+                        );
+                    case "login-update-password.ftl":
+                        return (
+                            <LoginUpdatePassword
+                                kcContext={kcContext}
+                                i18n={i18n}
+                                classes={classes}
+                                Template={Template}
+                                doUseDefaultCss={true}
+                            />
+                        );
+
+                    case "login-verify-email.ftl":
+                        return (
+                            <LoginVerifyEmail
+                                kcContext={kcContext}
+                                i18n={i18n}
+                                classes={classes}
+                                Template={Template}
+                                doUseDefaultCss={true}
+                            />
+                        );
+
+                    case "info.ftl":
+                        return (
+                            <Info
+                                kcContext={kcContext}
+                                i18n={i18n}
+                                classes={classes}
+                                Template={Template}
+                                doUseDefaultCss={true}
+                            />
+                        )
+
+                    case "login-page-expired.ftl":
+                        return (
+                            <LoginPageExpired
+                                kcContext={kcContext}
+                                i18n={i18n}
+                                classes={classes}
+                                Template={Template}
+                                doUseDefaultCss={true}
+                            />
+                        );
+
+                    case "error.ftl":
+                        return (
+                            <ErrorPage
                                 kcContext={kcContext}
                                 i18n={i18n}
                                 classes={classes}

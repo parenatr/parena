@@ -1,0 +1,121 @@
+/* Info.tsx'e özel, kendi kendine yeten stil dosyası — auth-shell.css'e bağımlı değildir. */
+
+.info-page {
+    --navy: #13294b;
+    --deep: #0c1d38;
+    --gold: #e0b54e;
+    --ink: #101321;
+    --muted: #6b7285;
+    --line: #e5e8f0;
+
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 34px;
+    padding: 24px;
+    background: linear-gradient(158deg, var(--navy), var(--deep));
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--ink);
+}
+
+.info-wordmark {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: 0.03em;
+    color: #fff;
+}
+
+.info-wordmark em {
+    font-style: normal;
+    color: var(--gold);
+}
+
+.info-card {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    padding: 36px 36px 32px;
+    box-shadow: 0 24px 60px -16px rgba(12, 29, 56, 0.5);
+}
+
+.info-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--gold), var(--navy));
+}
+
+.info-lang {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 6px;
+}
+
+.info-lang select {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-family: inherit;
+    font-size: 12.5px;
+    color: var(--muted);
+    background: #fff;
+    cursor: pointer;
+}
+
+.info-card h1 {
+    font-size: 1.34rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    color: var(--navy);
+    margin-bottom: 14px;
+}
+
+.info-instruction {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: #3a4152;
+    margin-bottom: 26px;
+}
+
+.info-instruction b {
+    color: var(--navy);
+}
+
+.info-card .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    font-family: inherit;
+    font-size: 14.5px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    padding: 13px 24px;
+    border-radius: 11px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    background: var(--navy);
+    color: #fff;
+    box-shadow: 0 10px 26px -12px rgba(19, 41, 75, 0.7);
+    transition: background 0.18s, transform 0.18s;
+}
+
+.info-card .btn:hover {
+    background: var(--deep);
+    transform: translateY(-2px);
+}
