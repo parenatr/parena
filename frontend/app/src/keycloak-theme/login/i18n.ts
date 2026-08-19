@@ -8,10 +8,12 @@ const { useI18n, ofTypeI18n } = i18nBuilder
     .withCustomTranslations({
         tr: {
             // Tam olarak Keycloak'ın fırlattığı Türkçe mesajın karşılığı
-            emailSentMessage: "E-posta adresiniz sistemde kayıtlıysa sıfırlama bağlantısı gönderilmiştir. Lütfen gelen kutunuzu kontrol edin."
+            emailSentMessage: "E-posta adresiniz sistemde kayıtlıysa sıfırlama bağlantısı gönderilmiştir. Lütfen gelen kutunuzu kontrol edin.",
+            logoutOtherSessions: "Diğer tüm oturumları kapat"
         },
         en: {
-            emailSentMessage: "You should receive an email shortly with further instructions."
+            emailSentMessage: "You should receive an email shortly with further instructions.",
+            logoutOtherSessions: "Sign out from other devices"
         }
     })
     .build();

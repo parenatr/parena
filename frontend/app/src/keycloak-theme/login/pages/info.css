@@ -1,4 +1,10 @@
 /* Info.tsx'e özel, kendi kendine yeten stil dosyası — auth-shell.css'e bağımlı değildir. */
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
 
 .info-page {
     --navy: #13294b;

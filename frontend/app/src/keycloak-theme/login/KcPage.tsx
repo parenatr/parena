@@ -9,10 +9,10 @@ const UserProfileFormFields = lazy(
 );
 
 const Login = lazy(() => import("./pages/Login"));
-const LoginResetPassword = lazy(() => import("./pages/LoginResetPassword"));
+const LoginResetPassword = lazy(() => import("./pages/ResetPasswordPage"));
 
 const LoginUpdatePassword = lazy(
-    () => import("./pages/LoginUpdatePassword")
+    () => import("./pages/UpdatePasswordPage")
 );
 
 const LoginVerifyEmail = lazy(

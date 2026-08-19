@@ -22,6 +22,10 @@ export default function LoginUpdatePassword(props: PageProps<Extract<KcContext, 
 
     const hasFieldError = messagesPerField.existsError("password", "password-confirm");
 
+    useEffect(() => {
+        document.title = "Yeni Şifre Belirle | Parena";
+    }, []);
+
     return (
         <AuthShell
             kcContext={kcContext}
