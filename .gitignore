@@ -88,3 +88,7 @@ coverage/
 
 .DS_Store
 Thumbs.db
+
+npm_data/
+npm_letsencrypt/
+*.save
