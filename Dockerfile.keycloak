@@ -1,16 +1,12 @@
 # Stage 1: React + Vite projesini derleyip Keycloakify teması (.jar) üretme
-FROM node:20-alpine AS theme-builder
-
-# Derleme için gerekli sistem paketleri
-RUN apk add --no-cache python3 make g++
-
+FROM node:20-slim AS theme-builder
 WORKDIR /workspace/frontend/app
 
 # Bağımlılık tanımlarını kopyala
 COPY frontend/app/package*.json ./
 
-# npm install ile bağımlılıkları yükle
-RUN npm install
+# Script tetiklemelerini atlayarak bağımlılıkları temizce yükle
+RUN npm install --ignore-scripts
 
 # Kaynak kodları kopyala ve Keycloakify build işlemini çalıştır
 COPY frontend/app/ ./
