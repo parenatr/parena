@@ -17,7 +17,7 @@ export default function Info(props: PageProps<Extract<KcContext, { pageId: "info
     // "VERIFY_EMAIL"); msg()/msgStr() ile çevrilmeleri gerekir. Tip tanımları serbest
     // string kabul etmediği için "as any" ile geçiyoruz — orijinal .ftl'deki
     // ${msg("${messageHeader}")} davranışının birebir karşılığı.
-    const header = messageHeader ? msgStr(messageHeader as any) : message.summary;
+    const header = messageHeader ?? message.summary;
 
     const instructionHtml =
         kcSanitize(message.summary) +

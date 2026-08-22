@@ -125,7 +125,10 @@ public class KeycloakAdminClientAdapter implements KeycloakPort {
         user.setLastName(lastName);
         user.setEnabled(true);
         user.setEmailVerified(false);
-        // TODO: email verification flow ayarlayacağım.
+        // Hesap, email doğrulanana kadar Keycloak'un kendi login akışı tarafından
+        // fiilen bloklanır (login-verify-email.ftl'e yönlendirilir, token üretilmez).
+        // Bu satır olmadan emailVerified=false sadece bir bayraktı, login'i engellemiyordu.
+        user.setRequiredActions(List.of("VERIFY_EMAIL"));
 
         //Set Password
         CredentialRepresentation credential = new CredentialRepresentation();

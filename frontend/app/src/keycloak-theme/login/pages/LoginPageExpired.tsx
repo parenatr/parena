@@ -1,28 +1,32 @@
 import type { PageProps } from "keycloakify/login/pages/PageProps";
 import type { KcContext } from "../KcContext";
 import type { I18n } from "../i18n";
+import { AuthErrorShell } from "../components/AuthErrorShell";
 
-export default function LoginPageExpired(props: PageProps<Extract<KcContext, { pageId: "login-page-expired.ftl" }>, I18n>) {
-    const { kcContext, i18n, doUseDefaultCss, Template, classes } = props;
+const ClockIcon = () => (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+    </svg>
+);
 
+export default function LoginPageExpired(
+    props: PageProps<Extract<KcContext, { pageId: "login-page-expired.ftl" }>, I18n>
+) {
+    const { kcContext, i18n } = props;
     const { url } = kcContext;
-
-    const { msg } = i18n;
+    const { msgStr } = i18n;
 
     return (
-        <Template kcContext={kcContext} i18n={i18n} doUseDefaultCss={doUseDefaultCss} classes={classes} headerNode={msg("pageExpiredTitle")}>
-            <p id="instruction1" className="instruction">
-                {msg("pageExpiredMsg1")}
-                <a id="loginRestartLink" href={url.loginRestartFlowUrl}>
-                    {msg("doClickHere")}{" "}
-                </a>{" "}
-                .<br />
-                {msg("pageExpiredMsg2")}{" "}
-                <a id="loginContinueLink" href={url.loginAction}>
-                    {msg("doClickHere")}
-                </a>{" "}
-                .
+        <AuthErrorShell icon={<ClockIcon />} title={msgStr("pageExpiredTitle")}>
+            <p>
+                {msgStr("pageExpiredMsg1")}{" "}
+                <a href={url.loginRestartFlowUrl}>{msgStr("doClickHere")}</a>.
             </p>
-        </Template>
+            <p style={{ marginTop: 8 }}>
+                {msgStr("pageExpiredMsg2")}{" "}
+                <a href={url.loginAction}>{msgStr("doClickHere")}</a>.
+            </p>
+        </AuthErrorShell>
     );
 }

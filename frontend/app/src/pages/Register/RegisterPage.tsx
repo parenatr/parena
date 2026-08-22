@@ -210,16 +210,7 @@ export default function RegisterPage({ plan = "topluluk" }: { plan?: string }) {
               <span>
                 <AppLink href="/kullanim-sartlari" target="_blank" rel="noopener">
                   Kullanım Şartları
-                </AppLink>
-                ,{" "}
-                <AppLink href="/gizlilik" target="_blank" rel="noopener">
-                  Gizlilik Politikası
-                </AppLink>{" "}
-                ve{" "}
-                <AppLink href="/kvkk" target="_blank" rel="noopener">
-                  KVKK Aydınlatma Metni
-                </AppLink>
-                'ni okudum, kabul ediyorum.
+                </AppLink>'nı okudum, kabul ediyorum.
               </span>
             </label>
             <p className={errors.terms ? "err on" : "err"} role="alert">
@@ -235,9 +226,26 @@ export default function RegisterPage({ plan = "topluluk" }: { plan?: string }) {
                 onChange={(e) => setMarketing(e.target.checked)}
               />
               <span>
-                Kampanya ve duyurulardan e-posta ile haberdar olmak istiyorum.{" "}
+                Tarafıma ürün, hizmet ve kampanyalara ilişkin ticari elektronik ileti almak istiyorum.
                 <span style={{ color: "var(--muted)" }}>(isteğe bağlı)</span>
               </span>
+            </label>
+          </div>
+
+          <div className="field" style={{ marginTop: 20 }}>
+            <label className="check">
+              <span>Kişisel verilerinizin işlenmesine ilişkin{" "}
+                <AppLink href="/kvkk" target="_blank" rel="noopener">
+                  Kvkk Aydınlatma Metni
+                </AppLink>'ni inceleyebilirsiniz.</span>
+            </label>
+          </div>
+          <div className="field" style={{ marginTop: 20 }}>
+            <label className="check">
+              <span>
+                <AppLink href="/gizlilik" target="_blank" rel="noopener">
+                  Gizlilik Politikası
+                </AppLink>'nı inceleyebilirsiniz.</span>
             </label>
           </div>
 

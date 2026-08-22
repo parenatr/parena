@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
 }
@@ -438,7 +439,7 @@ html {
   gap: 0 14px
 }
 
-.auth-page .check {
+.auth-page label.check {
   display: flex;
   gap: 9px;
   align-items: flex-start;
@@ -448,7 +449,7 @@ html {
   line-height: 1.55
 }
 
-.auth-page .check input {
+.auth-page label.check input {
   appearance: none;
   -webkit-appearance: none;
   width: 17px;
