@@ -9,10 +9,10 @@ const UserProfileFormFields = lazy(
 );
 
 const Login = lazy(() => import("./pages/Login"));
-const LoginResetPassword = lazy(() => import("./pages/ResetPasswordPage"));
+const LoginResetPassword = lazy(() => import("./pages/LoginResetPassword"));
 
 const LoginUpdatePassword = lazy(
-    () => import("./pages/UpdatePasswordPage")
+    () => import("./pages/LoginUpdatePassword")
 );
 
 const LoginVerifyEmail = lazy(
@@ -23,8 +23,8 @@ const LoginPageExpired = lazy(
     () => import("./pages/LoginPageExpired")
 );
 
-const ErrorPage = lazy(
-    () => import("./pages/ErrorPage")
+const Error = lazy(
+    () => import("./pages/Error")
 );
 
 const Info = lazy(
@@ -108,7 +108,7 @@ export default function KcPage(props: { kcContext: KcContext }) {
 
                     case "error.ftl":
                         return (
-                            <ErrorPage
+                            <Error
                                 kcContext={kcContext}
                                 i18n={i18n}
                                 classes={classes}

@@ -1,7 +1,6 @@
 package com.parena.userservice.domain.port;
 
 import com.parena.userservice.domain.aggregate.enums.Role;
-import com.parena.userservice.domain.aggregate.root.User;
 
 import java.util.Set;
 import java.util.UUID;

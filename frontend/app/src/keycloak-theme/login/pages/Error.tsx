@@ -4,6 +4,8 @@ import type { KcContext } from "../KcContext";
 import type { I18n } from "../i18n";
 import { AuthErrorShell } from "../components/AuthErrorShell";
 
+const FRONTEND_HOME_URL = import.meta.env.VITE_FRONTEND_BASE_URL as string;
+
 const ErrorIcon = () => (
     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <circle cx="12" cy="12" r="10" />
@@ -18,13 +20,19 @@ export default function Error(props: PageProps<Extract<KcContext, { pageId: "err
     const { msgStr } = i18n;
 
     return (
-        <AuthErrorShell icon={<ErrorIcon />} title={msgStr("errorTitle")}>
+        <AuthErrorShell
+            icon={<ErrorIcon />}
+            title={msgStr("errorTitle")}
+            docTitle="Bir hata oluştu | Parena"
+            actions={
+                !skipLink ? (
+                    <a className="btn btn-ghost" href={client?.baseUrl || FRONTEND_HOME_URL}>
+                        {client?.baseUrl ? msgStr("backToApplication") : "Anasayfaya dön"}
+                    </a>
+                ) : undefined
+            }
+        >
             <p dangerouslySetInnerHTML={{ __html: kcSanitize(message.summary) }} />
-            {!skipLink && !!client?.baseUrl && (
-                <a className="btn btn-ghost" href={client.baseUrl} style={{ marginTop: 16, display: "inline-flex" }}>
-                    {msgStr("backToApplication")}
-                </a>
-            )}
         </AuthErrorShell>
     );
 }

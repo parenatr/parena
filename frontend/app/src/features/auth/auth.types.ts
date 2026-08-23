@@ -15,13 +15,3 @@ export type RegisterRequest = {
   password: string;
   marketingConsent: boolean;
 };
-
-export type ForgotPasswordRequest = {
-  email: string;
-};
-
-export type ResetPasswordRequest = {
-  /** E-postadaki sıfırlama bağlantısından gelen tek kullanımlık token. */
-  token: string;
-  password: string;
-};

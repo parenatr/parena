@@ -6,6 +6,8 @@ import type { I18n } from "../i18n";
 import { ParenaMark } from "@/components/brand/ParenaMark";
 import "./info.css";
 
+const FRONTEND_HOME_URL = import.meta.env.VITE_FRONTEND_BASE_URL as string;
+
 export default function Info(props: PageProps<Extract<KcContext, { pageId: "info.ftl" }>, I18n>) {
     const { kcContext, i18n } = props;
 
@@ -36,7 +38,7 @@ export default function Info(props: PageProps<Extract<KcContext, { pageId: "info
 
     return (
         <div className="info-page">
-            <a className="info-wordmark" href="/" aria-label="PARENA ana sayfa">
+            <a className="info-wordmark" href={FRONTEND_HOME_URL} aria-label="PARENA ana sayfa">
                 <ParenaMark size={30} />
                 <span>
                     PAR<em>ENA</em>

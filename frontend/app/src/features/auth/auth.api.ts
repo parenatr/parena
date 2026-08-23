@@ -2,21 +2,17 @@ import { env } from "@/config/env";
 import { apiRequest } from "@/lib/http/api-client";
 
 import type {
-  ForgotPasswordRequest,
   RegisterRequest,
-  ResetPasswordRequest,
   SessionUser,
 } from "./auth.types";
 
 export const AUTH_ENDPOINTS = {
   register: "/api/v1/users/register",
-  forgotPassword: "/api/auth/forgot-password",
-  resetPassword: "/api/auth/reset-password",
   me: "/api/auth/me",
-  logout: "/api/auth/logout", // TODO: BFF'in gerçek logout mekanizması ayrı ele alınacak (aşağıya bakın)
+  logout: "/api/auth/logout", // TODO: BFF'in gerçek logout mekanizması ayrı ele alınacak
 } as const;
 
-/** Keycloak'ın (ileride Keycloakify temalı) login sayfasına tam sayfa yönlendirme URL'i. */
+/** Keycloak'ın (Keycloakify temalı) login sayfasına tam sayfa yönlendirme URL'i. */
 export function getLoginRedirectUrl(): string {
   return `${env.apiBaseUrl}/oauth2/authorization/keycloak`;
 }
@@ -24,11 +20,12 @@ export function getLoginRedirectUrl(): string {
 export const register = (data: RegisterRequest) =>
   apiRequest<void>(AUTH_ENDPOINTS.register, { method: "POST", body: data });
 
-export const forgotPassword = (data: ForgotPasswordRequest) =>
-  apiRequest<void>(AUTH_ENDPOINTS.forgotPassword, { method: "POST", body: data });
-
-export const resetPassword = (data: ResetPasswordRequest) =>
-  apiRequest<void>(AUTH_ENDPOINTS.resetPassword, { method: "POST", body: data });
+/** Keycloak'ın native "Forgot Password" akışına yönlendirme.
+ *  Kullanıcı login sayfasına düşer; oradaki "Şifremi unuttum" linki
+ *  Keycloak'un kendi reset-credentials ekranına götürür. */
+export function getPasswordResetRedirectUrl(): string {
+  return getLoginRedirectUrl();
+}
 
 export const fetchSession = async (signal?: AbortSignal) => {
   const payload = await apiRequest<unknown>(AUTH_ENDPOINTS.me, {
@@ -42,9 +39,6 @@ export const fetchSession = async (signal?: AbortSignal) => {
 
   return { ...candidate, roles: candidate.roles ?? [] } as SessionUser;
 };
-
-//export const logout = () =>
-//  apiRequest<{ redirectUrl: string }>(AUTH_ENDPOINTS.logout, { method: "POST" });
 
 export const logout = (): void => {
   // AJAX kullanmıyoruz; tarayıcıyı doğrudan BFF logout endpoint'ine sürüyoruz

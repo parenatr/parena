@@ -14,7 +14,7 @@ services:
     ports:
       - '80:80'   # Let's Encrypt SSL doğrulaması için şarttır
       - '443:443' # Gerçek şifreli HTTPS trafiği için şarttır
-      - '81:81'   # NPM Panel girişi (İşiniz bitince cloud firewall'dan kapatabilirsiniz)
+      - '81:81'   # NPM Panel girişi kapalı.
     volumes:
       - ./npm_data:/data
       - ./npm_letsencrypt:/etc/letsencrypt

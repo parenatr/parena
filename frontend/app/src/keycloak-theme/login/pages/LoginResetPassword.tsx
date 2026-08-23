@@ -7,6 +7,7 @@ import type { I18n } from "../i18n";
 import { AuthShell } from "../../../components/auth/AuthShell";
 import { AuthField } from "../../../components/auth/AuthField";
 
+//Şifremi Unuttum  -> Email ister.
 export default function LoginResetPassword(
     props: PageProps<Extract<KcContext, { pageId: "login-reset-password.ftl" }>, I18n>
 ) {

@@ -6,11 +6,8 @@ import com.parena.userservice.web.dto.request.RegisterUserRequest;
 import com.parena.userservice.web.dto.response.RegisteredUserResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -36,7 +33,6 @@ public class UserController {
                 user.getUserId().value(),
                 user.getEmail(),
                 user.getFirstName(),
-                user.getLastName()
-        );
+                user.getLastName());
     }
 }

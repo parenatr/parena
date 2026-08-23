@@ -19,7 +19,7 @@ const { useI18n, ofTypeI18n } = i18nBuilder
             logoutOtherSessions: "Sign out from other devices",
             backToApplication: "Back to Application",
             proceedWithAction: "Click here to proceed",
-            confirmExecutionOfActions: "Perform the following action(s)",
+            confirmExecutionOfActions: "Perform the following action",
         }
     })
     .build();

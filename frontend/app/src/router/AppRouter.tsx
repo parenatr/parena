@@ -4,9 +4,6 @@ import { useEffect } from "react";
 
 import { useDocumentMeta, type PageMeta } from "@/hooks/use-document-meta";
 import CheckoutPage, { checkoutPageMeta } from "@/pages/Checkout/CheckoutPage";
-import ForgotPasswordPage, {
-  forgotPasswordPageMeta,
-} from "@/pages/ForgotPassword/ForgotPasswordPage";
 import LaunchPage, { launchPageMeta } from "@/pages/Launch/LaunchPage";
 import CerezPage, { cerezPageMeta } from "@/pages/Legal/CerezPage";
 import GizlilikPage, { gizlilikPageMeta } from "@/pages/Legal/GizlilikPage";
@@ -16,11 +13,9 @@ import KullanimSartlariPage, {
 import KvkkPage, { kvkkPageMeta } from "@/pages/Legal/KvkkPage";
 import MesafeliSatisPage, { mesafeliSatisPageMeta } from "@/pages/Legal/MesafeliSatisPage";
 import RegisterPage, { registerPageMeta } from "@/pages/Register/RegisterPage";
-import ResetPasswordPage, { resetPasswordPageMeta } from "@/pages/ResetPassword/ResetPasswordPage";
-import { getLoginRedirectUrl } from "@/features/auth/auth.api";
+import { getLoginRedirectUrl, getPasswordResetRedirectUrl } from "@/features/auth/auth.api";
 
-
-/** Sayfayı meta yönetimiyle sarmalar (TanStack `head()` karşılığı). */
+/** Sayfayı meta yönetimiyle sarmalar. */
 function withMeta(Page: ComponentType, meta: PageMeta) {
   return function MetaBoundPage() {
     useDocumentMeta(meta);
@@ -32,13 +27,14 @@ function LoginRoute() {
   useEffect(() => {
     window.location.href = getLoginRedirectUrl();
   }, []);
-  return null; // kısa bir "Yönlendiriliyorsunuz..." metni de gösterebiliriz.
+  return null;
 }
 
-function ResetPasswordRoute() {
-  useDocumentMeta(resetPasswordPageMeta);
-  const [params] = useSearchParams();
-  return <ResetPasswordPage token={params.get("token") ?? undefined} />;
+function ForgotPasswordRoute() {
+  useEffect(() => {
+    window.location.href = getPasswordResetRedirectUrl();
+  }, []);
+  return null;
 }
 
 const LaunchRoute = withMeta(LaunchPage, launchPageMeta);
@@ -48,7 +44,6 @@ function RegisterRoute() {
   const plan = params.get("plan") ?? "topluluk";
   return <RegisterPage plan={plan} />;
 }
-const ForgotPasswordRoute = withMeta(ForgotPasswordPage, forgotPasswordPageMeta);
 const CheckoutRoute = withMeta(CheckoutPage, checkoutPageMeta);
 const CerezRoute = withMeta(CerezPage, cerezPageMeta);
 const GizlilikRoute = withMeta(GizlilikPage, gizlilikPageMeta);
@@ -83,18 +78,17 @@ export function AppRouter() {
     <>
       <ScrollToTop />
       <Routes>
-      <Route path="/" element={<LaunchRoute />} />
-      <Route path="/giris" element={<LoginRoute />} />
-      <Route path="/uye-ol" element={<RegisterRoute />} />
-      <Route path="/sifremi-unuttum" element={<ForgotPasswordRoute />} />
-      <Route path="/sifre-sifirla" element={<ResetPasswordRoute />} />
-      <Route path="/odeme" element={<CheckoutRoute />} />
-      <Route path="/cerez" element={<CerezRoute />} />
-      <Route path="/gizlilik" element={<GizlilikRoute />} />
-      <Route path="/kullanim-sartlari" element={<KullanimSartlariRoute />} />
-      <Route path="/kvkk" element={<KvkkRoute />} />
-      <Route path="/mesafeli-satis" element={<MesafeliSatisRoute />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/" element={<LaunchRoute />} />
+        <Route path="/giris" element={<LoginRoute />} />
+        <Route path="/uye-ol" element={<RegisterRoute />} />
+        <Route path="/sifremi-unuttum" element={<ForgotPasswordRoute />} />
+        <Route path="/odeme" element={<CheckoutRoute />} />
+        <Route path="/cerez" element={<CerezRoute />} />
+        <Route path="/gizlilik" element={<GizlilikRoute />} />
+        <Route path="/kullanim-sartlari" element={<KullanimSartlariRoute />} />
+        <Route path="/kvkk" element={<KvkkRoute />} />
+        <Route path="/mesafeli-satis" element={<MesafeliSatisRoute />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   );

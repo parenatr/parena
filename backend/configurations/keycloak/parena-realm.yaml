@@ -8,24 +8,27 @@ registrationAllowed: false # Keycloak'ın kendi register formu KAPALI.
 loginTheme: app
 resetPasswordAllowed: true # Forgot Password akışı Keycloak'ın kendi (Keycloakify temalı) flow'u üzerinden.
 rememberMe: true
-verifyEmail:
-  false # TODO: user-service, Admin API ile kullanıcı oluşturduktan sonra
+verifyEmail: false
+  # TODO: user-service, Admin API ile kullanıcı oluşturduktan sonra
   # ayrıca "gönder email verification" action'ını tetiklemeli.
   # Bunu true yapmak sadece Keycloak'ın KENDİ self-registration
   # formundan gelen kayıtları etkiler; bizim akışımızda etkisi yok.
   # KYC/AML gereksinimi netleşince true'ya çekip user-service'te
 # sendVerifyEmail() çağrısını ekleyeceğiz.
 
+registrationEmailAsUsername: true
 loginWithEmailAllowed: true
 duplicateEmailsAllowed: false
 
 # --- Brute-force koruması ---
 bruteForceProtected: true
-permanentLockout: false
-failureFactor: 5
-waitIncrementSeconds: 60
+permanentLockout: true
 maxFailureWaitSeconds: 900
+minimumQuickLoginWaitSeconds : 60
+waitIncrementSeconds: 60
+quickLoginCheckMilliSeconds : 1000
 maxDeltaTimeSeconds: 43200
+failureFactor: 3
 
 # --- Parola politikası ---
 passwordPolicy: "length(10) and upperCase(1) and lowerCase(1) and digits(1) and specialChars(1) and notUsername and passwordHistory(3)"

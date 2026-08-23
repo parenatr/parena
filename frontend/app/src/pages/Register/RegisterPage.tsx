@@ -7,6 +7,7 @@ import { FOUNDER_PRICE, FOUNDER_QUOTA_LEFT } from "@/data/quota";
 import { useRegister } from "@/features/auth/auth.queries";
 import { isValidEmail, normalizeEmail } from "@/lib/auth-validation";
 import { ApiError, toUserMessage } from "@/lib/http/api-error";
+import { getPasswordRuleError, scorePasswordStrength, STRENGTH_LABELS } from "@/lib/password-policy";
 
 export const registerPageMeta = {
   title: "Ücretsiz Üye Ol | Parena",
@@ -16,13 +17,6 @@ export const registerPageMeta = {
   ogDescription: "Kurucu kontenjanı sınırlı. Kart bilgisi istenmeden 2 dakikada üye ol.",
 };
 
-const STRENGTH_LABELS = [
-  "Parola gücü ölçülüyor",
-  "Zayıf",
-  "Orta",
-  "İyi",
-  "Güçlü",
-] as const;
 
 const BACKEND_FIELD_MAP: Record<string, keyof Errors> = {
   firstName: "ad",
@@ -30,15 +24,6 @@ const BACKEND_FIELD_MAP: Record<string, keyof Errors> = {
   email: "mail",
   password: "pass",
 };
-
-function scorePassword(value: string) {
-  let score = 0;
-  if (value.length >= 8) score++;
-  if (value.length >= 12) score++;
-  if (/[A-ZÇĞİÖŞÜ]/.test(value) && /[a-zçğıöşü]/.test(value)) score++;
-  if (/[0-9]/.test(value) && /[^A-Za-z0-9]/.test(value)) score++;
-  return Math.min(score, 4);
-}
 
 type Errors = {
   ad?: string;
@@ -62,7 +47,7 @@ export default function RegisterPage({ plan = "topluluk" }: { plan?: string }) {
   const [doneMail, setDoneMail] = useState<string | null>(null);
 
   const registerMutation = useRegister();
-  const strength = useMemo(() => (password ? scorePassword(password) : 0), [password]);
+  const strength = useMemo(() => (password ? scorePasswordStrength(password) : 0), [password]);
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -71,11 +56,12 @@ export default function RegisterPage({ plan = "topluluk" }: { plan?: string }) {
     const ad = firstName.trim().slice(0, 60);
     const soyad = lastName.trim().slice(0, 60);
     const mail = normalizeEmail(email);
+    const passwordError = getPasswordRuleError(password, mail);
     const next: Errors = {};
     if (ad.length < 2) next.ad = "Adını gir.";
     if (soyad.length < 2) next.soyad = "Soyadını gir.";
     if (!isValidEmail(mail)) next.mail = "Geçerli bir e-posta adresi gir.";
-    if (password.length < 8) next.pass = "Parola en az 8 karakter olmalı.";
+    if (passwordError) next.pass = passwordError;
     if (!terms) next.terms = "Devam etmek için sözleşmeleri kabul etmelisin.";
 
     setErrors(next);
@@ -178,7 +164,7 @@ export default function RegisterPage({ plan = "topluluk" }: { plan?: string }) {
             id="pass"
             label={
               <>
-                Parola <span className="hint">— en az 8 karakter</span>
+                Parola <span className="hint">— en az 10 karakter</span>
               </>
             }
             name="password"

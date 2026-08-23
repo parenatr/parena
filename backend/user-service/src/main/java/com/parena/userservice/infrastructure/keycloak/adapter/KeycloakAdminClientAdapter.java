@@ -1,8 +1,6 @@
 package com.parena.userservice.infrastructure.keycloak.adapter;
 
-
 import com.parena.userservice.domain.aggregate.enums.Role;
-import com.parena.userservice.domain.aggregate.root.User;
 import com.parena.userservice.infrastructure.keycloak.exception.KeycloakServiceException;
 import com.parena.userservice.domain.port.KeycloakPort;
 import com.parena.userservice.infrastructure.keycloak.config.KeycloakProperties;
@@ -43,14 +41,15 @@ public class KeycloakAdminClientAdapter implements KeycloakPort {
     public UUID createUser(String firstName, String lastName, String email, String password, Set<Role> roles) {
         log.info("Creating user with email: {}", email);
 
-        //Realm'e bağlan (GET /admin/realms/{realm})
+        // Realm'e bağlan (GET /admin/realms/{realm})
         RealmResource realmResource = keycloakAdminClient.realm(keycloakProperties.getRealm());
-        //O Realm içerisindeki kullanıcı endpointine erişir (GET /admin/realms/{realm}/users)
+        // O Realm içerisindeki kullanıcı endpointine erişir (GET
+        // /admin/realms/{realm}/users)
         UsersResource usersResource = realmResource.users();
-        //Create user representation
+        // Create user representation
         UserRepresentation user = getUserRepresentation(firstName, lastName, email, password);
 
-        //User create edilip Response nesnesine atanır.
+        // User create edilip Response nesnesine atanır.
         try (Response response = usersResource.create(user)) {
             if (response.getStatus() == 409) {
                 throw new EmailAlreadyRegisteredException(email);
@@ -71,7 +70,6 @@ public class KeycloakAdminClientAdapter implements KeycloakPort {
             // telafi eylemi (Keycloak kullanıcısını silme) devreye giremezdi.
         }
     }
-
 
     @Override
     public void deleteUser(UUID keycloakId) {
@@ -103,8 +101,7 @@ public class KeycloakAdminClientAdapter implements KeycloakPort {
             userResource.executeActionsEmail(
                     keycloakProperties.getClientId(),
                     keycloakProperties.getEmailVerifiedRedirectUri(),
-                    List.of("VERIFY_EMAIL")
-            );
+                    List.of("VERIFY_EMAIL"));
         } catch (jakarta.ws.rs.WebApplicationException e) {
             String body = e.getResponse().readEntity(String.class);
             log.error("executeActionsEmail başarısız: status={}, body={}", e.getResponse().getStatus(), body);
@@ -112,12 +109,11 @@ public class KeycloakAdminClientAdapter implements KeycloakPort {
         }
     }
 
-    //Helper methods
+    // Helper methods
     private UserRepresentation getUserRepresentation(
             String firstName, String lastName,
-            String email, String password)
-    {
-        //Create User with Keycloak Admin Api
+            String email, String password) {
+        // Create User with Keycloak Admin Api
         UserRepresentation user = new UserRepresentation();
         user.setUsername(email);
         user.setEmail(email);
@@ -127,18 +123,18 @@ public class KeycloakAdminClientAdapter implements KeycloakPort {
         user.setEmailVerified(false);
         // Hesap, email doğrulanana kadar Keycloak'un kendi login akışı tarafından
         // fiilen bloklanır (login-verify-email.ftl'e yönlendirilir, token üretilmez).
-        // Bu satır olmadan emailVerified=false sadece bir bayraktı, login'i engellemiyordu.
+        // Bu satır olmadan emailVerified=false sadece bir bayraktı, login'i
+        // engellemiyordu.
         user.setRequiredActions(List.of("VERIFY_EMAIL"));
 
-        //Set Password
+        // Set Password
         CredentialRepresentation credential = new CredentialRepresentation();
         credential.setType(CredentialRepresentation.PASSWORD);
         credential.setValue(password);
         credential.setTemporary(false);
 
-        //UserRepresentation içerisine password bilgisi eklenir.
+        // UserRepresentation içerisine password bilgisi eklenir.
         user.setCredentials(List.of(credential));
         return user;
     }
 }
-

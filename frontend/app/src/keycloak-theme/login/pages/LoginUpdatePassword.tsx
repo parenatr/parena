@@ -5,50 +5,59 @@ import type { I18n } from "../i18n";
 
 import { AuthShell } from "../../../components/auth/AuthShell";
 import { AuthPasswordField } from "../../../components/auth/AuthField";
+import { getPasswordRuleError, scorePasswordStrength, STRENGTH_LABELS } from "@/lib/password-policy";
 
+//Yeni Parola Belirle -> new Password 
 export default function LoginUpdatePassword(props: PageProps<Extract<KcContext, { pageId: "login-update-password.ftl" }>, I18n>) {
     const { kcContext, i18n } = props;
-
     const { msg, msgStr } = i18n;
-
-    const { url, messagesPerField, isAppInitiatedAction } = kcContext;
+    const { url, messagesPerField, isAppInitiatedAction, auth } = kcContext;
 
     useEffect(() => {
-        document.title = "Yeni Şifre Belirle | Parena";
+        document.title = "Yeni Parola Belirle | Parena";
     }, []);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [passwordNew, setPasswordNew] = useState("");
+    const [passwordConfirm, setPasswordConfirm] = useState("");
+    const [clientError, setClientError] = useState<string | undefined>();
 
     const hasFieldError = messagesPerField.existsError("password", "password-confirm");
 
-    useEffect(() => {
-        document.title = "Yeni Şifre Belirle | Parena";
-    }, []);
-
+    function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        const ruleError = getPasswordRuleError(passwordNew, auth?.attemptedUsername);
+        if (ruleError) {
+            e.preventDefault();
+            setClientError(ruleError);
+            return;
+        }
+        if (passwordNew !== passwordConfirm) {
+            e.preventDefault();
+            setClientError("Parolalar eşleşmiyor.");
+            return;
+        }
+        setClientError(undefined);
+        setIsSubmitting(true);
+    }
     return (
         <AuthShell
-            kcContext={kcContext}
-            sideTitle="Son adım: yeni şifreni belirle."
-            sideText="Güçlü bir şifre seç, hesabını güvende tut. Kaydettikten sonra doğrudan hesabına yönlendirileceksin."
+            sideTitle="Son adım: yeni parolanı belirle."
+            sideText="Güçlü bir parola seç, hesabını güvende tut. Kaydettikten sonra doğrudan hesabına yönlendirileceksin."
             proof={[
-                { no: "01", text: "En az 8 karakter, harf ve rakam içermeli" },
+                { no: "01", text: "En az 10 karakter, büyük/küçük harf, rakam, özel karakter" },
                 { no: "02", text: "Güncelleme sonrası tüm oturumlar kapanır" },
-                { no: "03", text: "Şifreni kimseyle paylaşma" }
+                { no: "03", text: "Parolanı kimseyle paylaşma" }
             ]}
         >
             <div className="card-top">
-                <p className="eyebrow">Şifre güncelle</p>
-                <h1>Yeni şifreni belirle</h1>
-                <p className="sub">Hesabının güvenliği için yeni bir şifre oluştur.</p>
+                <p className="eyebrow">Parola güncelle</p>
+                <h1>Yeni parolanı belirle</h1>
+                <p className="sub">Hesabının güvenliği için yeni bir parola oluştur.</p>
             </div>
 
             <form
                 id="kc-passwd-update-form"
-                onSubmit={() => {
-                    setIsSubmitting(true);
-                    return true;
-                }}
+                onSubmit={handleSubmit}
                 action={url.loginAction}
                 method="post"
                 noValidate
@@ -57,13 +66,16 @@ export default function LoginUpdatePassword(props: PageProps<Extract<KcContext, 
                     id="password-new"
                     name="password-new"
                     label={msg("passwordNew")}
-                    placeholder="En az 8 karakter"
+                    placeholder="En az 10 karakter"
                     autoFocus
                     autoComplete="new-password"
                     value={passwordNew}
                     onChange={e => setPasswordNew(e.target.value)}
                     aria-invalid={hasFieldError}
-                    error={messagesPerField.existsError("password") ? messagesPerField.get("password") : undefined}
+                    error={
+                        clientError ??
+                        (messagesPerField.existsError("password") ? messagesPerField.get("password") : undefined)
+                    }
                 >
                     <PasswordStrengthMeter password={passwordNew} />
                 </AuthPasswordField>
@@ -72,8 +84,10 @@ export default function LoginUpdatePassword(props: PageProps<Extract<KcContext, 
                     id="password-confirm"
                     name="password-confirm"
                     label={msg("passwordConfirm")}
-                    placeholder="Şifreni tekrar gir"
+                    placeholder="Parolanı tekrar gir"
                     autoComplete="new-password"
+                    value={passwordConfirm}
+                    onChange={e => setPasswordConfirm(e.target.value)}
                     aria-invalid={hasFieldError}
                     error={messagesPerField.existsError("password-confirm") ? messagesPerField.get("password-confirm") : undefined}
                 />
@@ -97,35 +111,21 @@ export default function LoginUpdatePassword(props: PageProps<Extract<KcContext, 
                 </div>
             </form>
 
-            <p className="foot">Bu şifreyi başka hiçbir yerde kullanma.</p>
+            <p className="foot">Bu parolayı başka hiçbir yerde kullanma.</p>
         </AuthShell>
     );
 }
 
-function passScore(v: string) {
-    let s = 0;
-    if (v.length >= 8) s++;
-    if (/[A-Z]/.test(v) && /[a-z]/.test(v)) s++;
-    if (/\d/.test(v)) s++;
-    if (/[^A-Za-z0-9]/.test(v) && v.length >= 10) s++;
-    return Math.min(s, 4);
-}
 
-const METER_TXT = ["Çok zayıf", "Zayıf", "Orta", "İyi", "Güçlü"];
-
-/** `.field` içine, input ile hata satırı arasına yerleşen şifre gücü göstergesi. */
 function PasswordStrengthMeter({ password }: { password: string }) {
-    const score = password ? Math.max(passScore(password), 1) : 0;
+    const score = password ? Math.max(scorePasswordStrength(password), 1) : 0;
 
     return (
         <>
             <div className={`meter${score ? ` s${score}` : ""}`}>
-                <i></i>
-                <i></i>
-                <i></i>
-                <i></i>
+                <i></i><i></i><i></i><i></i>
             </div>
-            <p className="meter-txt">{password ? METER_TXT[score] : "En az 8 karakter, harf ve rakam kullan."}</p>
+            <p className="meter-txt">{password ? STRENGTH_LABELS[score] : STRENGTH_LABELS[0]}</p>
         </>
     );
 }
