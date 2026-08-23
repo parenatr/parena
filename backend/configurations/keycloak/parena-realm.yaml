@@ -6,6 +6,8 @@ sslRequired: external # dev'de http serbest (proxy arkasında), prod'da zorunlu 
 registrationAllowed: false # Keycloak'ın kendi register formu KAPALI.
 # Register akışı user-service -> Keycloak Admin API üzerinden yürütülüyor.
 loginTheme: app
+emailTheme: app
+
 resetPasswordAllowed: true # Forgot Password akışı Keycloak'ın kendi (Keycloakify temalı) flow'u üzerinden.
 rememberMe: true
 verifyEmail: false
@@ -32,6 +34,7 @@ failureFactor: 3
 
 # --- Parola politikası ---
 passwordPolicy: "length(10) and upperCase(1) and lowerCase(1) and digits(1) and specialChars(1) and notUsername and passwordHistory(3)"
+#minimum 10 karakter, en az 1 adet büyük harf, en az 1 adet küçük harf, en az 1 adet sayı, şifre ile mail aynı olamaz, 3 adet password geçmişi tutulur.
 
 # --- Token / session ömürleri ---
 accessTokenLifespan: 300 # 5 dk - BFF refresh token ile otomatik yeniler
