@@ -1,6 +1,12 @@
 # This file is managed by Keycloakify, do not edit it manually.
 
 # === Owned files start ===
+# email/html/email-verification.ftl
+# email/html/executeActions.ftl
+# email/html/password-reset.ftl
+# email/html/template.ftl
+# email/messages/messages_en.properties
+# email/messages/messages_tr.properties
 # === Owned files end =====
 
 # === @keycloakify/email-native v260007.0.0 ===
@@ -8,7 +14,6 @@
 /email/html/email-test.ftl
 /email/html/email-update-confirmation.ftl
 /email/html/email-verification-with-code.ftl
-/email/html/email-verification.ftl
 /email/html/event-login_error.ftl
 /email/html/event-remove_credential.ftl
 /email/html/event-remove_totp.ftl
@@ -17,18 +22,14 @@
 /email/html/event-update_totp.ftl
 /email/html/event-user_disabled_by_permanent_lockout.ftl
 /email/html/event-user_disabled_by_temporary_lockout.ftl
-/email/html/executeActions.ftl
 /email/html/identity-provider-link.ftl
 /email/html/org-invite.ftl
-/email/html/password-reset.ftl
-/email/html/template.ftl
 /email/messages/messages_ar.properties
 /email/messages/messages_ca.properties
 /email/messages/messages_cs.properties
 /email/messages/messages_da.properties
 /email/messages/messages_de.properties
 /email/messages/messages_el.properties
-/email/messages/messages_en.properties
 /email/messages/messages_es.properties
 /email/messages/messages_fa.properties
 /email/messages/messages_fi.properties
@@ -47,7 +48,6 @@
 /email/messages/messages_sk.properties
 /email/messages/messages_sv.properties
 /email/messages/messages_th.properties
-/email/messages/messages_tr.properties
 /email/messages/messages_uk.properties
 /email/messages/messages_zh_CN.properties
 /email/messages/messages_zh_TW.properties
