@@ -2,23 +2,23 @@ import { kcSanitize } from "keycloakify/lib/kcSanitize";
 import type { PageProps } from "keycloakify/login/pages/PageProps";
 import type { KcContext } from "../KcContext";
 import type { I18n } from "../i18n";
+import { useEffect } from "react";
 
 import { ParenaMark } from "@/components/brand/ParenaMark";
 import "./info.css";
 
-const FRONTEND_HOME_URL = import.meta.env.VITE_FRONTEND_BASE_URL as string;
 
 export default function Info(props: PageProps<Extract<KcContext, { pageId: "info.ftl" }>, I18n>) {
     const { kcContext, i18n } = props;
-
-    //   const { msg, msgStr } = i18n;
     const { msgStr } = i18n;
-    const { message, messageHeader, requiredActions, skipLink, pageRedirectUri, actionUri, client, locale } = kcContext;
+    const { message, messageHeader, requiredActions, skipLink, pageRedirectUri, actionUri, client, locale, properties } = kcContext;
 
-    // messageHeader ve requiredActions birer mesaj *anahtarı*dır (ör. "emailVerifyTitle",
-    // "VERIFY_EMAIL"); msg()/msgStr() ile çevrilmeleri gerekir. Tip tanımları serbest
-    // string kabul etmediği için "as any" ile geçiyoruz — orijinal .ftl'deki
-    // ${msg("${messageHeader}")} davranışının birebir karşılığı.
+    const appUrl = properties?.APP_URL; // runtime'da Keycloak container'ından gelir
+
+    useEffect(() => {
+        document.title = "Hesabını Güncelle | Parena";
+    }, []);
+
     const header = messageHeader ?? message.summary;
 
     const instructionHtml =
@@ -34,11 +34,13 @@ export default function Info(props: PageProps<Extract<KcContext, { pageId: "info
             ? { href: actionUri, label: msgStr("proceedWithAction") }
             : client.baseUrl
                 ? { href: client.baseUrl, label: msgStr("backToApplication") }
-                : undefined;
+                : appUrl
+                    ? { href: appUrl, label: "Anasayfaya dön" }
+                    : undefined;
 
     return (
         <div className="info-page">
-            <a className="info-wordmark" href={FRONTEND_HOME_URL} aria-label="PARENA ana sayfa">
+            <a className="info-wordmark" href={appUrl ?? "/"} aria-label="PARENA ana sayfa">
                 <ParenaMark size={30} />
                 <span>
                     PAR<em>ENA</em>

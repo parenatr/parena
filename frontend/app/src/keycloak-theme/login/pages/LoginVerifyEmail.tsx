@@ -1,14 +1,20 @@
 import type { PageProps } from "keycloakify/login/pages/PageProps";
 import type { KcContext } from "../KcContext";
 import type { I18n } from "../i18n";
+import { useEffect } from "react";
 
 import { AuthShell } from "../../../components/auth/AuthShell";
 
+//Kayıt oldun mail doğrulama action ile mailini doğrulamadın. Giriş yapmak istedin. 
 export default function LoginVerifyEmail(
     props: PageProps<Extract<KcContext, { pageId: "login-verify-email.ftl" }>, I18n>
 ) {
     const { kcContext } = props;
     const { url, user } = kcContext;
+
+    useEffect(() => {
+        document.title = "E-Posta Doğrulama | Parena";
+    }, []);
 
     return (
         <AuthShell

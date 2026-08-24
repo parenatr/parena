@@ -46,9 +46,7 @@ refreshTokenMaxReuse: 0 # rotation ihlali (eski token tekrar kullanılırsa) = t
 
 # --- Dil desteği ---
 internationalizationEnabled: true
-supportedLocales:
-  - tr
-  - en
+supportedLocales: ["tr"]
 defaultLocale: tr
 
 # --- Realm rolleri ---

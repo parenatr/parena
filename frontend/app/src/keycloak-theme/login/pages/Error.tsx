@@ -4,8 +4,6 @@ import type { KcContext } from "../KcContext";
 import type { I18n } from "../i18n";
 import { AuthErrorShell } from "../components/AuthErrorShell";
 
-const FRONTEND_HOME_URL = import.meta.env.VITE_FRONTEND_BASE_URL as string;
-
 const ErrorIcon = () => (
     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <circle cx="12" cy="12" r="10" />
@@ -16,8 +14,10 @@ const ErrorIcon = () => (
 
 export default function Error(props: PageProps<Extract<KcContext, { pageId: "error.ftl" }>, I18n>) {
     const { kcContext, i18n } = props;
-    const { message, client, skipLink } = kcContext;
+    const { message, client, skipLink, properties } = kcContext;
     const { msgStr } = i18n;
+
+    const appUrl = properties?.APP_URL; // runtime'da Docker'dan gelen APP_URL
 
     return (
         <AuthErrorShell
@@ -26,7 +26,7 @@ export default function Error(props: PageProps<Extract<KcContext, { pageId: "err
             docTitle="Bir hata oluştu | Parena"
             actions={
                 !skipLink ? (
-                    <a className="btn btn-ghost" href={client?.baseUrl || FRONTEND_HOME_URL}>
+                    <a className="btn btn-ghost" href={client?.baseUrl || appUrl || "/"}>
                         {client?.baseUrl ? msgStr("backToApplication") : "Anasayfaya dön"}
                     </a>
                 ) : undefined
