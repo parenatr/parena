@@ -25,14 +25,14 @@ duplicateEmailsAllowed: false
 # --- Brute-force koruması ---
 bruteForceProtected: true
 permanentLockout: false
-maxTemporaryLockouts: 1        # 1 geçici kilitten sonra kalıcıya geçer
 bruteForceStrategy: MULTIPLE
-maxFailureWaitSeconds: 900
-minimumQuickLoginWaitSeconds : 60
-waitIncrementSeconds: 60
-quickLoginCheckMilliSeconds : 1000
-maxDeltaTimeSeconds: 43200
-failureFactor: 5
+quickLoginCheckMilliSeconds : 1000 #1000ms altındaki art arda denemeler bot/otomasyon olarak algılanır
+minimumQuickLoginWaitSeconds : 5 #(5sn) ile anında geçici kilitlenir
+waitIncrementSeconds: 30        #hesap geçici kilitlenir. ilk kilit süresi 30 sn. 30 sn sonra kilit açılır.
+maxTemporaryLockouts: 3        # Kullanıcı bu geçici kilit turunu bir kez daha tetiklerse, hesap kalıcı kilide düşer ve admin müdahalesi gerekir.
+maxFailureWaitSeconds: 3600     #tekrarlanan turlarda 1 saate kadar katlanarak artar
+maxDeltaTimeSeconds: 900    #son başarısız denemeden bu yana 12 saat geçtiyse sayaç sıfırlanır.
+failureFactor: 5      #Bir kullanıcı 5 kez üst üste yanlış şifre girer → hesap geçici kilitlenir.
 
 # --- Parola politikası ---
 passwordPolicy: "length(10) and upperCase(1) and lowerCase(1) and digits(1) and specialChars(1) and notUsername and passwordHistory(3)"
