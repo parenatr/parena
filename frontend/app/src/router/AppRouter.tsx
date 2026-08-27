@@ -39,11 +39,20 @@ function ForgotPasswordRoute() {
 
 const LaunchRoute = withMeta(LaunchPage, launchPageMeta);
 function RegisterRoute() {
-  useDocumentMeta(registerPageMeta);
   const [params] = useSearchParams();
-  const plan = params.get("plan") ?? "topluluk";
-  return <RegisterPage plan={plan} />;
+
+  const rawPlan = params.get("plan");
+  const rawOffer = params.get("offer");
+
+  // Geçersiz veya eksik parametrelerde ücretsiz akışa dön.
+  const plan = rawPlan === "premium" ? "premium" : "ucretsiz";
+  const offer = plan === "premium" && rawOffer === "founder" ? "founder" : undefined;
+
+  useDocumentMeta(registerPageMeta);
+
+  return <RegisterPage plan={plan} offer={offer} />;
 }
+
 const CheckoutRoute = withMeta(CheckoutPage, checkoutPageMeta);
 const CerezRoute = withMeta(CerezPage, cerezPageMeta);
 const GizlilikRoute = withMeta(GizlilikPage, gizlilikPageMeta);

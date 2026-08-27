@@ -80,7 +80,7 @@ export function SiteNav() {
           <div className="mob-menu-actions">
             <AuthAction variant="mobile" />
             <a className="btn btn-primary" href="#fiyat" data-cta="nav-uyeol-mob" style={{ color: "#ffffff", background: "var(--navy)" }}>
-              Kurucu üye ol · 149 ₺/ay
+              Üye Ol
             </a>
           </div>
         </nav>
@@ -88,7 +88,7 @@ export function SiteNav() {
         <div className="nav-cta">
           <AuthAction variant="desktop" />
           <a className="btn btn-primary nav-primary-btn" href="#fiyat" data-cta="nav-uyeol">
-            Kurucu üye ol
+            Üye ol
           </a>
           <button
             type="button"

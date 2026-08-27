@@ -10,11 +10,10 @@ import { ApiError, toUserMessage } from "@/lib/http/api-error";
 import { getPasswordRuleError, scorePasswordStrength, STRENGTH_LABELS } from "@/lib/password-policy";
 
 export const registerPageMeta = {
-  title: "Ücretsiz Üye Ol | Parena",
-  description:
-    "2 dakikada ücretsiz PARENA hesabı oluştur; kart bilgisi istenmez. Kurucu üyeliğe istediğin zaman yükselt.",
-  ogTitle: "PARENA — Ücretsiz hesap oluştur",
-  ogDescription: "Kurucu kontenjanı sınırlı. Kart bilgisi istenmeden 2 dakikada üye ol.",
+  title: "Üye Ol | Parena",
+  description: "PARENA hesabını oluştur; ücretsiz erişimle başla veya Premium plana devam et.",
+  ogTitle: "PARENA — Hesabını oluştur",
+  ogDescription: "Ücretsiz hesapla başla veya Premium planına devam et.",
 };
 
 
@@ -34,8 +33,27 @@ type Errors = {
   form?: string;
 };
 
-export default function RegisterPage({ plan = "topluluk" }: { plan?: string }) {
-  const isFounder = plan === "kurucu";
+type RegisterPlan = "ucretsiz" | "premium";
+type RegisterOffer = "founder" | undefined;
+
+
+export default function RegisterPage({
+  plan,
+  offer,
+}: {
+  plan?: string | null;
+  offer?: string | null;
+}) {
+  // Geçersiz veya eksik parametreler ücretsiz akışa güvenli biçimde döner.
+  const selectedPlan: RegisterPlan = plan === "premium" ? "premium" : "ucretsiz";
+  const selectedOffer: RegisterOffer =
+    selectedPlan === "premium" && offer === "founder" ? "founder" : undefined;
+
+  const isPremium = selectedPlan === "premium";
+  const hasFounderOffer = selectedOffer === "founder";
+  const paymentHref = hasFounderOffer
+    ? "/odeme?plan=premium&offer=founder"
+    : "/odeme?plan=premium";
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -89,28 +107,68 @@ export default function RegisterPage({ plan = "topluluk" }: { plan?: string }) {
       }
     }
   }
+  const STANDARD_PREMIUM_PRICE = "249 ₺/ay";
+  const shellContent = hasFounderOffer
+    ? {
+      sideTitle: `Kurucu kontenjanında ${FOUNDER_QUOTA_LEFT} kişilik yer kaldı.`,
+      sideText:
+        `İlk 150 kullanıcıya Premium plan içinde Kurucu statüsü atanır. ` +
+        `Statün, üyeliğin kesintisiz sürdüğü müddetçe ${FOUNDER_PRICE} fiyat avantajını korur.`,
+      proof: [
+        { no: "01", text: "Premium plan için Kurucu statüsü avantajı" },
+        { no: "02", text: "Ödeme hesabın oluşturulduktan sonra tamamlanır" },
+        { no: "03", text: "Üyeliğin sürdükçe sabit fiyat avantajını koru" },
+      ],
+    }
+    : isPremium
+      ? {
+        sideTitle: "Premium üyeliğe bir adım kaldı.",
+        sideText:
+          `Premium planla tüm önerilere, kurum karnesine ve ileri analiz araçlarına ` +
+          `${STANDARD_PREMIUM_PRICE} ile erişebilirsin.`,
+        proof: [
+          { no: "01", text: "Dört içerik tipindeki tüm öneriler ve kaynak PDF" },
+          { no: "02", text: "Kurum ve sektör analizi, portföy takibi ve simülatör" },
+          { no: "03", text: "Ödeme hesabın oluşturulduktan sonra tamamlanır" },
+        ],
+      }
+      : {
+        sideTitle: "Parena’yı kendi hızında dene.",
+        sideText: "Ücretsiz hesabını oluştur, topluluğa katıl ve platformu yakından tanı.",
+        proof: [
+          { no: "01", text: "Ücretsiz hesapla Telegram topluluğuna katıl" },
+          { no: "02", text: "Kart bilgisi istenmez, kayıt 2 dakika sürer" },
+          { no: "03", text: "Hazır olduğunda Premium plana geç" },
+        ],
+      };
 
   return (
     <AuthShell
-      sideTitle={`Kurucu kontenjanında ${FOUNDER_QUOTA_LEFT} kişilik yer kaldı.`}
-      sideText={`İlk 150 üye için ${FOUNDER_PRICE}. 151. üyeden itibaren aynı platform 249 ₺/ay olarak devam edecek.`}
-      proof={[
-        { no: "01", text: "Ücretsiz hesapla Telegram topluluğuna katıl" },
-        { no: "02", text: "Kart bilgisi istenmez, kayıt 2 dakika sürer" },
-        { no: "03", text: "İstediğinde kurucu üyeliğe yükselt" },
-      ]}
+      sideTitle={shellContent.sideTitle}
+      sideText={shellContent.sideText}
+      proof={shellContent.proof}
     >
       <div className="card-top">
         <p className="eyebrow">Kayıt</p>
-        <h1>{isFounder ? "Önce hesabını oluştur" : "Ücretsiz hesap oluştur"}</h1>
+        <h1>{isPremium ? "Önce hesabını oluştur" : "Ücretsiz hesap oluştur"}</h1>
         <p className="sub">
           Zaten hesabın var mı? <AppLink href="/giris">Giriş yap</AppLink>
         </p>
-        {isFounder ? (
+
+        {isPremium ? (
           <div className="planbar">
-            <span className="pb-tag">Kurucu üyelik</span>
+            <span className="pb-tag">
+              {hasFounderOffer ? "Premium plan · Kurucu Üye" : "Premium plan"}
+            </span>
             <span className="pb-txt">
-              Önce hesabını oluştur, sonra ödemeye geç. <b>{FOUNDER_PRICE}</b>
+              {hasFounderOffer ? (
+                <>
+                  Önce hesabını oluştur, sonra ödemeye geç. Üyeliğin sürdükçe{" "}
+                  <b>{FOUNDER_PRICE}</b> avantajın korunur.
+                </>
+              ) : (
+                <>Önce hesabını oluştur, sonra Premium üyeliğe devam et.</>
+              )}
             </span>
           </div>
         ) : null}
@@ -259,10 +317,12 @@ export default function RegisterPage({ plan = "topluluk" }: { plan?: string }) {
             <span className="mail">{doneMail}</span> adresine bir doğrulama bağlantısı
             gönderdik. Bağlantıya tıklayarak hesabını etkinleştir.
           </p>
-          {isFounder ? (
+          {isPremium ? (
             <>
-              <AppLink className="btn" href="/odeme?plan=kurucu">
-                Ödemeye geç · {FOUNDER_PRICE}
+              <AppLink className="btn" href={paymentHref}>
+                {hasFounderOffer
+                  ? `Ödemeye geç · ${FOUNDER_PRICE}`
+                  : "Premium üyeliğe devam et"}
               </AppLink>
               <p style={{ fontSize: "12.5px", color: "var(--muted)", marginTop: 14 }}>
                 Ödemeyi sonra da tamamlayabilirsin;{" "}

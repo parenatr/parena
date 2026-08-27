@@ -16,7 +16,7 @@ export function StickyCta() {
           Kontenjan: <span id="stickyQuota">{PRICING_CONFIG.founder.takenFounders}</span>/{PRICING_CONFIG.founder.maxFounders} doldu ({FOUNDER_QUOTA_LEFT} kaldı)
         </span>
       </div>
-      <AppLink className="btn btn-primary" href="/uye-ol?plan=kurucu" data-cta="sticky">
+      <AppLink className="btn btn-primary" href="/uye-ol?plan=premium&offer=founder" data-cta="sticky">
         Üye ol
       </AppLink>
     </div>

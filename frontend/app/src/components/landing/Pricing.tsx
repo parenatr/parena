@@ -21,21 +21,47 @@ export function Pricing() {
 
             <div className="pcard rv">
               <span className="ptag free">Ücretsiz</span>
-              <p className="pname">Topluluk</p>
+              <p className="pname">Parena'yı dene</p>
               <p className="pprice">0 ₺<small>/ay</small></p>
               <p className="pyear">Kart bilgisi istenmez</p>
+
               <ul className="plist">
-                <li>PARENA Telegram topluluğuna katılım</li>
+                <li>Parena Telegram topluluğuna katılım</li>
                 <li>Topluluk içi piyasa sohbeti ve duyurular</li>
                 <li>Yeni özelliklerden ve kontenjan durumundan ilk haberdar olma</li>
+                <li>Anasayfa, Kap Akışı ve Ajanda sınırlı erişim</li>
                 <li className="off">Günlük, haftalık, model portföy ve kısa vadeli öneriler</li>
                 <li className="off">Her önerinin kâr/zararı ve hedef fiyatlar</li>
                 <li className="off">Sektör bazlı kurum isabet analizi</li>
                 <li className="off">Portföy karnesi, konsensüs ve simülatör</li>
               </ul>
-              <AppLink className="btn btn-ghost btn-block" href="/uye-ol?plan=topluluk" data-cta="plan-free">Topluluğa katıl</AppLink>
-              <p className="pfoot">Kayıt 2 dakika sürer.<br />
-                <AppLink href="/kullanim-sartlari">Kullanım Şartları</AppLink> ve <AppLink href="/gizlilik">Gizlilik Politikası</AppLink> geçerlidir.</p>
+
+              <div className="free-actions">
+                <a
+                  className="btn btn-ghost"
+                  href="https://t.me/parena_official"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-cta="plan-community"
+                >
+                  Topluluğa katıl
+                </a>
+                <AppLink
+                  className="btn btn-primary"
+                  href="/uye-ol?plan=ucretsiz"
+                  data-cta="plan-free"
+                >
+                  Ücretsiz kayıt ol
+                </AppLink>
+              </div>
+
+              <p className="pfoot">
+                <span>Kayıt 2 dakika sürer.</span>
+                <span>
+                  <AppLink href="/kullanim-sartlari">Kullanım Şartları</AppLink> ve{" "}
+                  <AppLink href="/gizlilik">Gizlilik Politikası</AppLink> geçerlidir.
+                </span>
+              </p>
             </div>
 
             <div className="pcard hero-plan rv">
@@ -75,12 +101,12 @@ export function Pricing() {
                 <li>Kurucu üyelere özel Telegram kanalı ve yeni özelliklere ilk erişim</li>
               </ul>
 
-              <AppLink className="btn btn-primary btn-block btn-lg" href="/uye-ol?plan=kurucu" data-cta="plan-premium">Kurucu üye ol · 149 ₺/ay</AppLink>
+              <AppLink className="btn btn-primary btn-block btn-lg" href="/uye-ol?plan=premium&offer=founder" data-cta="plan-premium">Kurucu üye ol · 149 ₺/ay</AppLink>
               <p className="pfoot">
                 🔒 Ödeme iyzico'nun güvenli sayfasında tamamlanır; kart bilgilerin PARENA'da saklanmaz.<br />
                 Kurucu kontenjanı dolduğunda üyelik 249 ₺/ay olarak devam eder.<br />
                 Üyelik <AppLink href="/kullanim-sartlari">Kullanım Şartları</AppLink> ve
-                <AppLink href="/mesafeli-satis">Mesafeli Satış Sözleşmesi</AppLink>'ne tabidir.
+                <AppLink href="/mesafeli-satis"> Mesafeli Satış Sözleşmesi</AppLink>'ne tabidir.
               </p>
             </div>
 

@@ -1569,8 +1569,52 @@ html {
 .launch-page .pfoot a:hover {
   border-bottom-color: var(--navy);
 }
+.launch-page .pfoot > span {
+  display: block;
+}
 
+.launch-page .pfoot > span + span {
+  margin-top: 3px;
+}
 
+.free-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr ));
+  gap: 10px;
+}
+@media (min-width: 981px) {
+  /* İki CTA'nın bulunduğu alan ile sağdaki btn-lg alanı eşit yüksekliktedir. */
+  .launch-page .free-actions,
+  .launch-page .pcard > .btn.btn-lg {
+    flex: 0 0 55px;
+    min-height: 55px;
+  }
+
+  /* Sol karttaki her CTA, Premium kartın btn-lg yüksekliğini taşır. */
+  .launch-page .free-actions .btn {
+    min-height: 55px;
+  }
+
+  /* Alt açıklamalar farklı uzunlukta olsa da CTA hizası değişmez. */
+  .launch-page .pcard > .pfoot {
+    min-height: 76px;
+  }
+}
+
+.free-actions .btn {
+  width: 100%;
+  padding-inline: 10px;
+  font-size: 13px;
+}
+
+@media (max-width: 640px) {
+  .free-actions {
+    grid-template-columns: 1fr;
+  }
+  .free-actions .btn {
+    font-size: 14.5px;
+  }
+}
 /* =========================
    CAPTURE
 ========================= */

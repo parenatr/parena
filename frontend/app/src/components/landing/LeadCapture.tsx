@@ -65,7 +65,7 @@ export function LeadCapture() {
           <p className="cap-note">
             E-posta adresin <AppLink href="/kvkk">KVKK Aydınlatma Metni</AppLink> kapsamında
             işlenir. Sohbete katılmak istersen{" "}
-            <AppLink href="/uye-ol?plan=topluluk">ücretsiz hesap açıp</AppLink> PARENA Telegram
+            <AppLink href="/uye-ol?plan=ucretsiz">ücretsiz hesap açıp</AppLink> PARENA Telegram
             topluluğuna girebilirsin.
           </p>
 
