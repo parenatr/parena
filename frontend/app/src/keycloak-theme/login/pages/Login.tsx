@@ -54,8 +54,9 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
 
             {/* Keycloak'ın kendi ürettiği durum mesajları — örn. reset-password
                 sonrası "E-postana talimatlar gönderildi" bildirimi buradan geliyor.
-                messagesPerField (alan hataları) ile ayrı, çakışmaları test ederken izleyin. */}
-            {message !== undefined && (
+                Kullanıcı adı/parola hatası messagesPerField'a da yazıldığı için (aşağıda
+                gösteriliyor), aynı metnin iki kez basılmaması için burada bastırılıyor. */}
+            {message !== undefined && !hasFieldError && (
                 <p className={`notice notice-${message.type}`} role="status">
                     {message.summary}
                 </p>
