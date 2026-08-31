@@ -7,7 +7,7 @@ eureka:
 #user-service keycloak bağlantısı.
 keycloak:
   realm: parena
-  auth-server-url: ${SO_KEYCLOAK_PUBLIC_URL}
+  auth-server-url: ${SO_KEYCLOAK_INTERNAL_URL}
 
   # Keycloak Admin API'ye bağlanmak için kullanılan client
   admin-client-id: user-service
@@ -19,7 +19,7 @@ keycloak:
 
 spring:
   datasource:
-    url: jdbc:postgresql://user_service_db:5432/user_service
+    url: jdbc:postgresql://user_service_db:5432/{SO_USER_SERVICE_DB_NAME}
     username: ${SO_USER_SERVICE_DB_USER}
     password: ${SO_USER_SERVICE_DB_PASSWORD}
 
