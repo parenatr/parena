@@ -19,7 +19,10 @@ services:
       - ./npm_data:/data
       - ./npm_letsencrypt:/etc/letsencrypt
     networks:
-      - parena
+      parena:
+        aliases:
+          - auth.parena.com.tr
+          - api.parena.com.tr
     restart: unless-stopped
     deploy:
       resources:
@@ -70,7 +73,7 @@ services:
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${SO_KEYCLOAK_ADMIN_PASSWORD}
       # GÜVENLİK VE PROXY SIKILAŞTIRMASI:
       KC_HOSTNAME: https://auth.parena.com.tr
-      KC_PROXY_HEADERS: xforwarded
+      KC_PROXY_HEADERS: xforwarded   #Keycloak'ın Nginx'ten gelen gerçek IP ve yönlendirme başlıklarını okumasını sağlar
       KC_HTTP_ENABLED: "true"
       APP_URL: ${SO_FRONTEND_BASE_URL}
     healthcheck:
@@ -258,9 +261,6 @@ services:
       SO_FRONTEND_BASE_URL: ${SO_FRONTEND_BASE_URL}
       SO_BFF_BASE_URL: ${SO_BFF_BASE_URL}
       SO_KEYCLOAK_PUBLIC_URL: ${SO_KEYCLOAK_PUBLIC_URL}
-    extra_hosts:
-      auth.parena.com.tr: host-gateway
-      api.parena.com.tr: host-gateway
     networks: [ parena ]
     deploy:
       resources:
@@ -288,9 +288,6 @@ services:
       timeout: 3s
       retries: 20
       start_period: 20s
-    extra_hosts:
-      auth.parena.com.tr: host-gateway
-      api.parena.com.tr: host-gateway
     environment:
       SO_CONFIG_SECURITY_USER: ${SO_CONFIG_SECURITY_USER}
       SO_CONFIG_SECURITY_PASSWORD: ${SO_CONFIG_SECURITY_PASSWORD}
