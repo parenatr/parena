@@ -264,10 +264,12 @@ services:
 
       SO_USER_SERVICE_DB_USER: ${SO_USER_SERVICE_DB_USER}
       SO_USER_SERVICE_DB_PASSWORD: ${SO_USER_SERVICE_DB_PASSWORD}
+      SO_USER_SERVICE_DB_NAME: ${SO_USER_SERVICE_DB_NAME}
 
       SO_USER_SERVICE_CLIENT_SECRET: ${SO_USER_SERVICE_CLIENT_SECRET}
       SO_FRONTEND_BASE_URL: ${SO_FRONTEND_BASE_URL}
       SO_KEYCLOAK_PUBLIC_URL: ${SO_KEYCLOAK_PUBLIC_URL}
+      SO_KEYCLOAK_INTERNAL_URL: ${SO_KEYCLOAK_INTERNAL_URL}
     networks: [ parena ]
 
   # ---------------- DB(PostgreSQL) Services ----------------
@@ -275,7 +277,7 @@ services:
     image: postgres:16
     container_name: user-service-db
     environment:
-      POSTGRES_DB: user_service
+      POSTGRES_DB: ${SO_USER_SERVICE_DB_NAME}
       POSTGRES_USER: ${SO_USER_SERVICE_DB_USER}
       POSTGRES_PASSWORD: ${SO_USER_SERVICE_DB_PASSWORD}
     ports:
@@ -283,7 +285,7 @@ services:
     volumes:
       - userservicedb_vol:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${SO_USER_SERVICE_DB_USER} -d user_service" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${SO_USER_SERVICE_DB_USER} -d ${SO_USER_SERVICE_DB_NAME}" ]
       interval: 5s
       timeout: 3s
       retries: 10
