@@ -42,15 +42,13 @@ function RegisterRoute() {
   const [params] = useSearchParams();
 
   const rawPlan = params.get("plan");
-  const rawOffer = params.get("offer");
 
   // Geçersiz veya eksik parametrelerde ücretsiz akışa dön.
   const plan = rawPlan === "premium" ? "premium" : "ucretsiz";
-  const offer = plan === "premium" && rawOffer === "founder" ? "founder" : undefined;
 
   useDocumentMeta(registerPageMeta);
 
-  return <RegisterPage plan={plan} offer={offer} />;
+  return <RegisterPage plan={plan} />;
 }
 
 const CheckoutRoute = withMeta(CheckoutPage, checkoutPageMeta);

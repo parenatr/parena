@@ -3,7 +3,6 @@ import { useMemo, useState, type FormEvent } from "react";
 import { AuthField, AuthPasswordField } from "@/components/auth/AuthField";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { AppLink } from "@/components/ui/app-link";
-import { FOUNDER_PRICE, FOUNDER_QUOTA_LEFT } from "@/data/quota";
 import { useRegister } from "@/features/auth/auth.queries";
 import { isValidEmail, normalizeEmail } from "@/lib/auth-validation";
 import { ApiError, toUserMessage } from "@/lib/http/api-error";
@@ -34,26 +33,16 @@ type Errors = {
 };
 
 type RegisterPlan = "ucretsiz" | "premium";
-type RegisterOffer = "founder" | undefined;
-
 
 export default function RegisterPage({
   plan,
-  offer,
 }: {
   plan?: string | null;
-  offer?: string | null;
 }) {
   // Geçersiz veya eksik parametreler ücretsiz akışa güvenli biçimde döner.
   const selectedPlan: RegisterPlan = plan === "premium" ? "premium" : "ucretsiz";
-  const selectedOffer: RegisterOffer =
-    selectedPlan === "premium" && offer === "founder" ? "founder" : undefined;
-
   const isPremium = selectedPlan === "premium";
-  const hasFounderOffer = selectedOffer === "founder";
-  const paymentHref = hasFounderOffer
-    ? "/odeme?plan=premium&offer=founder"
-    : "/odeme?plan=premium";
+  const paymentHref = "/odeme?plan=premium";
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -108,19 +97,7 @@ export default function RegisterPage({
     }
   }
   const STANDARD_PREMIUM_PRICE = "249 ₺/ay";
-  const shellContent = hasFounderOffer
-    ? {
-      sideTitle: `Kurucu kontenjanında ${FOUNDER_QUOTA_LEFT} kişilik yer kaldı.`,
-      sideText:
-        `İlk 150 kullanıcıya Premium plan içinde Kurucu statüsü atanır. ` +
-        `Statün, üyeliğin kesintisiz sürdüğü müddetçe ${FOUNDER_PRICE} fiyat avantajını korur.`,
-      proof: [
-        { no: "01", text: "Premium plan için Kurucu statüsü avantajı" },
-        { no: "02", text: "Ödeme hesabın oluşturulduktan sonra tamamlanır" },
-        { no: "03", text: "Üyeliğin sürdükçe sabit fiyat avantajını koru" },
-      ],
-    }
-    : isPremium
+  const shellContent = isPremium
       ? {
         sideTitle: "Premium üyeliğe bir adım kaldı.",
         sideText:
@@ -158,17 +135,10 @@ export default function RegisterPage({
         {isPremium ? (
           <div className="planbar">
             <span className="pb-tag">
-              {hasFounderOffer ? "Premium plan · Kurucu Üye" : "Premium plan"}
+              Premium plan
             </span>
             <span className="pb-txt">
-              {hasFounderOffer ? (
-                <>
-                  Önce hesabını oluştur, sonra ödemeye geç. Üyeliğin sürdükçe{" "}
-                  <b>{FOUNDER_PRICE}</b> avantajın korunur.
-                </>
-              ) : (
-                <>Önce hesabını oluştur, sonra Premium üyeliğe devam et.</>
-              )}
+              Önce hesabını oluştur, sonra Premium üyeliğe devam et.
             </span>
           </div>
         ) : null}
@@ -320,9 +290,7 @@ export default function RegisterPage({
           {isPremium ? (
             <>
               <AppLink className="btn" href={paymentHref}>
-                {hasFounderOffer
-                  ? `Ödemeye geç · ${FOUNDER_PRICE}`
-                  : "Premium üyeliğe devam et"}
+                Premium üyeliğe devam et
               </AppLink>
               <p style={{ fontSize: "12.5px", color: "var(--muted)", marginTop: 14 }}>
                 Ödemeyi sonra da tamamlayabilirsin;{" "}

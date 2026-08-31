@@ -5,6 +5,10 @@ import { BrowserRouter } from "react-router-dom";
 import { AppRouter } from "./router/AppRouter";
 
 /**
+ * App.tsx
+ * Asıl uygulama
+ * Fast Refresh kuralı aktif
+ * 
  * Uygulama kabuğu.
  * Mimari: React -> react-router-dom -> Pages
  *         React Components -> React Query -> API Client -> BFF

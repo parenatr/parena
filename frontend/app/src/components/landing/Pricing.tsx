@@ -101,7 +101,7 @@ export function Pricing() {
                 <li>Kurucu üyelere özel Telegram kanalı ve yeni özelliklere ilk erişim</li>
               </ul>
 
-              <AppLink className="btn btn-primary btn-block btn-lg" href="/uye-ol?plan=premium&offer=founder" data-cta="plan-premium">Kurucu üye ol · 149 ₺/ay</AppLink>
+              <AppLink className="btn btn-primary btn-block btn-lg" href="/uye-ol?plan=premium" data-cta="plan-premium">Kurucu üye ol · 149 ₺/ay</AppLink>
               <p className="pfoot">
                 🔒 Ödeme iyzico'nun güvenli sayfasında tamamlanır; kart bilgilerin PARENA'da saklanmaz.<br />
                 Kurucu kontenjanı dolduğunda üyelik 249 ₺/ay olarak devam eder.<br />

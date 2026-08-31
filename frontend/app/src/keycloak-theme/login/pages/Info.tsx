@@ -24,7 +24,7 @@ export default function Info(props: PageProps<Extract<KcContext, { pageId: "info
     const instructionHtml =
         kcSanitize(message.summary) +
         (requiredActions
-            ? `: <b>${requiredActions.map(action => kcSanitize(msgStr(`requiredAction.${action}` as any))).join(", ")}</b>`
+            ? `: <b>${requiredActions.map(action => kcSanitize(msgStr(`requiredAction.${action}` as Parameters<typeof msgStr>[0]))).join(", ")}</b>`
             : "");
 
     const showLink = skipLink === undefined;

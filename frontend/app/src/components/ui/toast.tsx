@@ -4,9 +4,7 @@ import {
   Info,
 } from "lucide-react";
 import {
-  createContext,
   useCallback,
-  useContext,
   useMemo,
   useRef,
   useState,
@@ -14,21 +12,12 @@ import {
 } from "react";
 
 import { cn } from "@/lib/utils";
-
-type ToastVariant = "success" | "error" | "info";
+import { ToastContext, type ToastVariant } from "../../hooks/use-toast";
 
 interface ToastState {
   message: string;
   variant: ToastVariant;
 }
-
-interface ToastContextValue {
-  success: (message: string) => void;
-  error: (message: string) => void;
-  info: (message: string) => void;
-}
-
-const ToastContext = createContext<ToastContextValue | null>(null);
 
 export function ToastProvider({ children }: PropsWithChildren) {
   const [toast, setToast] = useState<ToastState | null>(null);
@@ -121,14 +110,4 @@ export function ToastProvider({ children }: PropsWithChildren) {
       )}
     </ToastContext.Provider>
   );
-}
-
-export function useToast() {
-  const context = useContext(ToastContext);
-
-  if (!context) {
-    throw new Error("useToast must be used inside ToastProvider");
-  }
-
-  return context;
 }
