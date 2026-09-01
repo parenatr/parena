@@ -27,7 +27,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://keycloak:8585/realms/parena/protocol/openid-connect/certs
+          jwk-set-uri: ${SO_KEYCLOAK_INTERNAL_URL}/realms/parena/protocol/openid-connect/certs
 
   jpa:
     hibernate:

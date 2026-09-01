@@ -24,8 +24,8 @@ duplicateEmailsAllowed: false
 
 # --- Brute-force koruması ---
 bruteForceProtected: true
-permanentLockout: true
-bruteForceStrategy: MULTIPLE
+permanentLockout: true       #kalıcı kilitlenme açık
+bruteForceStrategy: MULTIPLE #Lockout permanently after temporary lockout
 quickLoginCheckMilliSeconds : 1000 #1000ms altındaki art arda denemeler bot/otomasyon olarak algılanır
 minimumQuickLoginWaitSeconds : 5 #(5sn) ile anında geçici kilitlenir
 waitIncrementSeconds: 30        #hesap geçici kilitlenir. ilk kilit süresi 30 sn. 30 sn sonra kilit açılır.
@@ -108,7 +108,7 @@ clients:
       - "https://api.parena.com.tr/login/oauth2/code/*"
       - "$(env:SO_FRONTEND_BASE_URL)/email-dogrulandi"
     webOrigins:
-      - "https://parena.com.tr" # Frontend (Vercel) origin adresi
+      - "$(env:SO_FRONTEND_BASE_URL)" # Frontend (Vercel) origin adresi
     attributes:
       pkce.code.challenge.method: S256
       post.logout.redirect.uris: "$(env:SO_FRONTEND_BASE_URL)/*"
