@@ -38,10 +38,20 @@ function BrandBlock({ className, homeHref }: { className: string; homeHref: stri
 }
 
 /** Auth ekranlarının iki panelli ortak kabuğu (sol marka paneli + sağ form kartı). */
-export function AuthShell({ sideTitle, sideText, proof = DEFAULT_PROOF, children, kcContext }: AuthShellProps) {
-  const appOrigin = kcContext?.properties?.APP_URL;      // Keycloak'ta dolu, SPA'da undefined
-  const homeHref = appOrigin ?? "/";
-  const legalHref = (path: string) => (appOrigin ? `${appOrigin}${path}` : path);
+export function AuthShell({
+  sideTitle,
+  sideText,
+  proof = DEFAULT_PROOF,
+  children,
+  kcContext,
+}: AuthShellProps) {
+  const websiteOrigin =
+    kcContext?.properties?.WEBSITE_URL ?? "https://parena.com.tr";
+
+  const homeHref = websiteOrigin;
+
+  const legalHref = (path: string) =>
+    `${websiteOrigin}${path}`;
   return (
     <div className="auth-page">
       <a className="skip" href="#icerik">

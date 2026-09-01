@@ -11,7 +11,14 @@ export default defineConfig({
     keycloakify({
       accountThemeImplementation: "none",
       environmentVariables: [
-        { name: "APP_URL", default: "https://parena.com.tr" },
+        {
+          name: "APP_URL",
+          default: "https://app.parena.com.tr",
+        },
+        {
+          name: "WEBSITE_URL",
+          default: "https://parena.com.tr",
+        },
       ],
     }),
   ],
