@@ -76,6 +76,7 @@ services:
       KC_PROXY_HEADERS: xforwarded   #Keycloak'ın Nginx'ten gelen gerçek IP ve yönlendirme başlıklarını okumasını sağlar
       KC_HTTP_ENABLED: "true"
       APP_URL: ${SO_FRONTEND_BASE_URL}
+      WEBSITE_URL: ${SO_WEBSITE_BASE_URL}
     healthcheck:
       test:
         [
@@ -261,6 +262,7 @@ services:
       SO_FRONTEND_BASE_URL: ${SO_FRONTEND_BASE_URL}
       SO_BFF_BASE_URL: ${SO_BFF_BASE_URL}
       SO_KEYCLOAK_PUBLIC_URL: ${SO_KEYCLOAK_PUBLIC_URL}
+      SO_KEYCLOAK_INTERNAL_URL: ${SO_KEYCLOAK_INTERNAL_URL}
     networks: [ parena ]
     deploy:
       resources:
