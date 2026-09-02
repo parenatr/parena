@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import { Compare } from "@/components/landing/Compare";
 import { Faq } from "@/components/landing/Faq";
@@ -16,6 +16,7 @@ import { StickyCta } from "@/components/landing/StickyCta";
 import { TrustBar } from "@/components/landing/TrustBar";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteNav } from "@/components/layout/SiteNav";
+import { useSession } from "@/features/auth/auth.queries";
 import { useLandingEffects } from "@/hooks/use-landing-effects";
 
 import "./LaunchPage.css";
@@ -32,6 +33,20 @@ export const launchPageMeta = {
 export default function LaunchPage() {
   const rootRef = useRef<HTMLDivElement>(null);
   useLandingEffects(rootRef);
+
+  // ── GEÇİCİ DEMO YÖNLENDİRMESİ ──────────────────────────────────────────
+  // Sunum için: login/register sonrası bu sayfaya (BFF'in default redirect
+  // hedefi) düşen HER authenticated kullanıcı, public/demo-dashboard.html
+  // altındaki temsili statik dashboard'a yönlendirilir. Gerçek dashboard
+  // henüz yok; bu blok sunum bitince kaldırılacak (bu commit tek başına
+  // revert edilebilir, demo/sunum-dashboard branch'inde tutulur).
+  const { isAuthenticated, isLoading } = useSession();
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      window.location.replace("/demo-dashboard.html");
+    }
+  }, [isAuthenticated, isLoading]);
+  // ── GEÇİCİ DEMO YÖNLENDİRMESİ SONU ──────────────────────────────────────
 
   return (
     <div className="launch-page" ref={rootRef}>
