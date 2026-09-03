@@ -2,6 +2,14 @@
 #actuator endpoints -> uygulamanızı izlemenize ve onunla etkileşim kurmanıza olanak tanır.
 management:
   endpoints:
+    access:
+      default: none        #endpoint’leri varsayılan olarak devre dışı bırakır.
     web:
       exposure:
-        include: '*'
+        include:          #web üzerinden yalnızca belirtilenleri yayınlar.
+          - health
+
+  endpoint:
+    health:
+      access: read-only
+      show-details: never
