@@ -31,53 +31,17 @@ async function parseBody(response: Response): Promise<unknown> {
   }
 }
 
-function getCsrfTokenFromCookie(): string | null {
-  const match = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+export function getCsrfTokenFromCookie(): string | null {
+  const match = document.cookie.match(
+    /(?:^|;\s*)XSRF-TOKEN=([^;]+)/
+  );
   return match ? decodeURIComponent(match[1]) : null;
 }
 
-/**
- * BFF (Backend-for-Frontend) istemcisi.
- *
- * - `credentials: "include"` → oturum HttpOnly cookie ile taşınır,
- *   token hiçbir zaman JavaScript tarafında tutulmaz.
- * - `X-Requested-With` → BFF'in tarayıcı isteğini ayırt edip 302 yerine
- *   401 dönebilmesi için (Spring Security standart pratiği).
- */
-export async function apiRequest<TResponse>(
-  path: string,
-  { method = "GET", body, signal, allowUnauthorized }: RequestOptions = {},
+async function handleResponse<TResponse>(
+  response: Response,
+  allowUnauthorized?: boolean,
 ): Promise<TResponse> {
-  let response: Response;
-
-  try {
-    const csrfToken = getCsrfTokenFromCookie();
-
-    response = await fetch(`${env.apiBaseUrl}${path}`, {
-      method,
-      credentials: "include",
-      signal,
-      headers: {
-        Accept: "application/json",
-        "X-Requested-With": "XMLHttpRequest",
-        ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
-        ...(method !== "GET" && csrfToken
-          ? { "X-XSRF-TOKEN": csrfToken }
-          : {}),
-      },
-      body: body !== undefined ? JSON.stringify(body) : undefined,
-    });
-  } catch (cause) {
-    if (cause instanceof DOMException && cause.name === "AbortError") {
-      throw cause;
-    }
-
-    throw new ApiError({
-      status: 0,
-      message: "Sunucuya ulaşılamadı",
-    });
-  }
-
   const payload = await parseBody(response);
 
   if (!response.ok) {
@@ -113,4 +77,91 @@ export async function apiRequest<TResponse>(
   }
 
   return payload as TResponse;
+}
+
+/**
+ * BFF (Backend-for-Frontend) istemcisi — oturum gerektiren (credential'lı) uçlar için.
+ *
+ * - `credentials: "include"` → oturum HttpOnly cookie ile taşınır,
+ *   token hiçbir zaman JavaScript tarafında tutulmaz.
+ * - `X-Requested-With` → BFF'in tarayıcı isteğini ayırt edip 302 yerine
+ *   401 dönebilmesi için (Spring Security standart pratiği).
+ *
+ * Cookie/CSRF taşımayan public uçlar (register vb.) için `publicApiRequest`
+ * kullanılmalı — backend tarafında bu uçların CORS kaynağı credential'sız ve
+ * dar kapsamlı tanımlı, bu istemciyle çağrılırlarsa preflight reddedilir.
+ */
+export async function apiRequest<TResponse>(
+  path: string,
+  { method = "GET", body, signal, allowUnauthorized }: RequestOptions = {},
+): Promise<TResponse> {
+  let response: Response;
+
+  try {
+    const csrfToken = getCsrfTokenFromCookie();
+
+    response = await fetch(`${env.apiBaseUrl}${path}`, {
+      method,
+      credentials: "include",
+      signal,
+      headers: {
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+        ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
+        ...(method !== "GET" && csrfToken
+          ? { "X-XSRF-TOKEN": csrfToken }
+          : {}),
+      },
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    });
+  } catch (cause) {
+    if (cause instanceof DOMException && cause.name === "AbortError") {
+      throw cause;
+    }
+
+    throw new ApiError({
+      status: 0,
+      message: "Sunucuya ulaşılamadı",
+    });
+  }
+
+  return handleResponse<TResponse>(response, allowUnauthorized);
+}
+
+/**
+ * BFF istemcisi — oturum/cookie/CSRF taşımayan public uçlar için (register vb.).
+ *
+ * Kimliksiz bir kullanıcının çalınacak bir session'ı yoktur; bu yüzden
+ * `credentials` ve `X-Requested-With` bilinçli olarak gönderilmez. Backend
+ * tarafında bu uçların CORS kaynağı da aynı şekilde credential'sız ve dar
+ * kapsamlı tanımlıdır (bkz. SecurityConfig#registerCorsConfigurationSource).
+ */
+export async function publicApiRequest<TResponse>(
+  path: string,
+  { method = "GET", body, signal }: RequestOptions = {},
+): Promise<TResponse> {
+  let response: Response;
+
+  try {
+    response = await fetch(`${env.apiBaseUrl}${path}`, {
+      method,
+      signal,
+      headers: {
+        Accept: "application/json",
+        ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
+      },
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    });
+  } catch (cause) {
+    if (cause instanceof DOMException && cause.name === "AbortError") {
+      throw cause;
+    }
+
+    throw new ApiError({
+      status: 0,
+      message: "Sunucuya ulaşılamadı",
+    });
+  }
+
+  return handleResponse<TResponse>(response);
 }

@@ -1,5 +1,5 @@
 import { env } from "@/config/env";
-import { apiRequest } from "@/lib/http/api-client";
+import { apiRequest, getCsrfTokenFromCookie, publicApiRequest } from "@/lib/http/api-client";
 
 import type {
   RegisterRequest,
@@ -18,7 +18,7 @@ export function getLoginRedirectUrl(): string {
 }
 
 export const register = (data: RegisterRequest) =>
-  apiRequest<void>(AUTH_ENDPOINTS.register, { method: "POST", body: data });
+  publicApiRequest<void>(AUTH_ENDPOINTS.register, { method: "POST", body: data });
 
 /** Keycloak'ın native "Forgot Password" akışına yönlendirme.
  *  Kullanıcı login sayfasına düşer; oradaki "Şifremi unuttum" linki
@@ -41,6 +41,25 @@ export const fetchSession = async (signal?: AbortSignal) => {
 };
 
 export const logout = (): void => {
-  // AJAX kullanmıyoruz; tarayıcıyı doğrudan BFF logout endpoint'ine sürüyoruz
-  window.location.href = `${env.apiBaseUrl}${AUTH_ENDPOINTS.logout}`;
+  const csrfToken = getCsrfTokenFromCookie();
+
+  if (!csrfToken) {
+    throw new Error("CSRF token bulunamadı.");
+  }
+
+  const form = document.createElement("form");
+
+  form.method = "POST";
+  form.action = `${env.apiBaseUrl}${AUTH_ENDPOINTS.logout}`;
+  form.style.display = "none";
+
+  const csrfInput = document.createElement("input");
+
+  csrfInput.type = "hidden";
+  csrfInput.name = "_csrf";
+  csrfInput.value = csrfToken;
+
+  form.appendChild(csrfInput);
+  document.body.appendChild(form);
+  form.submit();
 };

@@ -104,14 +104,14 @@ clients:
     implicitFlowEnabled: false
     serviceAccountsEnabled: false
     redirectUris:
-      - "http://localhost:8989/login/oauth2/code/*" # Lokal geliştirme ortamı (BFF portu)
-      - "https://api.parena.com.tr/login/oauth2/code/*"
+      - "http://localhost:8989/login/oauth2/code/keycloak" # Lokal geliştirme ortamı (BFF portu)
+      - "https://api.parena.com.tr/login/oauth2/code/keycloak"
       - "$(env:SO_FRONTEND_BASE_URL)/email-dogrulandi"
-    webOrigins:
+    webOrigins:                        # Keycloak'a tarayıcıdan erişmesine izin verilen exact frontend origin'i
       - "$(env:SO_FRONTEND_BASE_URL)" # Frontend (Vercel) origin adresi
     attributes:
       pkce.code.challenge.method: S256
-      post.logout.redirect.uris: "$(env:SO_FRONTEND_BASE_URL)/*"
+      post.logout.redirect.uris: "$(env:SO_WEBSITE_BASE_URL)/"
       use.refresh.tokens: "true"
     defaultClientScopes:
       - web-origins
@@ -162,13 +162,13 @@ users:
 # Sağlayıcıyı netleştirene kadar placeholder kalacak, doldurulmazsa Keycloak
 # başlamaya devam eder ama forgot-password maili SESSİZCE gitmez (loglara düşer).
 smtpServer:
-  host: "smtp.zoho.eu"
-  port: "587"
+  host: "$(env:SO_SMTP_HOST)"
+  port: "$(env:SO_SMTP_PORT)"
   from: "no-reply@parena.com.tr"
   fromDisplayName: "Parena"
   replyTo: "destek@parena.com.tr"
-  auth: "true"
+  auth: "$(env:SO_SMTP_AUTH)"
   user: "$(env:SO_SMTP_USER)"
   password: "$(env:SO_SMTP_PASSWORD)"
-  ssl: "false"
-  starttls: "true"
+  ssl: "$(env:SO_SMTP_SSL)"
+  starttls: "$(env:SO_SMTP_STARTTLS)"

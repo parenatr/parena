@@ -40,11 +40,6 @@ public class ProfileSyncController {
         Jwt jwt = jwtAuth.getToken();
         String sub = jwt.getSubject();
 
-        if (sub == null) {
-            log.error("sync-email-verification: JWT'de 'sub' claim'i yok. Ham token: {}", jwt.getTokenValue());
-            return ResponseEntity.badRequest().build();
-        }
-
         UUID keycloakId = UUID.fromString(sub);
         boolean emailVerified = Boolean.TRUE.equals(jwt.getClaim("email_verified"));
         syncEmailVerificationUseCase.sync(keycloakId, emailVerified);

@@ -18,7 +18,7 @@ keycloak:
 spring:
   #db config (postgresql)
   datasource:
-    url: jdbc:postgresql://localhost:5432/user_service
+    url: jdbc:postgresql://localhost:5432/${SO_USER_SERVICE_DB_NAME}
     username: ${SO_USER_SERVICE_DB_USER}
     password: ${SO_USER_SERVICE_DB_PASSWORD}
 

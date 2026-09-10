@@ -51,7 +51,7 @@ services:
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${SO_KEYCLOAK_ADMIN_PASSWORD}
       KC_HEALTH_ENABLED: "true"
       KC_METRICS_ENABLED: "true"
-
+      WEBSITE_URL: ${SO_WEBSITE_BASE_URL}
       KC_PROXY: edge
       KC_HOSTNAME_STRICT: "false"
       KC_HOSTNAME_STRICT_HTTPS: "false"
@@ -88,6 +88,8 @@ services:
     depends_on:
       keycloak:
         condition: service_healthy
+      mailpit:
+        condition: service_started
     environment:
       KEYCLOAK_URL: http://keycloak:8585
       KEYCLOAK_USER: ${SO_KEYCLOAK_ADMIN}
@@ -96,16 +98,37 @@ services:
       KEYCLOAK_AVAILABILITYCHECK_TIMEOUT: 120s
       IMPORT_FILES_LOCATIONS: "/config/*.yaml"
       IMPORT_VARSUBSTITUTION_ENABLED: "true"
+
       SO_BFF_CLIENT_SECRET: ${SO_BFF_CLIENT_SECRET}
       SO_USER_SERVICE_CLIENT_SECRET: ${SO_USER_SERVICE_CLIENT_SECRET}
       SO_BFF_BASE_URL: ${SO_BFF_BASE_URL}
       SO_FRONTEND_BASE_URL: ${SO_FRONTEND_BASE_URL}
+      SO_WEBSITE_BASE_URL: ${SO_WEBSITE_BASE_URL}
 
-      # SMTP
+      # SMTP — lokalde Mailpit'e gider (bkz. mailpit servisi), prod'da gerçek sağlayıcıya
+      SO_SMTP_HOST: ${SO_SMTP_HOST}
+      SO_SMTP_PORT: ${SO_SMTP_PORT}
+      SO_SMTP_AUTH: ${SO_SMTP_AUTH}
+      SO_SMTP_SSL: ${SO_SMTP_SSL}
+      SO_SMTP_STARTTLS: ${SO_SMTP_STARTTLS}
       SO_SMTP_USER: ${SO_SMTP_USER}
       SO_SMTP_PASSWORD: ${SO_SMTP_PASSWORD}
     volumes:
       - ./backend/configurations/keycloak:/config
+    networks:
+      - parena
+
+  # -----------------------------------------------------------------
+  # Lokal geliştirme: gerçek SMTP sağlayıcısı yerine e-postaları yakalayan
+  # sahte sunucu — giden SMTP portları birçok ISS/mobil operatör tarafından
+  # engellendiği için. Gönderilen mailler http://localhost:8025 üzerinden
+  # görüntülenir. Prod'da kullanılmaz.
+  # -----------------------------------------------------------------
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: mailpit
+    ports:
+      - "8025:8025"
     networks:
       - parena
 
@@ -234,6 +257,7 @@ services:
       SO_FRONTEND_BASE_URL: ${SO_FRONTEND_BASE_URL}
       SO_BFF_BASE_URL: ${SO_BFF_BASE_URL}
       SO_KEYCLOAK_PUBLIC_URL: ${SO_KEYCLOAK_PUBLIC_URL}
+      SO_WEBSITE_BASE_URL: ${SO_WEBSITE_BASE_URL}
     networks: [ parena ]
 
   user-service:
@@ -290,11 +314,30 @@ services:
       timeout: 3s
       retries: 10
     networks: [ parena ]
+  
+  institution_service_db:
+    image: postgres:16
+    container_name: institution-service-db
+    environment:
+      POSTGRES_DB: ${SO_INSTITUTION_SERVICE_DB_NAME}
+      POSTGRES_USER: ${SO_INSTITUTION_SERVICE_DB_USER}
+      POSTGRES_PASSWORD: ${SO_INSTITUTION_SERVICE_DB_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - institutionservicedb_vol:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${SO_INSTITUTION_SERVICE_DB_USER} -d ${SO_INSTITUTION_SERVICE_DB_NAME}" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [ parena ]
 
 volumes:
   keycloakdb_vol: {}
   redis_vol: {}
   userservicedb_vol: {}
+  institutionservicedb_vol: {}
 
 networks:
   parena:
