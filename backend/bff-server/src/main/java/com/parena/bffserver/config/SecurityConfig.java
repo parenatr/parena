@@ -16,6 +16,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
 import org.springframework.security.web.server.csrf.CookieServerCsrfTokenRepository;
 import org.springframework.security.web.server.csrf.ServerCsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.server.util.matcher.OrServerWebExchangeMatcher;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
@@ -48,7 +49,15 @@ public class SecurityConfig {
             ServerHttpSecurity http,
             @Qualifier("registerCorsConfigurationSource") CorsConfigurationSource registerCorsConfigurationSource) {
         return http
-                .securityMatcher(ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, "/api/v1/users/register"))
+                // ÖNEMLİ: Sadece POST eşlenirse tarayıcının CORS preflight'ı (OPTIONS metodu)
+                // bu zincire hiç girmez, defaultFilterChain'e düşer ve orada
+                // anyExchange().authenticated() kuralına takılıp 403 döner. Preflight
+                // hiçbir zaman kimlik doğrulama bilgisi taşımaz, bu yüzden OPTIONS'ı da
+                // burada, aynı permitAll zincirinde eşlemek zorunludur.
+                .securityMatcher(new OrServerWebExchangeMatcher(
+                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, "/api/v1/users/register"),
+                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.OPTIONS, "/api/v1/users/register")
+                ))
                 .cors(cors -> cors.configurationSource(registerCorsConfigurationSource))
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchange -> exchange.anyExchange().permitAll())
