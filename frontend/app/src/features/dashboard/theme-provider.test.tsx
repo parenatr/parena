@@ -87,4 +87,16 @@ describe("ThemeProvider", () => {
 
     expect(container.querySelector('[data-theme="light"]')).not.toBeNull();
   });
+
+  it("hiçbir işlem yapılmadığında sistem tercihini localStorage'a yazmaz", () => {
+    mockMatchMedia(true);
+
+    render(
+      <ThemeProvider>
+        <Consumer />
+      </ThemeProvider>,
+    );
+
+    expect(window.localStorage.getItem("parena-dashboard-theme")).toBeNull();
+  });
 });

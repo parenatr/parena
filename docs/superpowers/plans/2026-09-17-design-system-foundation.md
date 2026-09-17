@@ -22,6 +22,19 @@
 
 ---
 
+## Post-implementation not (Task 1 fix round)
+
+Task 1'in gerçek implementasyonu, fix loop sırasında controller kararıyla bu planın
+aşağıdaki Task 1 kod bloklarından saptı: `--foreground` saf siyah (`oklch(0 0 0)`)
+olarak korundu (değiştirilmedi), yumuşatılmış ton ise ayrı bir `--foreground-strong`
+değil, `--foreground-muted` adlı token olarak eklendi. Aşağıdaki Task 1 kod blokları
+bu haliyle **güncel değildir** — kimse buradaki eski `--foreground-strong` kod
+bloklarını kopyalamamalı. Gerçekte shipped edilen değerler için bkz.
+`docs/design-system/design-spec.md` §4.3 ve
+`.superpowers/sdd/2026-09-17-design-system-foundation/progress.md`.
+
+---
+
 ### Task 1: `tokens.css` — tek design-token kaynağı
 
 **Files:**

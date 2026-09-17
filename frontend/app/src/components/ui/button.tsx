@@ -15,10 +15,21 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild, loading, disabled, children, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button";
+    if (asChild) {
+      return (
+        <Slot
+          ref={ref}
+          className={cn(buttonVariants({ variant, size }), className)}
+          aria-busy={loading || undefined}
+          {...props}
+        >
+          {children}
+        </Slot>
+      );
+    }
 
     return (
-      <Comp
+      <button
         ref={ref}
         className={cn(buttonVariants({ variant, size }), className)}
         disabled={disabled || loading}
@@ -32,7 +43,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           />
         ) : null}
         {children}
-      </Comp>
+      </button>
     );
   },
 );

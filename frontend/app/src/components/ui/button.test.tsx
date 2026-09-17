@@ -35,4 +35,15 @@ describe("Button", () => {
     render(<Button disabled>Devre dışı</Button>);
     expect(screen.getByRole("button", { name: "Devre dışı" })).toBeDisabled();
   });
+
+  it("asChild ile loading birlikte kullanıldığında hata fırlatmaz", () => {
+    render(
+      <Button asChild loading>
+        <a href="#test">Bağlantı</a>
+      </Button>,
+    );
+
+    const link = screen.getByRole("link", { name: "Bağlantı" });
+    expect(link).toHaveAttribute("aria-busy", "true");
+  });
 });

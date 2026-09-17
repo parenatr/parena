@@ -76,7 +76,7 @@ Mevcut oklch `:root` seti korunur (kaynak `index.css`), üstüne şu **eksik/ça
 
 | Sorun | Çözüm |
 |---|---|
-| `--foreground` şu an saf siyah (`oklch(0 0 0)`), ama gerçek paragraf metni tüm sayfalarda `#3B4256` (yumuşak lacivert-gri) literal olarak kullanılıyor | Yeni token: `--foreground` gövde metni için `#3B4256` eşdeğeri oklch değerine çekilir; başlıklar zaten `--brand` kullanıyor (değişmez). Saf siyah gerekiyorsa yeni `--foreground-strong` eklenir. |
+| `--foreground` şu an saf siyah (`oklch(0 0 0)`), ama gerçek paragraf metni tüm sayfalarda `#3B4256` (yumuşak lacivert-gri) literal olarak kullanılıyor | `--foreground` saf siyah olarak korunur (mevcut codebase'le uyum, değiştirilmedi); `#3B4256` eşdeğeri yumuşak ton, ayrı ve varsayılan olmayan bir token olan `--foreground-muted`'e taşınır — bunu isteyen component'ler açıkça `text-foreground-muted` kullanır. |
 | `--muted`, `--background` ile aynı değere sahip (muhtemelen kopyala-yapıştır hatası) | `--muted` gerçek bir "hafif dolgu" rengi olarak ayrıştırılır (background'dan görsel olarak ayrışan bir ton). |
 | Durum renkleri (`--buy`, `--sell`, `--gold`) için "üzerine yazılacak metin" varyantı yok — literal `#0E7A50`, `#8E6B12`, `#FF9C9C` gibi değerler dağınık | `--color-buy-foreground`, `--color-sell-foreground`, `--color-gold-foreground` eklenir; kontrast erişilebilirlik hedefiyle (WCAG AA, 4.5:1) merkezi olarak türetilir. |
 | `rgba(19,41,75,X)` deseni 30+ yerde literal | Tailwind v4'ün opacity-modifier söz dizimi kullanılır: `bg-(--color-brand)/10`, `text-(--color-brand)/70` gibi — ayrı bir token gerekmez, kural olarak literal rgba yazımı yasaklanır. |
