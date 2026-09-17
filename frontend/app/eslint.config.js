@@ -32,6 +32,11 @@ export default defineConfig([
             'kullanimSartlariPageMeta',
             'kvkkPageMeta',
             'mesafeliSatisPageMeta',
+            // Radix `Select` re-exports (select.tsx): `Root`/`Value` are
+            // already components, but re-exporting an aliased import isn't
+            // recognized as a component definition by this rule's heuristic.
+            'Select',
+            'SelectValue',
           ],
         },
       ],
