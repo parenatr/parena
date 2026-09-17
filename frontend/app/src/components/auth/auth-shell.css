@@ -360,9 +360,17 @@ html {
   position: relative
 }
 
-.auth-page input[type=text],
-.auth-page input[type=email],
-.auth-page input[type=password] {
+/* Bu seçiciler kasıtlı olarak `.field` altına sınırlı: hâlâ kullanılan
+   AuthField/AuthPasswordField (bkz. Keycloak login temasındaki kullanımı)
+   `.field` sarmalayıcısı kullanıyor. Yeni tasarım sistemi `Input`/`Field`
+   component'leri (RegisterPage'de kullanılıyor) bu class'ı hiç emit etmez —
+   bilerek: Tailwind v4'ün katmansız (unlayered) CSS'i her zaman katmanlı
+   utility'lerin önüne geçirmesi nedeniyle, bu seçiciler daha önce geniş
+   kapsamlı olduğunda yeni Input'un Tailwind stilini (padding, border,
+   focus-ring) tamamen eziyordu. */
+.auth-page .field input[type=text],
+.auth-page .field input[type=email],
+.auth-page .field input[type=password] {
   width: 100%;
   padding: 13px 15px;
   border: 1.5px solid var(--line);
@@ -374,17 +382,17 @@ html {
   transition: border-color .16s, box-shadow .16s;
 }
 
-.auth-page input::placeholder {
+.auth-page .field input::placeholder {
   color: #A8AEBD
 }
 
-.auth-page input:focus {
+.auth-page .field input:focus {
   outline: none;
   border-color: var(--navy);
   box-shadow: 0 0 0 3px rgba(19, 41, 75, .09)
 }
 
-.auth-page input[aria-invalid=true] {
+.auth-page .field input[aria-invalid=true] {
   border-color: var(--sell);
   background: rgba(225, 79, 79, .03)
 }

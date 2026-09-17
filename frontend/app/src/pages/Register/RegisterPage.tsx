@@ -150,7 +150,7 @@ export default function RegisterPage({
       {!doneMail ? (
         <form onSubmit={handleSubmit} noValidate>
           <div className="name-row">
-            <Field htmlFor="ad" label="Ad" required error={errors.ad}>
+            <Field htmlFor="ad" label="Ad" required error={errors.ad} className="mb-4">
               <Input
                 id="ad"
                 type="text"
@@ -164,7 +164,7 @@ export default function RegisterPage({
               />
             </Field>
 
-            <Field htmlFor="soyad" label="Soyad" required error={errors.soyad}>
+            <Field htmlFor="soyad" label="Soyad" required error={errors.soyad} className="mb-4">
               <Input
                 id="soyad"
                 type="text"
@@ -179,7 +179,7 @@ export default function RegisterPage({
             </Field>
           </div>
 
-          <Field htmlFor="mail" label="E-posta adresi" required error={errors.mail}>
+          <Field htmlFor="mail" label="E-posta adresi" required error={errors.mail} className="mb-4">
             <Input
               id="mail"
               type="email"
@@ -193,7 +193,14 @@ export default function RegisterPage({
             />
           </Field>
 
-          <Field htmlFor="pass" label="Parola" required hint="en az 10 karakter" error={errors.pass}>
+          <Field
+            htmlFor="pass"
+            label="Parola"
+            required
+            hint="en az 10 karakter"
+            error={errors.pass}
+            className="mb-4"
+          >
             <Input
               id="pass"
               type="password"
