@@ -46,9 +46,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {input}
         <button
           type="button"
-          className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted-foreground hover:text-foreground"
+          className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted-foreground hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
           onClick={() => setVisible((v) => !v)}
           aria-label={visible ? "Parolayı gizle" : "Parolayı göster"}
+          disabled={props.disabled}
         >
           {visible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
         </button>

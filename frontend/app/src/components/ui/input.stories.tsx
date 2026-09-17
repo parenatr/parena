@@ -16,3 +16,6 @@ export const Email: Story = { args: { type: "email" } };
 export const Password: Story = { args: { type: "password", placeholder: "••••••••" } };
 export const Invalid: Story = { args: { invalid: true } };
 export const Disabled: Story = { args: { disabled: true } };
+export const PasswordDisabled: Story = {
+  args: { type: "password", placeholder: "••••••••", disabled: true },
+};

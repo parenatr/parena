@@ -30,4 +30,10 @@ describe("Input", () => {
     render(<Input aria-label="Devre dışı" disabled />);
     expect(screen.getByRole("textbox", { name: "Devre dışı" })).toBeDisabled();
   });
+
+  it("also disables the password-visibility toggle when the input is disabled", () => {
+    render(<Input type="password" aria-label="Parola" disabled />);
+    expect(screen.getByLabelText("Parola")).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Parolayı göster" })).toBeDisabled();
+  });
 });
