@@ -1,8 +1,11 @@
 import { useMemo, useState, type FormEvent } from "react";
 
-import { AuthField, AuthPasswordField } from "@/components/auth/AuthField";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { AppLink } from "@/components/ui/app-link";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Field } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useRegister } from "@/features/auth/auth.queries";
 import { isValidEmail, normalizeEmail } from "@/lib/auth-validation";
 import { ApiError, toUserMessage } from "@/lib/http/api-error";
@@ -147,61 +150,60 @@ export default function RegisterPage({
       {!doneMail ? (
         <form onSubmit={handleSubmit} noValidate>
           <div className="name-row">
-            <AuthField
-              id="ad"
-              label="Ad"
-              type="text"
-              name="given-name"
-              placeholder="Adın"
-              autoComplete="given-name"
-              maxLength={60}
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              error={errors.ad}
-            />
+            <Field htmlFor="ad" label="Ad" required error={errors.ad}>
+              <Input
+                id="ad"
+                type="text"
+                name="given-name"
+                placeholder="Adın"
+                autoComplete="given-name"
+                maxLength={60}
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                invalid={!!errors.ad}
+              />
+            </Field>
 
-            <AuthField
-              id="soyad"
-              label="Soyad"
-              type="text"
-              name="family-name"
-              placeholder="Soyadın"
-              autoComplete="family-name"
-              maxLength={60}
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              error={errors.soyad}
-            />
+            <Field htmlFor="soyad" label="Soyad" required error={errors.soyad}>
+              <Input
+                id="soyad"
+                type="text"
+                name="family-name"
+                placeholder="Soyadın"
+                autoComplete="family-name"
+                maxLength={60}
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                invalid={!!errors.soyad}
+              />
+            </Field>
           </div>
 
+          <Field htmlFor="mail" label="E-posta adresi" required error={errors.mail}>
+            <Input
+              id="mail"
+              type="email"
+              name="email"
+              placeholder="ornek@eposta.com"
+              autoComplete="email"
+              inputMode="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              invalid={!!errors.mail}
+            />
+          </Field>
 
-          <AuthField
-            id="mail"
-            label="E-posta adresi"
-            type="email"
-            name="email"
-            placeholder="ornek@eposta.com"
-            autoComplete="email"
-            inputMode="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            error={errors.mail}
-          />
-
-          <AuthPasswordField
-            id="pass"
-            label={
-              <>
-                Parola <span className="hint">— en az 10 karakter</span>
-              </>
-            }
-            name="password"
-            placeholder="••••••••"
-            autoComplete="new-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            error={errors.pass}
-          >
+          <Field htmlFor="pass" label="Parola" required hint="en az 10 karakter" error={errors.pass}>
+            <Input
+              id="pass"
+              type="password"
+              name="password"
+              placeholder="••••••••"
+              autoComplete="new-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              invalid={!!errors.pass}
+            />
             <div className={strength ? `meter s${strength}` : "meter"} aria-hidden="true">
               <i />
               <i />
@@ -211,57 +213,57 @@ export default function RegisterPage({
             <p className="meter-txt">
               {password ? STRENGTH_LABELS[strength] : STRENGTH_LABELS[0]}
             </p>
-          </AuthPasswordField>
+          </Field>
 
-          <div className="field" style={{ marginTop: 20 }}>
-            <label className="check">
-              <input
-                type="checkbox"
+          <div className="grid gap-1.5" style={{ marginTop: 20 }}>
+            <Label className="flex items-start gap-2 font-normal">
+              <Checkbox
                 checked={terms}
+                onCheckedChange={(checked) => setTerms(checked === true)}
                 aria-invalid={errors.terms ? true : undefined}
-                onChange={(e) => setTerms(e.target.checked)}
+                className="mt-0.5"
               />
-              <span>
+              <span className="text-sm">
                 <AppLink href="/kullanim-sartlari" target="_blank" rel="noopener">
                   Kullanım Şartları
-                </AppLink>'nı okudum, kabul ediyorum.
+                </AppLink>
+                'nı okudum, kabul ediyorum.
               </span>
-            </label>
-            <p className={errors.terms ? "err on" : "err"} role="alert">
-              {errors.terms}
-            </p>
+            </Label>
+            {errors.terms ? (
+              <p className="text-xs text-destructive" role="alert">
+                {errors.terms}
+              </p>
+            ) : null}
           </div>
 
-          <div className="field" style={{ marginBottom: 22 }}>
-            <label className="check">
-              <input
-                type="checkbox"
+          <div className="grid gap-1.5" style={{ marginBottom: 22 }}>
+            <Label className="flex items-start gap-2 font-normal">
+              <Checkbox
                 checked={marketing}
-                onChange={(e) => setMarketing(e.target.checked)}
+                onCheckedChange={(checked) => setMarketing(checked === true)}
+                className="mt-0.5"
               />
-              <span>
-                Tarafıma ürün, hizmet ve kampanyalara ilişkin ticari elektronik ileti almak istiyorum.
+              <span className="text-sm">
+                Tarafıma ürün, hizmet ve kampanyalara ilişkin ticari elektronik ileti almak istiyorum.{" "}
                 <span style={{ color: "var(--muted)" }}>(isteğe bağlı)</span>
               </span>
-            </label>
+            </Label>
           </div>
 
-          <div className="field" style={{ marginTop: 20 }}>
-            <label className="check">
-              <span>Kişisel verilerinizin işlenmesine ilişkin{" "}
-                <AppLink href="/kvkk" target="_blank" rel="noopener">
-                  Kvkk Aydınlatma Metni
-                </AppLink>'ni inceleyebilirsiniz.</span>
-            </label>
-          </div>
-          <div className="field" style={{ marginTop: 20 }}>
-            <label className="check">
-              <span>
-                <AppLink href="/gizlilik" target="_blank" rel="noopener">
-                  Gizlilik Politikası
-                </AppLink>'nı inceleyebilirsiniz.</span>
-            </label>
-          </div>
+          <p className="text-sm text-muted-foreground" style={{ marginTop: 20 }}>
+            Kişisel verilerinizin işlenmesine ilişkin{" "}
+            <AppLink href="/kvkk" target="_blank" rel="noopener">
+              Kvkk Aydınlatma Metni
+            </AppLink>
+            'ni inceleyebilirsiniz.
+          </p>
+          <p className="text-sm text-muted-foreground" style={{ marginTop: 20 }}>
+            <AppLink href="/gizlilik" target="_blank" rel="noopener">
+              Gizlilik Politikası
+            </AppLink>
+            'nı inceleyebilirsiniz.
+          </p>
 
           <button type="submit" className="btn" disabled={registerMutation.isPending}>
             {registerMutation.isPending ? "Oluşturuluyor…" : "Hesabı oluştur"}
