@@ -1,0 +1,45 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-server:8761/eureka
+
+app:
+  frontend-base-url: ${SO_FRONTEND_BASE_URL}
+  gateway-base-url: http://gateway-server:8888
+  website-base-url: ${SO_WEBSITE_BASE_URL}
+
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: ${SO_KEYCLOAK_PUBLIC_URL}/realms/parena
+            authorization-uri: ${SO_KEYCLOAK_PUBLIC_URL}/realms/parena/protocol/openid-connect/auth
+            token-uri: ${SO_KEYCLOAK_INTERNAL_URL}/realms/parena/protocol/openid-connect/token
+            jwk-set-uri: ${SO_KEYCLOAK_INTERNAL_URL}/realms/parena/protocol/openid-connect/certs
+            user-name-attribute: preferred_username
+        registration:
+          keycloak:
+            client-id: bff-server
+            client-secret: ${SO_BFF_CLIENT_SECRET}
+            redirect-uri: "${SO_BFF_BASE_URL}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+            scope:
+              - openid
+              - profile
+              - email
+              - roles
+  session:
+    redis:
+      namespace: parena:bff:session
+    timeout: 30m
+  data:
+    redis:
+      host: redis
+      port: 6379
+      password: ${SO_REDIS_PASSWORD}
+
+logging:
+  level:
+    org.springframework.security: WARN
