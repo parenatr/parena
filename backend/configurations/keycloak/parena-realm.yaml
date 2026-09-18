@@ -111,7 +111,15 @@ clients:
       - "$(env:SO_FRONTEND_BASE_URL)" # Frontend (Vercel) origin adresi
     attributes:
       pkce.code.challenge.method: S256
-      post.logout.redirect.uris: "$(env:SO_WEBSITE_BASE_URL)/"
+      # ÖNEMLİ: SecurityConfig.java'nın oidcLogoutSuccessHandler'ı
+      # handler.setPostLogoutRedirectUri(this.websiteBaseUrl) çağırıyor — websiteBaseUrl'e
+      # SONDA "/" EKLEMİYOR (ve registerCorsConfigurationSource da aynı değeri sonda "/"
+      # OLMADAN bir CORS origin'i olarak kullanıyor, orada bir "/" olsa origin geçersiz
+      # olurdu). Keycloak redirect URI'leri EXACT STRING match ile karşılaştırır (bkz.
+      # keycloak-realm-security.md §9 checklist) — burada eskiden sonda "/" vardı, bu da
+      # gönderilen değerle (SO_WEBSITE_BASE_URL, trailing slash'sız) hiçbir zaman eşleşmiyordu
+      # (canlı doğrulandı: Keycloak event log'unda "invalid_redirect_uri"). "/" kaldırıldı.
+      post.logout.redirect.uris: "$(env:SO_WEBSITE_BASE_URL)"
       use.refresh.tokens: "true"
     defaultClientScopes:
       - web-origins
