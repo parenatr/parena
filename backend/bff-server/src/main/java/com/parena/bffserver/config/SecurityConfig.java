@@ -1,6 +1,7 @@
 package com.parena.bffserver.config;
 
 import com.parena.bffserver.security.EmailVerificationSyncHandler;
+import com.parena.bffserver.security.LogoutAuditLogHandler;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -8,19 +9,23 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
-import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.client.oidc.web.server.logout.OidcClientInitiatedServerLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.logout.DelegatingServerLogoutHandler;
+import org.springframework.security.web.server.authentication.logout.SecurityContextServerLogoutHandler;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
-import org.springframework.security.web.server.csrf.CookieServerCsrfTokenRepository;
+import org.springframework.security.web.server.authentication.logout.WebSessionServerLogoutHandler;
 import org.springframework.security.web.server.csrf.ServerCsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.server.csrf.WebSessionServerCsrfTokenRepository;
 import org.springframework.security.web.server.util.matcher.OrServerWebExchangeMatcher;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.server.session.CookieWebSessionIdResolver;
+import org.springframework.web.server.session.WebSessionIdResolver;
 
 import java.util.List;
 
@@ -71,23 +76,81 @@ public class SecurityConfig {
             ServerHttpSecurity http,
             ReactiveClientRegistrationRepository clientRegistrationRepository,
             EmailVerificationSyncHandler emailVerificationSyncHandler,
+            LogoutAuditLogHandler logoutAuditLogHandler,
             @Qualifier("defaultCorsConfigurationSource") CorsConfigurationSource defaultCorsConfigurationSource) {
 
         ServerCsrfTokenRequestAttributeHandler csrfAttributeHandler = new ServerCsrfTokenRequestAttributeHandler();
 
         return http
-                .cors(cors -> cors.configurationSource(defaultCorsConfigurationSource))
+                .cors(cors -> cors
+                        .configurationSource(defaultCorsConfigurationSource))
                 .csrf(csrf -> csrf
-                        .csrfTokenRepository(CookieServerCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRepository(new WebSessionServerCsrfTokenRepository())
                         .csrfTokenRequestHandler(csrfAttributeHandler))
-                .addFilterAfter(new CsrfCookieWebFilter(), SecurityWebFiltersOrder.CSRF)
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers("/actuator/health", "/api/auth/me").permitAll()
+                        // ÖNEMLİ: requiresLogout artık sadece POST'u eşliyor (bkz. aşağıdaki
+                        // .logout(...) bloğu), bu yüzden GET/PUT/PATCH/DELETE/HEAD
+                        // /api/auth/logout'a gelen istekler LogoutWebFilter'a hiç girmeden
+                        // buradan geçip GatewayProxyController'ın "/api/**" catch-all'ına
+                        // düşer ve ham Cookie header'ını downstream'e forward eder (bkz.
+                        // bff-token-architecture.md §2, GatewayProxyHandler DOKUNULMAZ —
+                        // ayrı bir teknik borç). Bu non-POST metodları authorizeExchange
+                        // katmanında, proxy'ye ULAŞMADAN önce açıkça reddediyoruz. Sıra
+                        // kritik: authorizeExchange kuralları tanım sırasına göre
+                        // değerlendirilir (ilk eşleşen kazanır), bu yüzden bu denyAll()
+                        // kuralları anyExchange().authenticated()'dan ÖNCE gelmeli.
+                        .pathMatchers(HttpMethod.GET, "/api/auth/logout").denyAll()
+                        .pathMatchers(HttpMethod.PUT, "/api/auth/logout").denyAll()
+                        .pathMatchers(HttpMethod.PATCH, "/api/auth/logout").denyAll()
+                        .pathMatchers(HttpMethod.DELETE, "/api/auth/logout").denyAll()
+                        .pathMatchers(HttpMethod.HEAD, "/api/auth/logout").denyAll()
                         .anyExchange().authenticated())
-                .oauth2Login(oauth2 -> oauth2.authenticationSuccessHandler(emailVerificationSyncHandler))
+                .oauth2Login(oauth2 -> oauth2
+                        .authenticationSuccessHandler(emailVerificationSyncHandler))
                 .logout(logout -> logout
-                        .requiresLogout(ServerWebExchangeMatchers.pathMatchers("/api/auth/logout"))
-                        .logoutSuccessHandler(oidcLogoutSuccessHandler(clientRegistrationRepository)))
+                        // ÖNEMLİ: metod belirtilmezse GET dahil her HTTP metodu logout'u
+                        // tetikleyebilir (logout-CSRF / prefetch riski) — register chain'deki
+                        // HttpMethod.POST pattern'iyle tutarlı hale getirildi.
+                        .requiresLogout(ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, "/api/auth/logout"))
+                        // Sıra kritik: audit log SecurityContext hâlâ mevcutken çalışmalı.
+                        // NOT (brief'ten gerekçeli sapma): Planın orijinal Step 6'sı
+                        // WebSessionServerLogoutHandler'ı BU zincirin (logoutHandler) içine,
+                        // en sona koyuyordu. Test sırasında bulundu: ServerHttpSecurity'nin
+                        // CsrfSpec'i (.csrf(...) bu zincirde aktif olduğu için), .build()
+                        // zamanında KENDİ CsrfServerLogoutHandler'ını logout handler listesinin
+                        // EN SONUNA, yazdığımız sıradan TAMAMEN BAĞIMSIZ OLARAK ekliyor
+                        // (ServerHttpSecurity$CsrfSpec#configure — bkz. spring-security
+                        // kaynağı). O handler, session'daki CSRF token'ını temizlemek için
+                        // WebSessionServerCsrfTokenRepository.saveToken(exchange, null)
+                        // çağırıyor; bu da KOŞULSUZ olarak WebSession.changeSessionId()
+                        // tetikliyor. WebSessionServerLogoutHandler burada (bizim zincirimizde)
+                        // olduğunda, CsrfSpec'in handler'ı ondan SONRA (session zaten invalidate
+                        // edilmiş/Redis'ten silinmişken) çalışıyor ve
+                        // ReactiveRedisSessionRepository "IllegalStateException: Session was
+                        // invalidated" fırlatıp 500 döndürüyor — handler sırasını değiştirmek
+                        // (brief'in kendi yorumunun önerdiği gibi) bunu ÇÖZMÜYOR, çünkü
+                        // CsrfSpec'in eklediği handler HER ZAMAN bizim TÜM listemizden sonra
+                        // çalışıyor (doğrulandı: WebSessionServerLogoutHandler tek başına,
+                        // SecurityContextServerLogoutHandler ve LogoutAuditLogHandler
+                        // olmadan bile denendi, aynı hata). Bu, framework seviyesinde bilinen
+                        // bir sınırlama (bkz. spring-projects/spring-security#11271 — bir
+                        // maintainer/rwinch tarafından "incorrect ordering" olarak
+                        // etiketlenmiş ama gerçek kök neden sonraki yorumda/johnnywalker
+                        // tarafından CsrfSpec'in eklediği handler olarak teşhis edilmiş,
+                        // issue "invalid" kapatılmış ama düzeltilmemiş). ÇÖZÜM: WebSession
+                        // invalidation'ı logoutHandler zincirinden ÇIKARIP logoutSuccessHandler
+                        // aşamasına taşıdık (aşağıdaki invalidateWebSessionThenRedirect) —
+                        // böylece SecurityContext + (CsrfSpec'in eklediği) Csrf temizliği
+                        // TAMAMEN biterken session hâlâ geçerli, WebSession invalidation ise
+                        // gerçekten hiçbir şeyin artık ona dokunmayacağı, logout akışının
+                        // mantıksal EN SONUNDA çalışıyor — davranış (audit → context temizliği
+                        // → Redis'ten silme, sonra yönlendirme) brief'in istediğiyle aynı.
+                        .logoutHandler(new DelegatingServerLogoutHandler(
+                                logoutAuditLogHandler,
+                                new SecurityContextServerLogoutHandler()))
+                        .logoutSuccessHandler(invalidateWebSessionThenRedirect(
+                                oidcLogoutSuccessHandler(clientRegistrationRepository))))
                 .build();
     }
 
@@ -97,9 +160,20 @@ public class SecurityConfig {
         var handler = new OidcClientInitiatedServerLogoutSuccessHandler(clientRegistrationRepository);
 
         // Keycloak oturumu kapandıktan sonra döneceği frontend adresi
-        handler.setPostLogoutRedirectUri(this.frontendBaseUrl + "/giris");
+        handler.setPostLogoutRedirectUri(this.websiteBaseUrl);
 
         return handler;
+    }
+
+    // Redis-backed WebSession'ı gerçekten invalidate eden adım — bkz. yukarıdaki
+    // uzun NOT. Delege edilen success handler (OIDC redirect) WebSession'a hiç
+    // dokunmadığı için (sadece Authentication parametresinden idToken okur ve
+    // ClientRegistrationRepository'den bakar), invalidation'ı ondan hemen önce
+    // yapmak güvenli — invalidation'dan SONRA session'a erişen hiçbir kod yok.
+    private ServerLogoutSuccessHandler invalidateWebSessionThenRedirect(ServerLogoutSuccessHandler delegate) {
+        WebSessionServerLogoutHandler webSessionServerLogoutHandler = new WebSessionServerLogoutHandler();
+        return (exchange, authentication) -> webSessionServerLogoutHandler.logout(exchange, authentication)
+                .then(delegate.onLogoutSuccess(exchange, authentication));
     }
 
     // Sadece register endpoint'i için: marketing origin (parena.com.tr) güvenilir,
@@ -133,5 +207,21 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
+    }
+
+    // __Host- prefix, tarayıcı seviyesinde Secure + Domain-yok + Path=/ şartını
+    // ZORUNLU kılar — subdomain-takeover senaryosunda cookie'nin başka bir
+    // subdomain'e (örn. admin.parena.com.tr) sızmasına karşı en güçlü garanti.
+    // Domain BİLEREK set edilmiyor (bkz. bff-token-architecture.md §4).
+    @Bean
+    public WebSessionIdResolver webSessionIdResolver() {
+        CookieWebSessionIdResolver resolver = new CookieWebSessionIdResolver();
+        resolver.setCookieName("__Host-session");
+        resolver.addCookieInitializer(builder -> builder
+                .secure(true)
+                .httpOnly(true)
+                .sameSite("Strict")
+                .path("/"));
+        return resolver;
     }
 }

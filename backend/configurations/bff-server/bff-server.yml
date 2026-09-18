@@ -1,5 +1,6 @@
 server:
   port: 8989
+  forward-headers-strategy: framework
 
 eureka:
   fetch-registry: true

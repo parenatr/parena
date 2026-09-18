@@ -65,9 +65,55 @@
             <artifactId>spring-session-data-redis</artifactId>
         </dependency>
 
+        <!-- NOT: Task 3 TDD sürecinde bulundu (brief'in kapsamı dışında ama görevin
+             "explicit Redis-invalidation" hedefiyle doğrudan ilgili) — Spring Boot 4'te
+             Session auto-configuration ayrı bir modüle taşındı
+             (org.springframework.boot:spring-boot-session-data-redis); bu olmadan
+             spring-session-data-redis + reactive Redis classpath'te olsa bile hiçbir
+             auto-configuration devreye girmiyor ve WebSession'lar sessizce Boot'un
+             varsayılan InMemoryWebSessionStore'una düşüyor (Redis'e HİÇBİR session
+             key'i yazılmıyor) — doğrulandı: LogoutSecurityConfigTest'te bu bağımlılık
+             olmadan log satırları "InMemoryWebSessionStore" gösteriyordu. Bu, sadece test
+             değil PRODUCTION session mimarisini de etkileyen gerçek bir eksiklik;
+             CLAUDE.md/bff-token-architecture.md'nin varsaydığı "Redis-backed session"
+             bu bağımlılık olmadan çalışmıyordu. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-session-data-redis</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
+
+        <!-- Spring Security Test -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- NOT: Spring Boot 4'te WebTestClient auto-configuration (reactive
+             @SpringBootTest için) ayrı bir starter'a taşındı — brief'in listesinde
+             yoktu ama onsuz `@Autowired WebTestClient` bean bulunamıyor (context
+             başarıyla ayağa kalksa bile). Testcontainers'tan bağımsız bir gerçek
+             eksiklik olduğu için eklendi. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Testcontainers (Redis) - integration testleri için -->
+        <!-- NOT: Spring Boot 4.0.2'nin yönettiği Testcontainers BOM 2.0.3'te
+             artifactId `junit-jupiter` -> `testcontainers-junit-jupiter` olarak
+             yeniden adlandırıldı (Testcontainers 2.x breaking change); brief'teki
+             eski artifactId derlenmiyordu, düzeltildi. -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers-junit-jupiter</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

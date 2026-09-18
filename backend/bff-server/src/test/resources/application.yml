@@ -1,0 +1,57 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+  main:
+    web-application-type: reactive
+  # NOT: Brief'in Step 2 yml'i bunu içermiyordu, ama WebClientConfig#authorizedClientManager
+  # (dolayısıyla GatewayProxyHandler) her zaman bir ReactiveClientRegistrationRepository
+  # bean'i talep ediyor; bu bean olmadan context hiç ayağa kalkmıyor (test-öncesi bootstrap
+  # hatası, logout davranışıyla ilgisiz). Discovery'de gerçek ağ çağrısı olmaması için
+  # issuer-uri yerine endpoint'ler açıkça verildi — mockOidcLogin() zaten kendi bağımsız
+  # (registrationId="test") authentication'ını kuruyor, bu registration'a dokunmuyor.
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: test-client
+            client-secret: test-secret
+            authorization-grant-type: authorization_code
+            scope: openid, profile, email
+            redirect-uri: "http://localhost:8989/login/oauth2/code/{registrationId}"
+        provider:
+          keycloak:
+            authorization-uri: http://localhost:8585/realms/parena/protocol/openid-connect/auth
+            token-uri: http://localhost:8585/realms/parena/protocol/openid-connect/token
+            user-info-uri: http://localhost:8585/realms/parena/protocol/openid-connect/userinfo
+            jwk-set-uri: http://localhost:8585/realms/parena/protocol/openid-connect/certs
+            user-name-attribute: preferred_username
+  # NOT: Brief'in Step 2 yml'i bunu da içermiyordu. bff-server-docker/dev.yml prod'da
+  # `spring.session.redis.namespace: parena:bff:session` kullanıyor — ama Spring Boot
+  # 4'ün spring-boot-session-data-redis modülünün kendi configuration-metadata.json'ı
+  # bu property'nin `spring.session.data.redis.namespace`'e TAŞINDIĞINI gösteriyor (eski
+  # isim artık etkisiz — boş sanity check ile doğrulandı: eski isimle key hep
+  # "spring:session:sessions:*" (hardcoded default) altında kalıyordu, "parena:bff:
+  # session:*" hiçbir zaman eşleşmiyordu, yani assertion sessizce hep boş dönüyordu).
+  # BU AYNI ZAMANDA bir PRODUCTION bulgusu: bff-server-dev.yml/bff-server-docker.yml
+  # hâlâ eski property adını kullanıyor, dolayısıyla prod'da da namespace muhtemelen
+  # uygulanmıyor — Task 3 kapsamı dışında olduğu için o dosyalar burada değiştirilmedi,
+  # rapora ayrı bir bulgu olarak taşınıyor. Testte DOĞRU (yeni) property adı kullanıldı.
+  session:
+    data:
+      redis:
+        namespace: parena:bff:session
+
+eureka:
+  client:
+    enabled: false
+
+app:
+  frontend-base-url: https://app.parena.com.tr
+  website-base-url: https://parena.com.tr
+  gateway-base-url: http://localhost:8888
+
+logging:
+  level:
+    org.springframework.security: DEBUG
