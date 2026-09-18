@@ -1,6 +1,8 @@
 import { env } from "@/config/env";
-import { apiRequest, getCsrfTokenFromCookie, publicApiRequest } from "@/lib/http/api-client";
+import { apiRequest, publicApiRequest } from "@/lib/http/api-client";
+import { getCsrfToken } from "@/lib/http/csrf";
 
+import { broadcastLogout } from "./auth-broadcast";
 import type {
   RegisterRequest,
   SessionUser,
@@ -9,10 +11,9 @@ import type {
 export const AUTH_ENDPOINTS = {
   register: "/api/v1/users/register",
   me: "/api/auth/me",
-  logout: "/api/auth/logout", // TODO: BFF'in gerçek logout mekanizması ayrı ele alınacak
+  logout: "/api/auth/logout",
 } as const;
 
-/** Keycloak'ın (Keycloakify temalı) login sayfasına tam sayfa yönlendirme URL'i. */
 export function getLoginRedirectUrl(): string {
   return `${env.apiBaseUrl}/oauth2/authorization/keycloak`;
 }
@@ -20,9 +21,6 @@ export function getLoginRedirectUrl(): string {
 export const register = (data: RegisterRequest) =>
   publicApiRequest<void>(AUTH_ENDPOINTS.register, { method: "POST", body: data });
 
-/** Keycloak'ın native "Forgot Password" akışına yönlendirme.
- *  Kullanıcı login sayfasına düşer; oradaki "Şifremi unuttum" linki
- *  Keycloak'un kendi reset-credentials ekranına götürür. */
 export function getPasswordResetRedirectUrl(): string {
   return getLoginRedirectUrl();
 }
@@ -40,24 +38,24 @@ export const fetchSession = async (signal?: AbortSignal) => {
   return { ...candidate, roles: candidate.roles ?? [] } as SessionUser;
 };
 
-export const logout = (): void => {
-  const csrfToken = getCsrfTokenFromCookie();
-
-  if (!csrfToken) {
-    throw new Error("CSRF token bulunamadı.");
-  }
+/**
+ * Tam sayfa form-submit ile logout: RP-initiated logout, Keycloak'a redirect
+ * zinciri gerektirdiği için `fetch` ile değil, native form submission ile
+ * tetiklenir. CSRF token'ı bellekteki store'dan alınır (cookie'den DEĞİL).
+ */
+export const logout = async (): Promise<void> => {
+  const csrf = await getCsrfToken();
+  broadcastLogout();
 
   const form = document.createElement("form");
-
   form.method = "POST";
   form.action = `${env.apiBaseUrl}${AUTH_ENDPOINTS.logout}`;
   form.style.display = "none";
 
   const csrfInput = document.createElement("input");
-
   csrfInput.type = "hidden";
-  csrfInput.name = "_csrf";
-  csrfInput.value = csrfToken;
+  csrfInput.name = csrf.parameterName;
+  csrfInput.value = csrf.token;
 
   form.appendChild(csrfInput);
   document.body.appendChild(form);
