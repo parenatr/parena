@@ -1,6 +1,7 @@
 import { env } from "@/config/env";
 
 import { ApiError } from "./api-error";
+import { clearCsrfToken, getCsrfToken } from "./csrf";
 
 type RequestOptions = {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -31,13 +32,6 @@ async function parseBody(response: Response): Promise<unknown> {
   }
 }
 
-export function getCsrfTokenFromCookie(): string | null {
-  const match = document.cookie.match(
-    /(?:^|;\s*)XSRF-TOKEN=([^;]+)/
-  );
-  return match ? decodeURIComponent(match[1]) : null;
-}
-
 async function handleResponse<TResponse>(
   response: Response,
   allowUnauthorized?: boolean,
@@ -45,8 +39,9 @@ async function handleResponse<TResponse>(
   const payload = await parseBody(response);
 
   if (!response.ok) {
-    if (response.status === 401 && allowUnauthorized) {
-      return null as TResponse;
+    if (response.status === 401) {
+      clearCsrfToken();
+      if (allowUnauthorized) return null as TResponse;
     }
 
     const problem = (
@@ -79,13 +74,37 @@ async function handleResponse<TResponse>(
   return payload as TResponse;
 }
 
+async function doFetch(
+  path: string,
+  method: RequestOptions["method"],
+  body: unknown,
+  signal: AbortSignal | undefined,
+  csrfHeader?: { name: string; value: string },
+): Promise<Response> {
+  return fetch(`${env.apiBaseUrl}${path}`, {
+    method,
+    credentials: "include",
+    signal,
+    headers: {
+      Accept: "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+      ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
+      ...(csrfHeader ? { [csrfHeader.name]: csrfHeader.value } : {}),
+    },
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+  });
+}
+
 /**
  * BFF (Backend-for-Frontend) istemcisi — oturum gerektiren (credential'lı) uçlar için.
  *
  * - `credentials: "include"` → oturum HttpOnly cookie ile taşınır,
  *   token hiçbir zaman JavaScript tarafında tutulmaz.
- * - `X-Requested-With` → BFF'in tarayıcı isteğini ayırt edip 302 yerine
- *   401 dönebilmesi için (Spring Security standart pratiği).
+ * - Mutasyon (GET dışı) isteklerinde CSRF token, bellekteki store'dan alınıp
+ *   backend'in bildirdiği header adıyla eklenir. Token cookie'den DEĞİL,
+ *   `/api/csrf` endpoint'inden (WebSession-backed) okunur — bkz. `csrf.ts`.
+ * - İlk CSRF denemesi 403 ile başarısız olursa (örn. session yenilendi,
+ *   token stale kaldı) token zorla yenilenip istek BİR KEZ tekrar denenir.
  *
  * Cookie/CSRF taşımayan public uçlar (register vb.) için `publicApiRequest`
  * kullanılmalı — backend tarafında bu uçların CORS kaynağı credential'sız ve
@@ -95,25 +114,25 @@ export async function apiRequest<TResponse>(
   path: string,
   { method = "GET", body, signal, allowUnauthorized }: RequestOptions = {},
 ): Promise<TResponse> {
+  const isMutating = method !== "GET";
   let response: Response;
 
   try {
-    const csrfToken = getCsrfTokenFromCookie();
+    let csrfHeader: { name: string; value: string } | undefined;
+    if (isMutating) {
+      const csrf = await getCsrfToken();
+      csrfHeader = { name: csrf.headerName, value: csrf.token };
+    }
 
-    response = await fetch(`${env.apiBaseUrl}${path}`, {
-      method,
-      credentials: "include",
-      signal,
-      headers: {
-        Accept: "application/json",
-        "X-Requested-With": "XMLHttpRequest",
-        ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
-        ...(method !== "GET" && csrfToken
-          ? { "X-XSRF-TOKEN": csrfToken }
-          : {}),
-      },
-      body: body !== undefined ? JSON.stringify(body) : undefined,
-    });
+    response = await doFetch(path, method, body, signal, csrfHeader);
+
+    if (isMutating && response.status === 403) {
+      const refreshed = await getCsrfToken(true);
+      response = await doFetch(path, method, body, signal, {
+        name: refreshed.headerName,
+        value: refreshed.token,
+      });
+    }
   } catch (cause) {
     if (cause instanceof DOMException && cause.name === "AbortError") {
       throw cause;
