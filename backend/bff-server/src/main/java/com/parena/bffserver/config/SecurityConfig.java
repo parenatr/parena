@@ -89,6 +89,22 @@ public class SecurityConfig {
                         .csrfTokenRequestHandler(csrfAttributeHandler))
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers("/actuator/health", "/api/auth/me").permitAll()
+                        // ÖNEMLİ: requiresLogout artık sadece POST'u eşliyor (bkz. aşağıdaki
+                        // .logout(...) bloğu), bu yüzden GET/PUT/PATCH/DELETE/HEAD
+                        // /api/auth/logout'a gelen istekler LogoutWebFilter'a hiç girmeden
+                        // buradan geçip GatewayProxyController'ın "/api/**" catch-all'ına
+                        // düşer ve ham Cookie header'ını downstream'e forward eder (bkz.
+                        // bff-token-architecture.md §2, GatewayProxyHandler DOKUNULMAZ —
+                        // ayrı bir teknik borç). Bu non-POST metodları authorizeExchange
+                        // katmanında, proxy'ye ULAŞMADAN önce açıkça reddediyoruz. Sıra
+                        // kritik: authorizeExchange kuralları tanım sırasına göre
+                        // değerlendirilir (ilk eşleşen kazanır), bu yüzden bu denyAll()
+                        // kuralları anyExchange().authenticated()'dan ÖNCE gelmeli.
+                        .pathMatchers(HttpMethod.GET, "/api/auth/logout").denyAll()
+                        .pathMatchers(HttpMethod.PUT, "/api/auth/logout").denyAll()
+                        .pathMatchers(HttpMethod.PATCH, "/api/auth/logout").denyAll()
+                        .pathMatchers(HttpMethod.DELETE, "/api/auth/logout").denyAll()
+                        .pathMatchers(HttpMethod.HEAD, "/api/auth/logout").denyAll()
                         .anyExchange().authenticated())
                 .oauth2Login(oauth2 -> oauth2
                         .authenticationSuccessHandler(emailVerificationSyncHandler))

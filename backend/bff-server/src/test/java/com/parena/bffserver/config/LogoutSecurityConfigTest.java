@@ -75,24 +75,23 @@ class LogoutSecurityConfigTest {
 
     @Test
     void getRequestToLogoutIsNotAcceptedAsLogout() {
-        // NOT: Brief burada is4xxClientError() bekliyordu. GET artık LogoutWebFilter
-        // tarafından yakalanmıyor (matcher POST-only) — ama bu app'te /api/auth/logout
-        // aynı zamanda GatewayProxyController'ın @RequestMapping("/api/**") catch-all'ına
-        // da düşüyor (bkz. GatewayProxyController — bilinçli olarak DOKUNULMADI, global
-        // kısıt gereği). Bu izole testte (gateway-server/Eureka yok) load-balanced
-        // WebClient "localhost" için hiçbir instance bulamıyor ve 503 dönüyor; tam
-        // stack'li bir ortamda (gateway-server ayakta) bu muhtemelen gateway'in kendi
-        // 404'üne (temiz bir 4xx) denk gelirdi. Test-ortamı farkından etkilenmemek için
-        // asıl güvenlik açısından önemli olanı doğruluyoruz: istek ESKİDEN OLDUĞU GİBİ
-        // (302 /login?logout) başarılı bir logout olarak işlenmiyor — yani hem 4xx hem
-        // 5xx kabul edilebilir, sadece 2xx/3xx (logout-as-success) KABUL EDİLEMEZ.
+        // NOT: GET artık LogoutWebFilter tarafından yakalanmıyor (matcher POST-only),
+        // ve eskiden bu yüzden /api/auth/logout GatewayProxyController'ın
+        // @RequestMapping("/api/**") catch-all'ına düşüp (bkz. GatewayProxyController
+        // — bilinçli olarak DOKUNULMADI, global kısıt gereği) izole test ortamında
+        // (gateway-server/Eureka yok) load-balanced WebClient'ın bulamadığı bir
+        // instance nedeniyle belirsiz bir 503 dönüyordu. Fix: SecurityConfig'in
+        // authorizeExchange zincirine GET/PUT/PATCH/DELETE/HEAD /api/auth/logout için
+        // açık .denyAll() kuralları eklendi (anyExchange().authenticated()'dan ÖNCE) —
+        // artık bu istek proxy'ye HİÇ ULAŞMADAN authorizeExchange katmanında
+        // deterministik olarak 403 ile reddediliyor (bkz. AuthorizationWebFilter log:
+        // "Authorization failed: Access Denied"), gateway/Eureka'nın ayakta olup
+        // olmamasından bağımsız. Bu yüzden artık kesin 403 doğrulanabiliyor.
         webTestClient
                 .mutateWith(SecurityMockServerConfigurers.mockOidcLogin())
                 .get().uri("/api/auth/logout")
                 .exchange()
-                .expectStatus().value(status -> assertThat(status)
-                        .as("GET /api/auth/logout logout olarak başarıyla işlenmemeli (2xx/3xx olmamalı)")
-                        .isGreaterThanOrEqualTo(400));
+                .expectStatus().isForbidden();
     }
 
     @Test
@@ -161,4 +160,24 @@ class LogoutSecurityConfigTest {
                 .as("logout sonrası Redis'te bu session'a ait hiçbir key kalmamalı")
                 .isEmpty();
     }
+
+    // NOT (FIX 4 araştırması — final review sonrası düzeltme dalgası): Burada
+    // "logout sonrası ESKİ session cookie'siyle korumalı bir endpoint'e artık
+    // authenticate OLUNAMIYOR" iddiasını kanıtlayan bir test eklenmesi denendi,
+    // ancak ampirik olarak doğrulandı ki bu test harness'inde YAPILAMAZ:
+    // `SecurityMockServerConfigurers.mockOidcLogin()` mock authentication'ı
+    // SADECE per-request reactor context'ine yazıyor; gerçek
+    // WebSessionServerSecurityContextRepository.save() akışını TETİKLEMİYOR.
+    // Doğrulama: mockOidcLogin() ile GET /api/csrf çağrıldıktan sonra dönen
+    // session cookie'siyle (mockOidcLogin() OLMADAN) tekrar GET /api/csrf
+    // çağrıldığında 302 (oauth2 authorization redirect'i, yani "unauthenticated")
+    // dönüyor — yani mock harness'te WebSession'a hiçbir zaman GERÇEK bir
+    // SecurityContext yazılmıyor, dolayısıyla "logout sonrası eski session
+    // artık authenticate edemiyor" testi burada anlamsız olurdu: session zaten
+    // (mock authentication kaldırıldığı anda) baştan authenticate edemiyor —
+    // logout'un invalidation'ının bir sonucu değil. Bu nedenle FIX 4 bu PR'da
+    // ADDRESSED EDİLMEDİ; gerçek bir kanıt için ya (a) gerçek bir
+    // OAuth2AuthorizedClient/SecurityContext'i testte WebSession'a manuel olarak
+    // yazan bir yardımcı, ya da (b) tam entegrasyon ortamı (gerçek Keycloak)
+    // gerekir — ikisi de bu fix dalgasının kapsamı dışında bırakıldı.
 }

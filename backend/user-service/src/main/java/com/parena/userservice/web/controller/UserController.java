@@ -44,6 +44,17 @@ public class UserController {
                 user.getLastName());
     }
 
+    /**
+     * Kullanıcının Keycloak'taki TÜM SSO session'larını ve refresh token'larını
+     * sunucu tarafında geçersiz kılar (bkz. {@link RevokeAllSessionsUseCase}).
+     *
+     * ÖNEMLİ: Bu, ÇAĞIRAN cihazın kendi bff-server/Redis WebSession'ını
+     * SONLANDIRMAZ — sadece Keycloak SSO session'larını/refresh token'larını
+     * etkiler. Çağıran cihazın kendi oturumunu da kapatmak için bu endpoint'e
+     * ek olarak normal logout akışı (POST /api/auth/logout) ayrıca
+     * tetiklenmelidir. Bu endpoint'in frontend'den çağrılması bu görevin
+     * kapsamı dışında bırakıldı (bkz. plan Task 6 Step 8).
+     */
     @PostMapping("/me/sessions/revoke-all")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void revokeAllSessions(@AuthenticationPrincipal Jwt jwt) {
