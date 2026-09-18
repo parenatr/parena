@@ -39,7 +39,9 @@ public class KeycloakAdminClientAdapter implements KeycloakPort {
 
     @Override
     public UUID createUser(String firstName, String lastName, String email, String password, Set<Role> roles) {
-        log.info("Creating user with email: {}", email);
+        // KVKK/audit-kvkk-compliance.md §5: log satırlarında email gibi PII
+        // ALANLARI bulunmaz — yalnızca dahili id (keycloakId) kullanılır.
+        log.info("Creating user in Keycloak");
 
         // Realm'e bağlan (GET /admin/realms/{realm})
         RealmResource realmResource = keycloakAdminClient.realm(keycloakProperties.getRealm());
@@ -63,7 +65,7 @@ public class KeycloakAdminClientAdapter implements KeycloakPort {
 
             String location = response.getLocation().getPath();
             UUID keycloakId = UUID.fromString(location.substring(location.lastIndexOf("/") + 1));
-            log.info("User created successfully in Keycloak: keycloakId= {}, email= {}", keycloakId, email);
+            log.info("User created successfully in Keycloak: keycloakId= {}", keycloakId);
             return keycloakId;
             // NOT: assignRoleToUser buradan bilerek kaldırıldı. Burada kalsaydı,
             // rol atama hatası register()'a keycloakId hiç ulaşmadan fırlar ve

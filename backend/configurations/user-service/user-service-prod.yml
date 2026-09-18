@@ -1,0 +1,41 @@
+#user-service prod ortamında (docker) çalışan eureka-server'a bağlanır.
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-server:8761/eureka
+
+#user-service keycloak bağlantısı.
+keycloak:
+  realm: parena
+  auth-server-url: ${SO_KEYCLOAK_INTERNAL_URL}
+
+  # Keycloak Admin API'ye bağlanmak için kullanılan client
+  admin-client-id: user-service
+  admin-client-secret: ${SO_USER_SERVICE_CLIENT_SECRET}
+
+  # executeActionsEmail için redirect'in ait olduğu client
+  client-id: bff-server
+  email-verified-redirect-uri: ${SO_FRONTEND_BASE_URL}/email-dogrulandi
+
+spring:
+  datasource:
+    url: jdbc:postgresql://user_service_db:5432/${SO_USER_SERVICE_DB_NAME}
+    username: ${SO_USER_SERVICE_DB_USER}
+    password: ${SO_USER_SERVICE_DB_PASSWORD}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${SO_KEYCLOAK_INTERNAL_URL}/realms/parena/protocol/openid-connect/certs
+
+  jpa:
+    hibernate:
+      ddl-auto: validate # şema Flyway'in sorumluluğunda
+      open-in-view: false
+  flyway:
+    enabled: true
+
+logging:
+  level:
+    org.springframework.security: WARN

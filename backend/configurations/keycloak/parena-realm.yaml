@@ -143,8 +143,12 @@ clients:
     standardFlowEnabled: false
     directAccessGrantsEnabled: false
     serviceAccountsEnabled: true
-    redirectUris:
-      - "https://parena.com.tr/*"
+    # standardFlowEnabled: false (service-account-only, client_credentials grant) —
+    # bu client hiçbir zaman tarayıcı redirect flow'u çalıştırmıyor, redirectUris
+    # kullanılmıyor. Önceden inert bir wildcard ("https://parena.com.tr/*") vardı;
+    # keycloak-realm-security.md'nin "redirect URI'ler exact match olmalı" ilkesiyle
+    # tutarlı olması için boş bırakıldı.
+    redirectUris: []
     fullScopeAllowed: true
     defaultClientScopes:
       - web-origins
