@@ -24,6 +24,8 @@ import org.springframework.security.web.server.util.matcher.ServerWebExchangeMat
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.server.session.CookieWebSessionIdResolver;
+import org.springframework.web.server.session.WebSessionIdResolver;
 
 import java.util.List;
 
@@ -189,5 +191,21 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
+    }
+
+    // __Host- prefix, tarayıcı seviyesinde Secure + Domain-yok + Path=/ şartını
+    // ZORUNLU kılar — subdomain-takeover senaryosunda cookie'nin başka bir
+    // subdomain'e (örn. admin.parena.com.tr) sızmasına karşı en güçlü garanti.
+    // Domain BİLEREK set edilmiyor (bkz. bff-token-architecture.md §4).
+    @Bean
+    public WebSessionIdResolver webSessionIdResolver() {
+        CookieWebSessionIdResolver resolver = new CookieWebSessionIdResolver();
+        resolver.setCookieName("__Host-session");
+        resolver.addCookieInitializer(builder -> builder
+                .secure(true)
+                .httpOnly(true)
+                .sameSite("Strict")
+                .path("/"));
+        return resolver;
     }
 }
