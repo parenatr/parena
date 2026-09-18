@@ -21,6 +21,14 @@ public interface KeycloakPort {
 
     void deleteUser(UUID keycloakId);
 
+    /**
+     * logoutAllSessions: Kullanıcının Keycloak'taki TÜM aktif session'larını
+     * (tüm cihaz/tarayıcı) ve refresh token'larını sunucu tarafında geçersiz
+     * kılar. Yalnızca çağıran kullanıcının KENDİ hesabı için kullanılabilir —
+     * yetki kontrolü use case seviyesinde yapılır.
+     */
+    void logoutAllSessions(UUID keycloakId);
+
     void assignRealmRoles(UUID keycloakId, Set<Role> roles);
 
     void sendVerificationEmail(UUID keycloakId);

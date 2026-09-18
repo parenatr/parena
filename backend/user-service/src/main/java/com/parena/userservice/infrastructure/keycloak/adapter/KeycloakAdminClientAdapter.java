@@ -81,6 +81,14 @@ public class KeycloakAdminClientAdapter implements KeycloakPort {
     }
 
     @Override
+    public void logoutAllSessions(UUID keycloakId) {
+        keycloakAdminClient.realm(keycloakProperties.getRealm())
+                .users().get(keycloakId.toString())
+                .logout();
+        log.info("All sessions revoked for keycloakId={}", keycloakId);
+    }
+
+    @Override
     public void assignRealmRoles(UUID keycloakId, Set<Role> roles) {
         UserResource userResource = keycloakAdminClient.realm(keycloakProperties.getRealm())
                 .users().get(keycloakId.toString());
