@@ -1,11 +1,12 @@
 import type { ComponentType } from "react";
-import { Navigate, Route, Routes, useSearchParams, useLocation } from "react-router-dom";
+import { Route, Routes, useSearchParams, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 
 import { useDocumentMeta, type PageMeta } from "@/hooks/use-document-meta";
 import { ROUTES } from "@/router/routes";
 import CheckoutPage, { checkoutPageMeta } from "@/pages/Checkout/CheckoutPage";
 import LaunchPage, { launchPageMeta } from "@/pages/Launch/LaunchPage";
+import NotFoundPage, { notFoundPageMeta } from "@/pages/NotFound/NotFoundPage";
 import CerezPage, { cerezPageMeta } from "@/pages/Legal/CerezPage";
 import GizlilikPage, { gizlilikPageMeta } from "@/pages/Legal/GizlilikPage";
 import KullanimSartlariPage, {
@@ -58,6 +59,7 @@ const GizlilikRoute = withMeta(GizlilikPage, gizlilikPageMeta);
 const KullanimSartlariRoute = withMeta(KullanimSartlariPage, kullanimSartlariPageMeta);
 const KvkkRoute = withMeta(KvkkPage, kvkkPageMeta);
 const MesafeliSatisRoute = withMeta(MesafeliSatisPage, mesafeliSatisPageMeta);
+const NotFoundRoute = withMeta(NotFoundPage, notFoundPageMeta);
 
 /** Uygulamanın tek yönlendirme merkezi. */
 function ScrollToTop() {
@@ -96,7 +98,7 @@ export function AppRouter() {
         <Route path={ROUTES.kullanimSartlari} element={<KullanimSartlariRoute />} />
         <Route path={ROUTES.kvkk} element={<KvkkRoute />} />
         <Route path={ROUTES.mesafeliSatis} element={<MesafeliSatisRoute />} />
-        <Route path="*" element={<Navigate to={ROUTES.home} replace />} />
+        <Route path="*" element={<NotFoundRoute />} />
       </Routes>
     </>
   );

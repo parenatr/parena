@@ -32,6 +32,7 @@ export default defineConfig([
             'kullanimSartlariPageMeta',
             'kvkkPageMeta',
             'mesafeliSatisPageMeta',
+            'notFoundPageMeta',
             // Radix `Select` re-export'ları (select.tsx): `Root`/`Value` aslında
             // component, ama aliaslı bir import'u yeniden export etmek bu kuralın
             // sezgisel analizi tarafından bir component tanımı olarak tanınmıyor.
