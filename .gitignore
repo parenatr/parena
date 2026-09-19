@@ -23,6 +23,7 @@ target/
 # ==========================
 
 .vscode/
+settings.local.json
 
 # ==========================
 # Eclipse
@@ -95,3 +96,10 @@ npm_letsencrypt/
 
 .superpowers/
 .claude/
+
+# ==========================
+# Git worktrees (superpowers subagent-driven-development)
+# ==========================
+
+.worktrees/
+.claude/worktrees/

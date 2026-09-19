@@ -1,4 +1,5 @@
 import type { Preview } from "@storybook/react";
+// @ts-expect-error CSS is resolved by Storybook's bundler.
 import "../src/index.css";
 
 const preview: Preview = {
