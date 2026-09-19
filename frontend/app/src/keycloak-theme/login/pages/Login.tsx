@@ -10,7 +10,7 @@ import { AuthField, AuthPasswordField } from "../../../components/auth/AuthField
 
 export default function Login(props: PageProps<Extract<KcContext, { pageId: "login.ftl" }>, I18n>) {
     const { kcContext } = props;
-    const FRONTEND_REGISTER_URL = `${kcContext.properties.APP_URL}/uye-ol`;
+    const FRONTEND_REGISTER_URL = `${kcContext.properties.WEBSITE_URL}/uye-ol`;
 
     useEffect(() => {
         document.title = "Giriş Yap | Parena";
