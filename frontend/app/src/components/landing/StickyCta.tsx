@@ -1,5 +1,6 @@
 import { AppLink } from "@/components/ui/app-link";
 import { PRICING_CONFIG, FOUNDER_QUOTA_LEFT } from "@/config/pricing";
+import { ROUTES } from "@/router/routes";
 
 /** Hero'dan sonra beliren yapışkan üyelik çubuğu. Görünürlüğü useLandingEffects yönetir. */
 export function StickyCta() {
@@ -16,7 +17,7 @@ export function StickyCta() {
           Kontenjan: <span id="stickyQuota">{PRICING_CONFIG.founder.takenFounders}</span>/{PRICING_CONFIG.founder.maxFounders} doldu ({FOUNDER_QUOTA_LEFT} kaldı)
         </span>
       </div>
-      <AppLink className="btn btn-primary" href="/uye-ol?plan=premium" data-cta="sticky">
+      <AppLink className="btn btn-primary" href={`${ROUTES.register}?plan=premium`} data-cta="sticky">
         Üye ol
       </AppLink>
     </div>

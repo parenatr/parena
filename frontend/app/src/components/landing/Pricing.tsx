@@ -1,4 +1,5 @@
 import { AppLink } from "@/components/ui/app-link";
+import { ROUTES } from "@/router/routes";
 
 export function Pricing() {
   return (
@@ -48,7 +49,7 @@ export function Pricing() {
                 </a>
                 <AppLink
                   className="btn btn-primary"
-                  href="/uye-ol?plan=ucretsiz"
+                  href={`${ROUTES.register}?plan=ucretsiz`}
                   data-cta="plan-free"
                 >
                   Ücretsiz kayıt ol
@@ -58,8 +59,8 @@ export function Pricing() {
               <p className="pfoot">
                 <span>Kayıt 2 dakika sürer.</span>
                 <span>
-                  <AppLink href="/kullanim-sartlari">Kullanım Şartları</AppLink> ve{" "}
-                  <AppLink href="/gizlilik">Gizlilik Politikası</AppLink> geçerlidir.
+                  <AppLink href={ROUTES.kullanimSartlari}>Kullanım Şartları</AppLink> ve{" "}
+                  <AppLink href={ROUTES.gizlilik}>Gizlilik Politikası</AppLink> geçerlidir.
                 </span>
               </p>
             </div>
@@ -101,12 +102,12 @@ export function Pricing() {
                 <li>Kurucu üyelere özel Telegram kanalı ve yeni özelliklere ilk erişim</li>
               </ul>
 
-              <AppLink className="btn btn-primary btn-block btn-lg" href="/uye-ol?plan=premium" data-cta="plan-premium">Kurucu üye ol · 149 ₺/ay</AppLink>
+              <AppLink className="btn btn-primary btn-block btn-lg" href={`${ROUTES.register}?plan=premium`} data-cta="plan-premium">Kurucu üye ol · 149 ₺/ay</AppLink>
               <p className="pfoot">
                 🔒 Ödeme iyzico'nun güvenli sayfasında tamamlanır; kart bilgilerin PARENA'da saklanmaz.<br />
                 Kurucu kontenjanı dolduğunda üyelik 249 ₺/ay olarak devam eder.<br />
-                Üyelik <AppLink href="/kullanim-sartlari">Kullanım Şartları</AppLink> ve
-                <AppLink href="/mesafeli-satis"> Mesafeli Satış Sözleşmesi</AppLink>'ne tabidir.
+                Üyelik <AppLink href={ROUTES.kullanimSartlari}>Kullanım Şartları</AppLink> ve
+                <AppLink href={ROUTES.mesafeliSatis}> Mesafeli Satış Sözleşmesi</AppLink>'ne tabidir.
               </p>
             </div>
 

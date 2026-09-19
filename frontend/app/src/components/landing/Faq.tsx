@@ -1,4 +1,5 @@
 import { AppLink } from "@/components/ui/app-link";
+import { ROUTES } from "@/router/routes";
 
 export function Faq() {
   return (
@@ -14,7 +15,7 @@ export function Faq() {
           <div className="faq rv">
             <details>
               <summary>PARENA yatırım tavsiyesi veriyor mu?</summary>
-              <div className="ans">Hayır. PARENA, SPK lisanslı aracı kurumların kamuya açık raporlarındaki borsa görüşlerini derler, karşılaştırır ve sonuçlarını raporlar. Kendi adına hiçbir alım-satım önerisi veya derecelendirme üretmez. Yatırım danışmanlığı, yetkili kuruluşlarla imzalanan sözleşme çerçevesinde sunulur. Ayrıntı: <AppLink href="/kullanim-sartlari#m3">Kullanım Şartları, madde 3</AppLink>.</div>
+              <div className="ans">Hayır. PARENA, SPK lisanslı aracı kurumların kamuya açık raporlarındaki borsa görüşlerini derler, karşılaştırır ve sonuçlarını raporlar. Kendi adına hiçbir alım-satım önerisi veya derecelendirme üretmez. Yatırım danışmanlığı, yetkili kuruluşlarla imzalanan sözleşme çerçevesinde sunulur. Ayrıntı: <AppLink href={`${ROUTES.kullanimSartlari}#m3`}>Kullanım Şartları, madde 3</AppLink>.</div>
             </details>
             <details>
               <summary>Borsa verileri nereden geliyor?</summary>
@@ -38,11 +39,11 @@ export function Faq() {
             </details>
             <details>
               <summary>Portföyümü PARENA'ya nasıl bağlıyorum?</summary>
-              <div className="ans">Portföyünü elle girersin. PARENA hiçbir aracı kurum hesabına, paranıza veya emir iletim sistemine erişmez; API bağlantısı istemez. Yalnızca girdiğin hisse, adet ve maliyet bilgisiyle takip ve karne hesaplaması yapar. Verilerinin nasıl işlendiğini <AppLink href="/gizlilik">Gizlilik Politikası</AppLink>'nda bulabilirsin.</div>
+              <div className="ans">Portföyünü elle girersin. PARENA hiçbir aracı kurum hesabına, paranıza veya emir iletim sistemine erişmez; API bağlantısı istemez. Yalnızca girdiğin hisse, adet ve maliyet bilgisiyle takip ve karne hesaplaması yapar. Verilerinin nasıl işlendiğini <AppLink href={ROUTES.gizlilik}>Gizlilik Politikası</AppLink>'nda bulabilirsin.</div>
             </details>
             <details>
               <summary>Ödeme güvenli mi?</summary>
-              <div className="ans">Ödemeler iyzico'nun güvenli sayfası üzerinden alınır. Kart bilgilerin PARENA sunucularında saklanmaz. Yıllık ödemede iki ay hediye edilir. Ödeme, ifa ve cayma koşulları <AppLink href="/mesafeli-satis">Mesafeli Satış Sözleşmesi</AppLink>'nde düzenlenmiştir.</div>
+              <div className="ans">Ödemeler iyzico'nun güvenli sayfası üzerinden alınır. Kart bilgilerin PARENA sunucularında saklanmaz. Yıllık ödemede iki ay hediye edilir. Ödeme, ifa ve cayma koşulları <AppLink href={ROUTES.mesafeliSatis}>Mesafeli Satış Sözleşmesi</AppLink>'nde düzenlenmiştir.</div>
             </details>
             <details>
               <summary>Hesabımı arkadaşımla paylaşabilir miyim?</summary>
