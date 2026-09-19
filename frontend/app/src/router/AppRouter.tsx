@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useSearchParams, useLocation } from "react-rou
 import { useEffect } from "react";
 
 import { useDocumentMeta, type PageMeta } from "@/hooks/use-document-meta";
+import { ROUTES } from "@/router/routes";
 import CheckoutPage, { checkoutPageMeta } from "@/pages/Checkout/CheckoutPage";
 import LaunchPage, { launchPageMeta } from "@/pages/Launch/LaunchPage";
 import CerezPage, { cerezPageMeta } from "@/pages/Legal/CerezPage";
@@ -85,17 +86,17 @@ export function AppRouter() {
     <>
       <ScrollToTop />
       <Routes>
-        <Route path="/" element={<LaunchRoute />} />
-        <Route path="/giris" element={<LoginRoute />} />
-        <Route path="/uye-ol" element={<RegisterRoute />} />
+        <Route path={ROUTES.home} element={<LaunchRoute />} />
+        <Route path={ROUTES.login} element={<LoginRoute />} />
+        <Route path={ROUTES.register} element={<RegisterRoute />} />
         <Route path="/sifremi-unuttum" element={<ForgotPasswordRoute />} />
-        <Route path="/odeme" element={<CheckoutRoute />} />
-        <Route path="/cerez" element={<CerezRoute />} />
-        <Route path="/gizlilik" element={<GizlilikRoute />} />
-        <Route path="/kullanim-sartlari" element={<KullanimSartlariRoute />} />
-        <Route path="/kvkk" element={<KvkkRoute />} />
-        <Route path="/mesafeli-satis" element={<MesafeliSatisRoute />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path={ROUTES.checkout} element={<CheckoutRoute />} />
+        <Route path={ROUTES.cerez} element={<CerezRoute />} />
+        <Route path={ROUTES.gizlilik} element={<GizlilikRoute />} />
+        <Route path={ROUTES.kullanimSartlari} element={<KullanimSartlariRoute />} />
+        <Route path={ROUTES.kvkk} element={<KvkkRoute />} />
+        <Route path={ROUTES.mesafeliSatis} element={<MesafeliSatisRoute />} />
+        <Route path="*" element={<Navigate to={ROUTES.home} replace />} />
       </Routes>
     </>
   );
