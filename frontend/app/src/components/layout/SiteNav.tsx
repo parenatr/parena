@@ -3,6 +3,7 @@ import { AppLink } from "@/components/ui/app-link";
 import { ParenaMark } from "@/components/brand/ParenaMark";
 import { useSession } from "@/features/auth/auth.queries";
 import { logout } from "@/features/auth/auth.api";
+import { ROUTES } from "@/router/routes";
 
 const LINKS = [
   { href: "#nasil", label: "Nasıl çalışır?" },
@@ -51,7 +52,7 @@ function AuthAction({
           ? "btn btn-ghost desktop-login-btn"
           : "btn btn-ghost"
       }
-      href="/giris"
+      href={ROUTES.login}
       data-cta={
         variant === "desktop" ? "nav-giris" : "nav-giris-mob"
       }
