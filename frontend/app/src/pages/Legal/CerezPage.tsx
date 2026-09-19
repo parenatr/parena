@@ -1,4 +1,6 @@
+import { AppLink } from "@/components/ui/app-link";
 import { LegalLayout } from "@/components/legal/LegalLayout";
+import { ROUTES } from "@/router/routes";
 
 export const cerezPageMeta = {
   title: 'Çerez Politikası - Parena',
@@ -128,7 +130,7 @@ export default function CerezPage() {
     <section id="c8">
       <h2>Hukuki dayanak</h2>
       <p>Zorunlu çerezler, KVKK'nın 5/2-(c) maddesi (sözleşmenin ifası) ve 5/2-(f) maddesi (meşru menfaat) kapsamında; tercih, analitik ve pazarlama çerezleri ise KVKK'nın 5/1 maddesi uyarınca <strong>açık rızanıza</strong> dayanılarak işlenmektedir.</p>
-      <p>Çerezler aracılığıyla işlenen kişisel verilere ilişkin ayrıntılı bilgilendirme için <a href="/kvkk">KVKK Aydınlatma Metni</a>'ni, genel gizlilik uygulamalarımız için <a href="/gizlilik">Gizlilik Politikası</a>'nı inceleyebilirsiniz.</p>
+      <p>Çerezler aracılığıyla işlenen kişisel verilere ilişkin ayrıntılı bilgilendirme için <AppLink href={ROUTES.kvkk}>KVKK Aydınlatma Metni</AppLink>'ni, genel gizlilik uygulamalarımız için <AppLink href={ROUTES.gizlilik}>Gizlilik Politikası</AppLink>'nı inceleyebilirsiniz.</p>
     </section>
 
     <section id="c9">
