@@ -92,3 +92,6 @@ Thumbs.db
 npm_data/
 npm_letsencrypt/
 *.save
+
+.superpowers/
+.claude/

@@ -2,6 +2,7 @@ import { useMemo, useState, type FormEvent } from "react";
 
 import { AuthShell } from "@/components/auth/AuthShell";
 import { AppLink } from "@/components/ui/app-link";
+import { ROUTES } from "@/router/routes";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -45,7 +46,7 @@ export default function RegisterPage({
   // Geçersiz veya eksik parametreler ücretsiz akışa güvenli biçimde döner.
   const selectedPlan: RegisterPlan = plan === "premium" ? "premium" : "ucretsiz";
   const isPremium = selectedPlan === "premium";
-  const paymentHref = "/odeme?plan=premium";
+  const paymentHref = `${ROUTES.checkout}?plan=premium`;
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -132,7 +133,7 @@ export default function RegisterPage({
         <p className="eyebrow">Kayıt</p>
         <h1>{isPremium ? "Önce hesabını oluştur" : "Ücretsiz hesap oluştur"}</h1>
         <p className="sub">
-          Zaten hesabın var mı? <AppLink href="/giris">Giriş yap</AppLink>
+          Zaten hesabın var mı? <AppLink href={ROUTES.login}>Giriş yap</AppLink>
         </p>
 
         {isPremium ? (
@@ -231,7 +232,7 @@ export default function RegisterPage({
                 className="mt-0.5"
               />
               <span className="text-sm">
-                <AppLink href="/kullanim-sartlari" target="_blank" rel="noopener">
+                <AppLink href={ROUTES.kullanimSartlari} target="_blank" rel="noopener">
                   Kullanım Şartları
                 </AppLink>
                 'nı okudum, kabul ediyorum.
@@ -260,13 +261,13 @@ export default function RegisterPage({
 
           <p className="text-sm text-muted-foreground" style={{ marginTop: 20 }}>
             Kişisel verilerinizin işlenmesine ilişkin{" "}
-            <AppLink href="/kvkk" target="_blank" rel="noopener">
+            <AppLink href={ROUTES.kvkk} target="_blank" rel="noopener">
               Kvkk Aydınlatma Metni
             </AppLink>
             'ni inceleyebilirsiniz.
           </p>
           <p className="text-sm text-muted-foreground" style={{ marginTop: 20 }}>
-            <AppLink href="/gizlilik" target="_blank" rel="noopener">
+            <AppLink href={ROUTES.gizlilik} target="_blank" rel="noopener">
               Gizlilik Politikası
             </AppLink>
             'nı inceleyebilirsiniz.
@@ -303,14 +304,14 @@ export default function RegisterPage({
               </AppLink>
               <p style={{ fontSize: "12.5px", color: "var(--muted)", marginTop: 14 }}>
                 Ödemeyi sonra da tamamlayabilirsin;{" "}
-                <AppLink href="/giris" style={{ fontWeight: 600 }}>
+                <AppLink href={ROUTES.login} style={{ fontWeight: 600 }}>
                   giriş yap
                 </AppLink>{" "}
                 ve hesabından devam et.
               </p>
             </>
           ) : (
-            <AppLink className="btn" href="/giris">
+            <AppLink className="btn" href={ROUTES.login}>
               Giriş sayfasına dön
             </AppLink>
           )}
@@ -319,7 +320,7 @@ export default function RegisterPage({
 
       <p className="legal-note">
         Ücretli üyeliğe geçtiğinde{" "}
-        <AppLink href="/mesafeli-satis" target="_blank" rel="noopener">
+        <AppLink href={ROUTES.mesafeliSatis} target="_blank" rel="noopener">
           Mesafeli Satış Sözleşmesi
         </AppLink>{" "}
         de geçerli olur.
