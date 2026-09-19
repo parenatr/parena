@@ -1,4 +1,6 @@
+import { AppLink } from "@/components/ui/app-link";
 import { LegalLayout } from "@/components/legal/LegalLayout";
+import { ROUTES } from "@/router/routes";
 
 export const gizlilikPageMeta = {
   title: 'Gizlilik - Parena',
@@ -46,7 +48,7 @@ export default function GizlilikPage() {
     <section id="g1">
       <h2>Bu politika neyi kapsar?</h2>
       <p>Bu Gizlilik Politikası, <span className="fill">[TİCARİ UNVAN]</span> tarafından işletilen parena.com.tr internet sitesi ve bağlı hizmetleri ("Platform") kullanılırken hangi verilerin toplandığını, bu verilerin neden işlendiğini ve kullanıcının bu veriler üzerindeki haklarını açıklar.</p>
-      <p>Kişisel verilerin işlenmesine ilişkin hukuki dayanaklar ve ayrıntılı bilgilendirme için <a href="/kvkk">KVKK Aydınlatma Metni</a>'ni; çerez kullanımı için <a href="/cerez">Çerez Politikası</a>'nı inceleyebilirsiniz. Bu üç metin birbirini tamamlar.</p>
+      <p>Kişisel verilerin işlenmesine ilişkin hukuki dayanaklar ve ayrıntılı bilgilendirme için <AppLink href={ROUTES.kvkk}>KVKK Aydınlatma Metni</AppLink>'ni; çerez kullanımı için <AppLink href={ROUTES.cerez}>Çerez Politikası</AppLink>'nı inceleyebilirsiniz. Bu üç metin birbirini tamamlar.</p>
       <p>Platform'u kullanarak bu politikada açıklanan uygulamaları okuduğunuzu kabul etmiş olursunuz.</p>
     </section>
 
@@ -93,7 +95,7 @@ export default function GizlilikPage() {
     <section id="g5">
       <h2>Çerezler ve ölçümleme</h2>
       <p>Platform, oturumun sürdürülmesi ve kullanım istatistiklerinin ölçülmesi için çerez ve benzeri teknolojiler kullanır. Zorunlu çerezler dışındaki çerezler yalnızca açık rızanız hâlinde çalıştırılır.</p>
-      <p>Kullanılan çerezlerin tam listesi, süreleri ve tercihlerinizi nasıl değiştireceğiniz <a href="/cerez">Çerez Politikası</a>'nda açıklanmıştır.</p>
+      <p>Kullanılan çerezlerin tam listesi, süreleri ve tercihlerinizi nasıl değiştireceğiniz <AppLink href={ROUTES.cerez}>Çerez Politikası</AppLink>'nda açıklanmıştır.</p>
     </section>
 
     <section id="g6">
@@ -149,7 +151,7 @@ export default function GizlilikPage() {
     <section id="g10">
       <h2>Haklarınız</h2>
       <p>KVKK'nın 11. maddesi kapsamında; verilerinizin işlenip işlenmediğini öğrenme, işlenmişse bilgi talep etme, düzeltme, silme, aktarıldığı üçüncü kişileri öğrenme ve zararın giderilmesini talep etme haklarına sahipsiniz.</p>
-      <p>Hakların tam listesi ve başvuru usulü <a href="/kvkk">KVKK Aydınlatma Metni</a>'nde ayrıntılı olarak açıklanmıştır. Başvurularınızı destek@parena.com.tr adresine iletebilirsiniz; talepler en geç 30 gün içinde sonuçlandırılır.</p>
+      <p>Hakların tam listesi ve başvuru usulü <AppLink href={ROUTES.kvkk}>KVKK Aydınlatma Metni</AppLink>'nde ayrıntılı olarak açıklanmıştır. Başvurularınızı destek@parena.com.tr adresine iletebilirsiniz; talepler en geç 30 gün içinde sonuçlandırılır.</p>
     </section>
 
     <section id="g11">

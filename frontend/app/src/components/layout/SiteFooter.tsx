@@ -1,4 +1,5 @@
 import { AppLink } from "@/components/ui/app-link";
+import { ROUTES } from "@/router/routes";
 
 import "./site-footer.css";
 
@@ -39,11 +40,11 @@ const SOCIALS = [
 ];
 
 const LEGAL_LINKS = [
-  { href: "/kullanim-sartlari", label: "Kullanım şartları" },
-  { href: "/gizlilik", label: "Gizlilik politikası" },
-  { href: "/kvkk", label: "KVKK aydınlatma metni" },
-  { href: "/mesafeli-satis", label: "Mesafeli satış sözleşmesi" },
-  { href: "/cerez", label: "Çerez politikası" },
+  { href: ROUTES.kullanimSartlari, label: "Kullanım şartları" },
+  { href: ROUTES.gizlilik, label: "Gizlilik politikası" },
+  { href: ROUTES.kvkk, label: "KVKK aydınlatma metni" },
+  { href: ROUTES.mesafeliSatis, label: "Mesafeli satış sözleşmesi" },
+  { href: ROUTES.cerez, label: "Çerez politikası" },
 ];
 
 export function SiteFooter() {
@@ -127,7 +128,7 @@ export function SiteFooter() {
           derecelendirme üretmez. Simülasyon ve geçmiş performans verileri geleceğe yönelik
           sonuçların garantisi değildir. Yatırım kararlarınızın sorumluluğu tamamen size aittir.
           Ayrıntılı hükümler için{" "}
-          <AppLink href="/kullanim-sartlari">Kullanım Şartları</AppLink>'na bakınız.
+          <AppLink href={ROUTES.kullanimSartlari}>Kullanım Şartları</AppLink>'na bakınız.
         </p>
 
         <div className="sf-bottom">

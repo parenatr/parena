@@ -1,4 +1,6 @@
+import { AppLink } from "@/components/ui/app-link";
 import { LegalLayout } from "@/components/legal/LegalLayout";
+import { ROUTES } from "@/router/routes";
 
 export const mesafeliSatisPageMeta = {
   title: 'Mesafeli Satış - Parena',
@@ -79,7 +81,7 @@ export default function MesafeliSatisPage() {
       <p><strong>Ödeme yöntemi:</strong> Kredi/banka kartı ile, ödeme kuruluşu iyzico'nun güvenli ödeme sayfası üzerinden. Kart bilgileri Satıcı tarafından saklanmaz.</p>
       <p><strong>Ek masraf:</strong> Hizmet dijital ortamda ifa edildiğinden kargo, teslimat veya benzeri bir ek masraf bulunmamaktadır.</p>
       <div className="callout">
-        <p><strong>Hizmetin niteliğine ilişkin uyarı:</strong> Platform yatırım danışmanlığı, portföy yöneticiliği veya yatırım tavsiyesi hizmeti sunmaz. Sunulan içerik yalnızca bilgilendirme amaçlıdır ve yatırım kararlarının sorumluluğu münhasıran Alıcı'ya aittir. Ayrıntı için <a href="/kullanim-sartlari">Kullanım Şartları</a>'nın 3. maddesine bakınız.</p>
+        <p><strong>Hizmetin niteliğine ilişkin uyarı:</strong> Platform yatırım danışmanlığı, portföy yöneticiliği veya yatırım tavsiyesi hizmeti sunmaz. Sunulan içerik yalnızca bilgilendirme amaçlıdır ve yatırım kararlarının sorumluluğu münhasıran Alıcı'ya aittir. Ayrıntı için <AppLink href={ROUTES.kullanimSartlari}>Kullanım Şartları</AppLink>'nın 3. maddesine bakınız.</p>
       </div>
     </section>
 

@@ -3,6 +3,7 @@ import { useMemo, useState, type FormEvent } from "react";
 import { ParenaMark } from "@/components/brand/ParenaMark";
 import { AppLink } from "@/components/ui/app-link";
 import { FOUNDER_QUOTA } from "@/data/quota";
+import { ROUTES } from "@/router/routes";
 
 import "./CheckoutPage.css";
 
@@ -31,7 +32,7 @@ const CONSENTS = [
     id: "onbilgi",
     content: (
       <>
-        <AppLink href="/mesafeli-satis" target="_blank" rel="noopener">
+        <AppLink href={ROUTES.mesafeliSatis} target="_blank" rel="noopener">
           Ön Bilgilendirme Formu
         </AppLink>
         'nu okudum ve bilgilendirildim.
@@ -42,11 +43,11 @@ const CONSENTS = [
     id: "mesafeli",
     content: (
       <>
-        <AppLink href="/mesafeli-satis" target="_blank" rel="noopener">
+        <AppLink href={ROUTES.mesafeliSatis} target="_blank" rel="noopener">
           Mesafeli Satış Sözleşmesi
         </AppLink>
         'ni ve{" "}
-        <AppLink href="/kullanim-sartlari" target="_blank" rel="noopener">
+        <AppLink href={ROUTES.kullanimSartlari} target="_blank" rel="noopener">
           Kullanım Şartları
         </AppLink>
         'nı okudum, kabul ediyorum.
@@ -275,11 +276,11 @@ export default function CheckoutPage() {
       <footer>
         <div className="wrap">
           <div className="flinks">
-            <AppLink href="/">Ana sayfa</AppLink>
-            <AppLink href="/kullanim-sartlari">Kullanım şartları</AppLink>
-            <AppLink href="/mesafeli-satis">Mesafeli satış sözleşmesi</AppLink>
-            <AppLink href="/gizlilik">Gizlilik politikası</AppLink>
-            <AppLink href="/kvkk">KVKK</AppLink>
+            <AppLink href={ROUTES.home}>Ana sayfa</AppLink>
+            <AppLink href={ROUTES.kullanimSartlari}>Kullanım şartları</AppLink>
+            <AppLink href={ROUTES.mesafeliSatis}>Mesafeli satış sözleşmesi</AppLink>
+            <AppLink href={ROUTES.gizlilik}>Gizlilik politikası</AppLink>
+            <AppLink href={ROUTES.kvkk}>KVKK</AppLink>
             <a href="mailto:destek@parena.com.tr">destek@parena.com.tr</a>
           </div>
           <p style={{ fontSize: 11, color: "rgba(255,255,255,.42)", lineHeight: 1.7 }}>

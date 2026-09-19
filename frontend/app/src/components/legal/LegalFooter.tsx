@@ -1,12 +1,13 @@
 import { AppLink } from "@/components/ui/app-link";
+import { ROUTES } from "@/router/routes";
 
 const LINKS = [
-  { href: "/", label: "Ana sayfa" },
-  { href: "/kullanim-sartlari", label: "Kullanım şartları" },
-  { href: "/gizlilik", label: "Gizlilik politikası" },
-  { href: "/kvkk", label: "KVKK aydınlatma metni" },
-  { href: "/mesafeli-satis", label: "Mesafeli satış sözleşmesi" },
-  { href: "/cerez", label: "Çerez politikası" },
+  { href: ROUTES.home, label: "Ana sayfa" },
+  { href: ROUTES.kullanimSartlari, label: "Kullanım şartları" },
+  { href: ROUTES.gizlilik, label: "Gizlilik politikası" },
+  { href: ROUTES.kvkk, label: "KVKK aydınlatma metni" },
+  { href: ROUTES.mesafeliSatis, label: "Mesafeli satış sözleşmesi" },
+  { href: ROUTES.cerez, label: "Çerez politikası" },
 ];
 
 /**

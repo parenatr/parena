@@ -1,4 +1,6 @@
+import { AppLink } from "@/components/ui/app-link";
 import { LegalLayout } from "@/components/legal/LegalLayout";
+import { ROUTES } from "@/router/routes";
 
 export const kullanimSartlariPageMeta = {
   title: 'Şartlar - Parena',
@@ -190,7 +192,7 @@ export default function KullanimSartlariPage() {
 
     <section id="m13">
       <h2>Kişisel verilerin korunması</h2>
-      <p>Üye'ye ait kişisel veriler, 6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında, <a href="/kvkk">KVKK Aydınlatma Metni</a>'nde belirtilen amaç, hukuki sebep ve saklama süreleri çerçevesinde işlenir.</p>
+      <p>Üye'ye ait kişisel veriler, 6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında, <AppLink href={ROUTES.kvkk}>KVKK Aydınlatma Metni</AppLink>'nde belirtilen amaç, hukuki sebep ve saklama süreleri çerçevesinde işlenir.</p>
       <p>Veri sorumlusu: <span className="fill">[TİCARİ UNVAN]</span> — destek@parena.com.tr</p>
       <p>Üye, KVKK'nın 11. maddesinde sayılan haklarını kullanmak üzere destek@parena.com.tr adresine başvurabilir. Başvurular en geç 30 gün içinde sonuçlandırılır.</p>
     </section>

@@ -1,9 +1,9 @@
 /**
  * Ortam değişkenleri tek noktadan okunur.
- * Netlify'da: Site settings → Environment variables → VITE_API_BASE_URL
+ * Vercelde: Site settings → Environment variables → VITE_API_BASE_URL
  * Örn: https://api.parena.com  (BFF sunucusunun kökü)
  *
- * Boş bırakılırsa istekler aynı origin'e (relative) gider; bu da Netlify
+ * Boş bırakılırsa istekler aynı origin'e (relative) gider; bu da Vercel
  * proxy/redirect ile BFF'e yönlendirme yapıldığı senaryoyu destekler.
  */
 const rawBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "";
