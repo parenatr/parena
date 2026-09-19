@@ -21,10 +21,6 @@ export function getLoginRedirectUrl(): string {
 export const register = (data: RegisterRequest) =>
   publicApiRequest<void>(AUTH_ENDPOINTS.register, { method: "POST", body: data });
 
-export function getPasswordResetRedirectUrl(): string {
-  return getLoginRedirectUrl();
-}
-
 export const fetchSession = async (signal?: AbortSignal) => {
   const payload = await apiRequest<unknown>(AUTH_ENDPOINTS.me, {
     signal,

@@ -15,7 +15,7 @@ import KullanimSartlariPage, {
 import KvkkPage, { kvkkPageMeta } from "@/pages/Legal/KvkkPage";
 import MesafeliSatisPage, { mesafeliSatisPageMeta } from "@/pages/Legal/MesafeliSatisPage";
 import RegisterPage, { registerPageMeta } from "@/pages/Register/RegisterPage";
-import { getLoginRedirectUrl, getPasswordResetRedirectUrl } from "@/features/auth/auth.api";
+import { getLoginRedirectUrl } from "@/features/auth/auth.api";
 
 /** Sayfayı meta yönetimiyle sarmalar. */
 function withMeta(Page: ComponentType, meta: PageMeta) {
@@ -28,13 +28,6 @@ function withMeta(Page: ComponentType, meta: PageMeta) {
 function LoginRoute() {
   useEffect(() => {
     window.location.href = getLoginRedirectUrl();
-  }, []);
-  return null;
-}
-
-function ForgotPasswordRoute() {
-  useEffect(() => {
-    window.location.href = getPasswordResetRedirectUrl();
   }, []);
   return null;
 }
@@ -91,7 +84,6 @@ export function AppRouter() {
         <Route path={ROUTES.home} element={<LaunchRoute />} />
         <Route path={ROUTES.login} element={<LoginRoute />} />
         <Route path={ROUTES.register} element={<RegisterRoute />} />
-        <Route path="/sifremi-unuttum" element={<ForgotPasswordRoute />} />
         <Route path={ROUTES.checkout} element={<CheckoutRoute />} />
         <Route path={ROUTES.cerez} element={<CerezRoute />} />
         <Route path={ROUTES.gizlilik} element={<GizlilikRoute />} />
