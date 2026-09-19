@@ -232,7 +232,12 @@ export default function RegisterPage({
                 className="mt-0.5"
               />
               <span className="text-sm">
-                <AppLink href={ROUTES.kullanimSartlari} target="_blank" rel="noopener">
+                <AppLink
+                  href={ROUTES.kullanimSartlari}
+                  target="_blank"
+                  rel="noopener"
+                  className="font-semibold underline! decoration-brand/30 underline-offset-2 hover:decoration-brand"
+                >
                   Kullanım Şartları
                 </AppLink>
                 'nı okudum, kabul ediyorum.
@@ -261,13 +266,23 @@ export default function RegisterPage({
 
           <p className="text-sm text-muted-foreground" style={{ marginTop: 20 }}>
             Kişisel verilerinizin işlenmesine ilişkin{" "}
-            <AppLink href={ROUTES.kvkk} target="_blank" rel="noopener">
+            <AppLink
+              href={ROUTES.kvkk}
+              target="_blank"
+              rel="noopener"
+              className="font-semibold underline! decoration-brand/30 underline-offset-2 hover:decoration-brand"
+            >
               Kvkk Aydınlatma Metni
             </AppLink>
             'ni inceleyebilirsiniz.
           </p>
           <p className="text-sm text-muted-foreground" style={{ marginTop: 20 }}>
-            <AppLink href={ROUTES.gizlilik} target="_blank" rel="noopener">
+            <AppLink
+              href={ROUTES.gizlilik}
+              target="_blank"
+              rel="noopener"
+              className="font-semibold underline! decoration-brand/30 underline-offset-2 hover:decoration-brand"
+            >
               Gizlilik Politikası
             </AppLink>
             'nı inceleyebilirsiniz.
